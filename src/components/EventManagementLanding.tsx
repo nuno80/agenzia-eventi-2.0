@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, FormEvent } from 'react';
+import React from 'react';
 import HeroSection from './landing/HeroSection';
 import DifferentiatorsSection from './landing/DifferentiatorsSection';
 import ServicesSection from './landing/ServicesSection';
@@ -11,6 +11,7 @@ import FAQSection from './landing/FAQSection';
 import ContactFormSection from './landing/ContactFormSection';
 import Footer from './landing/Footer';
 import WhatsAppButton from './landing/WhatsAppButton';
+import ContactUs1 from './mvpblocks/contact-us-1';
 
 const EventManagementLanding = () => {
   const handleContactClick = () => {
@@ -33,6 +34,7 @@ const EventManagementLanding = () => {
       <StatsSection />
       <FAQSection />
       <ContactFormSection />
+      <ContactUs1 />
       <Footer />
       <WhatsAppButton />
     </div>

@@ -5,10 +5,10 @@ import { motion, useInView } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import Earth from '@/components/ui/globe';
 import { SparklesCore } from '@/components/ui/sparkles';
 import { Label } from '@/components/ui/label';
 import { Check, Loader2 } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 export default function ContactUs1() {
   const [name, setName] = useState('');
@@ -47,13 +47,13 @@ export default function ContactUs1() {
       <div
         className="absolute top-0 left-0 h-[500px] w-[500px] rounded-full opacity-20 blur-[120px]"
         style={{
-          background: `radial-gradient(circle at center, #e60a64, transparent 70%)`,
+          background: `radial-gradient(circle at center, #f59e0b, transparent 70%)`, // amber-500
         }}
       />
       <div
         className="absolute right-0 bottom-0 h-[300px] w-[300px] rounded-full opacity-10 blur-[100px]"
         style={{
-          background: `radial-gradient(circle at center, #e60a64, transparent 70%)`,
+          background: `radial-gradient(circle at center, #f59e0b, transparent 70%)`, // amber-500
         }}
       />
 
@@ -82,7 +82,7 @@ export default function ContactUs1() {
                   maxSize={1.4}
                   particleDensity={500}
                   className="absolute inset-0 top-0 h-24 w-full"
-                  particleColor="#e60a64"
+                  particleColor="#f59e0b" // amber-500
                 />
               </motion.div>
 
@@ -152,25 +152,39 @@ export default function ContactUs1() {
                   whileTap={{ scale: 0.98 }}
                   className="w-full"
                 >
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-gradient-to-b from-rose-500 to-rose-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]"
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center justify-center">
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sending...
-                      </span>
-                    ) : isSubmitted ? (
-                      <span className="flex items-center justify-center">
-                        <Check className="mr-2 h-4 w-4" />
-                        Message Sent!
-                      </span>
-                    ) : (
-                      <span>Send Message</span>
-                    )}
-                  </Button>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center justify-center">
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Sending...
+                        </span>
+                      ) : isSubmitted ? (
+                        <span className="flex items-center justify-center">
+                          <Check className="mr-2 h-4 w-4" />
+                          Message Sent!
+                        </span>
+                      ) : (
+                        <span>Send Email</span>
+                      )}
+                    </Button>
+                    
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        const whatsappMessage = `Ciao! Sono ${name}. Il mio messaggio: ${message}. Email: ${email}`;
+                        window.open(`https://wa.me/393401234567?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+                      }}
+                      className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                    >
+                      <MessageCircle className="w-5 h-5" />
+                      Send via WhatsApp
+                    </Button>
+                  </div>
                 </motion.div>
               </motion.form>
             </div>
@@ -182,16 +196,9 @@ export default function ContactUs1() {
               className="relative my-8 flex items-center justify-center overflow-hidden pr-8"
             >
               <div className="flex flex-col items-center justify-center overflow-hidden">
-                <article className="relative mx-auto h-[350px] min-h-60 max-w-[450px] overflow-hidden rounded-3xl border bg-gradient-to-b from-[#e60a64] to-[#e60a64]/5 p-6 text-3xl tracking-tight text-white md:h-[450px] md:min-h-80 md:p-8 md:text-4xl md:leading-[1.05] lg:text-5xl">
+                <article className="relative mx-auto h-[350px] min-h-60 max-w-[450px] overflow-hidden rounded-3xl border bg-gradient-to-b from-amber-500 to-amber-600 p-6 text-3xl tracking-tight text-white md:h-[450px] md:min-h-80 md:p-8 md:text-4xl md:leading-[1.05] lg:text-5xl">
                   Presenting you with the best UI possible.
-                  <div className="absolute -right-20 -bottom-20 z-10 mx-auto flex h-full w-full max-w-[300px] items-center justify-center transition-all duration-700 hover:scale-105 md:-right-28 md:-bottom-28 md:max-w-[550px]">
-                    <Earth
-                      scale={1.1}
-                      baseColor={[1, 0, 0.3]}
-                      markerColor={[0, 0, 0]}
-                      glowColor={[1, 0.3, 0.4]}
-                    />
-                  </div>
+
                 </article>
               </div>
             </motion.div>
