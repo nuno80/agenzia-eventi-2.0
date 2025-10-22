@@ -7,12 +7,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { SparklesCore } from '@/components/ui/sparkles';
 import { Label } from '@/components/ui/label';
-import { Check, Loader2 } from 'lucide-react';
-import { MessageCircle } from 'lucide-react';
+import { Check, Loader2, MessageCircle } from 'lucide-react';
 
 export default function ContactUs1() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [eventType, setEventType] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -26,10 +27,12 @@ export default function ContactUs1() {
 
     try {
       // Perform form submission logic here
-      console.log('Form submitted:', { name, email, message });
+      console.log('Form submitted:', { name, email, phone, eventType, message });
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setName('');
       setEmail('');
+      setPhone('');
+      setEventType('');
       setMessage('');
       setIsSubmitted(true);
       setTimeout(() => {
@@ -95,6 +98,9 @@ export default function ContactUs1() {
                 onSubmit={handleSubmit}
                 className="mt-8 space-y-6"
               >
+                <p className="text-lg text-slate-600">
+                  Raccontaci del tuo progetto e ti ricontatteremo entro 24 ore
+                </p>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <motion.div
                     className="space-y-2"
@@ -102,12 +108,12 @@ export default function ContactUs1() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
                   >
-                    <Label htmlFor="name">Name</Label>
+                    <Label htmlFor="name">Nome e Cognome *</Label>
                     <Input
                       id="name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Enter your name"
+                      placeholder="Mario Rossi"
                       required
                     />
                   </motion.div>
@@ -118,15 +124,58 @@ export default function ContactUs1() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
                   >
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">Email *</Label>
                     <Input
                       id="email"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email"
+                      placeholder="mario.rossi@azienda.it"
                       required
                     />
+                  </motion.div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <motion.div
+                    className="space-y-2"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                  >
+                    <Label htmlFor="phone">Telefono *</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+39 340 123 4567"
+                      required
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    className="space-y-2"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7 }}
+                  >
+                    <Label htmlFor="eventType">Tipo di Evento *</Label>
+                    <select
+                      id="eventType"
+                      value={eventType}
+                      onChange={(e) => setEventType(e.target.value)}
+                      required
+                      className="flex h-9 w-full min-w-0 rounded-md border border-slate-300 bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 bg-white"
+                    >
+                      <option value="">Seleziona...</option>
+                      <option value="congresso">Congresso / Convention</option>
+                      <option value="corporate">Evento Aziendale</option>
+                      <option value="hostess">Servizio Hostess/Promoter</option>
+                      <option value="formazione">Corso di Formazione</option>
+                      <option value="ibrido">Evento Ibrido/Online</option>
+                      <option value="altro">Altro</option>
+                    </select>
                   </motion.div>
                 </div>
 
@@ -134,15 +183,15 @@ export default function ContactUs1() {
                   className="space-y-2"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
+                  transition={{ delay: 0.8 }}
                 >
-                  <Label htmlFor="message">Message</Label>
+                  <Label htmlFor="message">Messaggio</Label>
                   <Textarea
                     id="message"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Enter your message"
-                    required
+                    placeholder="Raccontaci brevemente del tuo progetto: data prevista, numero partecipanti, budget orientativo..."
+                    rows={4}
                     className="h-40 resize-none"
                   />
                 </motion.div>
@@ -152,38 +201,42 @@ export default function ContactUs1() {
                   whileTap={{ scale: 0.98 }}
                   className="w-full"
                 >
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-                    >
-                      {isSubmitting ? (
-                        <span className="flex items-center justify-center">
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Sending...
-                        </span>
-                      ) : isSubmitted ? (
-                        <span className="flex items-center justify-center">
-                          <Check className="mr-2 h-4 w-4" />
-                          Message Sent!
-                        </span>
-                      ) : (
-                        <span>Send Email</span>
-                      )}
-                    </Button>
+                  <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                    <div className="flex-1">
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                      >
+                        {isSubmitting ? (
+                          <span className="flex items-center justify-center">
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Sending...
+                          </span>
+                        ) : isSubmitted ? (
+                          <span className="flex items-center justify-center">
+                            <Check className="mr-2 h-4 w-4" />
+                            Message Sent!
+                          </span>
+                        ) : (
+                          <span>Send Email</span>
+                        )}
+                      </Button>
+                    </div>
                     
-                    <Button
-                      type="button"
-                      onClick={() => {
-                        const whatsappMessage = `Ciao! Sono ${name}. Il mio messaggio: ${message}. Email: ${email}`;
-                        window.open(`https://wa.me/393401234567?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-                      }}
-                      className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-                    >
-                      <MessageCircle className="w-5 h-5" />
-                      Send via WhatsApp
-                    </Button>
+                    <div className="flex-1">
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          const whatsappMessage = `Ciao! Sono ${name}. Interessato a: ${eventType}. Email: ${email}, Tel: ${phone}. Messaggio: ${message}`;
+                          window.open(`https://wa.me/393401234567?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+                        }}
+                        className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                      >
+                        <MessageCircle className="w-5 h-5" />
+                        Send via WhatsApp
+                      </Button>
+                    </div>
                   </div>
                 </motion.div>
               </motion.form>
@@ -197,8 +250,14 @@ export default function ContactUs1() {
             >
               <div className="flex flex-col items-center justify-center overflow-hidden">
                 <article className="relative mx-auto h-[350px] min-h-60 max-w-[450px] overflow-hidden rounded-3xl border bg-gradient-to-b from-amber-500 to-amber-600 p-6 text-3xl tracking-tight text-white md:h-[450px] md:min-h-80 md:p-8 md:text-4xl md:leading-[1.05] lg:text-5xl">
-                  Presenting you with the best UI possible.
-
+                  <div className="flex flex-col h-full justify-start pt-8">
+                    <h3 className="font-bold mb-4 text-3xl md:text-4xl lg:text-5xl tracking-tight">
+                      Richiedi un Preventivo Gratuito
+                    </h3>
+                    <p className="text-lg md:text-xl lg:text-2xl font-light">
+                      Raccontaci del tuo progetto e ti ricontatteremo entro 24 ore.
+                    </p>
+                  </div>
                 </article>
               </div>
             </motion.div>
