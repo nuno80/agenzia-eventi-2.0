@@ -197,16 +197,16 @@ export default function ContactUs1() {
                 </motion.div>
 
                 <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
                   className="w-full"
                 >
                   <div className="flex flex-col sm:flex-row gap-4 mb-6">
                     <div className="flex-1">
-                      <Button
+                      <motion.button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                        className="w-full h-14 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
                         {isSubmitting ? (
                           <span className="flex items-center justify-center">
@@ -221,21 +221,23 @@ export default function ContactUs1() {
                         ) : (
                           <span>Send Email</span>
                         )}
-                      </Button>
+                      </motion.button>
                     </div>
                     
                     <div className="flex-1">
-                      <Button
+                      <motion.button
                         type="button"
                         onClick={() => {
                           const whatsappMessage = `Ciao! Sono ${name}. Interessato a: ${eventType}. Email: ${email}, Tel: ${phone}. Messaggio: ${message}`;
                           window.open(`https://wa.me/393401234567?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
                         }}
-                        className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                        className="w-full h-14 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
                         <MessageCircle className="w-5 h-5" />
                         Send via WhatsApp
-                      </Button>
+                      </motion.button>
                     </div>
                   </div>
                 </motion.div>
