@@ -5,6 +5,7 @@ import { motion, useInView } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import Earth from '@/components/ui/globe';
 import { SparklesCore } from '@/components/ui/sparkles';
 import { Label } from '@/components/ui/label';
 import { Check, Loader2, MessageCircle } from 'lucide-react';
@@ -72,7 +73,7 @@ export default function ContactUs1() {
                 transition={{ duration: 0.5, delay: 0.1 }}
                 className="flex w-full gap-2"
               >
-                <h2 className="from-foreground to-foreground/80 mb-2 bg-gradient-to-r bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
+                <h2 className="from-foreground to-foreground/80 mb-2 bg-linear-to-r bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
                   Contact
                 </h2>
                 <span className="text-primary relative z-10 w-full text-4xl font-bold tracking-tight italic md:text-5xl">
@@ -99,7 +100,8 @@ export default function ContactUs1() {
                 className="mt-8 space-y-6"
               >
                 <p className="text-lg text-slate-600">
-                  Raccontaci del tuo progetto e ti ricontatteremo entro 24 ore
+                  Richiedi un Preventivo Gratuito<br />
+                  <span className="text-base">Raccontaci del tuo progetto e ti ricontatteremo entro 24 ore</span>
                 </p>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <motion.div
@@ -196,51 +198,57 @@ export default function ContactUs1() {
                   />
                 </motion.div>
 
-                <motion.div
-                  className="w-full"
-                >
+                <div className="w-full">
                   <div className="flex flex-col sm:flex-row gap-4 mb-6">
                     <div className="flex-1">
-                      <motion.button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full h-14 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                      <motion.div
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
+                        className="w-full"
                       >
-                        {isSubmitting ? (
-                          <span className="flex items-center justify-center">
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Sending...
-                          </span>
-                        ) : isSubmitted ? (
-                          <span className="flex items-center justify-center">
-                            <Check className="mr-2 h-4 w-4" />
-                            Message Sent!
-                          </span>
-                        ) : (
-                          <span>Send Email</span>
-                        )}
-                      </motion.button>
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="w-full h-14 bg-linear-to-b from-rose-500 to-rose-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset] px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2"
+                        >
+                          {isSubmitting ? (
+                            <span className="flex items-center justify-center">
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Sending...
+                            </span>
+                          ) : isSubmitted ? (
+                            <span className="flex items-center justify-center">
+                              <Check className="mr-2 h-4 w-4" />
+                              Message Sent!
+                            </span>
+                          ) : (
+                            <span>Send Email</span>
+                          )}
+                        </button>
+                      </motion.div>
                     </div>
                     
                     <div className="flex-1">
-                      <motion.button
-                        type="button"
-                        onClick={() => {
-                          const whatsappMessage = `Ciao! Sono ${name}. Interessato a: ${eventType}. Email: ${email}, Tel: ${phone}. Messaggio: ${message}`;
-                          window.open(`https://wa.me/393401234567?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-                        }}
-                        className="w-full h-14 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                      <motion.div
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
+                        className="w-full"
                       >
-                        <MessageCircle className="w-5 h-5" />
-                        Send via WhatsApp
-                      </motion.button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const whatsappMessage = `Ciao! Sono ${name}. Interessato a: ${eventType}. Email: ${email}, Tel: ${phone}. Messaggio: ${message}`;
+                            window.open(`https://wa.me/393401234567?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+                          }}
+                          className="w-full h-14 bg-linear-to-b from-rose-500 to-rose-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset] px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2"
+                        >
+                          <MessageCircle className="w-5 h-5" />
+                          Send via WhatsApp
+                        </button>
+                      </motion.div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               </motion.form>
             </div>
 
@@ -251,14 +259,16 @@ export default function ContactUs1() {
               className="relative my-8 flex items-center justify-center overflow-hidden pr-8"
             >
               <div className="flex flex-col items-center justify-center overflow-hidden">
-                <article className="relative mx-auto h-[350px] min-h-60 max-w-[450px] overflow-hidden rounded-3xl border bg-gradient-to-b from-amber-500 to-amber-600 p-6 text-3xl tracking-tight text-white md:h-[450px] md:min-h-80 md:p-8 md:text-4xl md:leading-[1.05] lg:text-5xl">
-                  <div className="flex flex-col h-full justify-start pt-8">
-                    <h3 className="font-bold mb-4 text-3xl md:text-4xl lg:text-5xl tracking-tight">
-                      Richiedi un Preventivo Gratuito
-                    </h3>
-                    <p className="text-lg md:text-xl lg:text-2xl font-light">
-                      Raccontaci del tuo progetto e ti ricontatteremo entro 24 ore.
-                    </p>
+                <article className="relative mx-auto h-[350px] min-h-60 max-w-[450px] overflow-hidden rounded-3xl border bg-gradient-to-b from-[#e60a64] to-[#e60a64]/5 p-6 text-3xl tracking-tight text-white md:h-[450px] md:min-h-80 md:p-8 md:text-4xl md:leading-[1.05] lg:text-5xl">
+                  Richiedi un Preventivo Gratuito<br />
+                  <span className="text-2xl">Raccontaci del tuo progetto e ti ricontatteremo entro 24 ore</span>
+                  <div className="absolute -right-20 -bottom-20 z-10 mx-auto flex h-full w-full max-w-[300px] items-center justify-center transition-all duration-700 hover:scale-105 md:-right-28 md:-bottom-28 md:max-w-[550px]">
+                    <Earth
+                      scale={1.1}
+                      baseColor={[1, 0, 0.3]}
+                      markerColor={[0, 0, 0]}
+                      glowColor={[1, 0.3, 0.4]}
+                    />
                   </div>
                 </article>
               </div>
