@@ -12,6 +12,7 @@ import ContactFormSection from './landing/ContactFormSection';
 import Footer from './landing/Footer';
 import WhatsAppButton from './landing/WhatsAppButton';
 import ContactUs1 from './mvpblocks/contact-us-1';
+import Navbar from './landing/Navbar';
 
 const EventManagementLanding = () => {
   const handleContactClick = () => {
@@ -26,6 +27,7 @@ const EventManagementLanding = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <Navbar />
       <HeroSection onContactClick={handleContactClick} onServicesClick={handleServicesClick} />
       <DifferentiatorsSection />
       <ServicesSection />

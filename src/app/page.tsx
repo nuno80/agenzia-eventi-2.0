@@ -16,7 +16,6 @@ export const metadata = {
 export default function Home() {
   return (
     <div>
-      <div className="p-4 bg-red-500 text-white">Test Tailwind CSS</div>
       <EventManagementLanding />
     </div>
   );

@@ -2,16 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { 
-  Calendar, 
-  Users, 
-  Video, 
-  GraduationCap, 
   ArrowRight, 
   Sparkles, 
   Award, 
   MapPin, 
   Target, 
-  ChevronDown 
+  ChevronDown,
+  Calendar, 
+  Users
 } from 'lucide-react';
 
 interface HeroSectionProps {
@@ -37,13 +35,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, onServicesCli
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  const floatingIcons = [
-    { Icon: Calendar, delay: '0s', duration: '20s' },
-    { Icon: Users, delay: '2s', duration: '18s' },
-    { Icon: Video, delay: '4s', duration: '22s' },
-    { Icon: GraduationCap, delay: '6s', duration: '19s' },
-  ];
-
   const stats = [
     { number: '15+', label: 'Anni Esperienza', icon: Award },
     { number: '200+', label: 'Eventi Gestiti', icon: Calendar },
@@ -56,19 +47,19 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, onServicesCli
     { icon: Target, text: 'Focus PMI & Corporate' },
   ];
 
-  // Generate random particles/stars
+  // Generate consistent particles with fixed values to prevent hydration mismatch
   const particles = Array.from({ length: 50 }, (_, i) => ({
     id: i,
-    size: Math.random() * 3 + 1,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    duration: Math.random() * 5 + 4,
-    delay: Math.random() * 2,
-    opacity: Math.random() * 0.5 + 0.3,
+    size: 1.5 + (i % 3), // Fixed sizes: 1.5, 2.5, 3.5 cycling
+    x: (i * 7) % 100, // Deterministic x positions
+    y: (i * 11) % 100, // Deterministic y positions
+    duration: 3 + (i % 4), // Fixed durations: 3, 4, 5, 6 cycling
+    delay: i % 2, // Fixed delays: 0 or 1
+    opacity: 0.3 + (i % 5) * 0.1, // Opacities: 0.3, 0.4, 0.5, 0.6, 0.7 cycling
   }));
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-950">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-950 pt-20 pb-32">
       {/* Floating Particles/Stars */}
       <div className="absolute inset-0 overflow-hidden">
         {particles.map((particle) => (
@@ -125,21 +116,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, onServicesCli
           }}
         />
       </div>
-
-      {/* Floating Icons */}
-      {floatingIcons.map(({ Icon, delay, duration }, idx) => (
-        <div
-          key={idx}
-          className="absolute text-amber-500/10"
-          style={{
-            top: `${20 + idx * 20}%`,
-            left: `${10 + idx * 20}%`,
-            animation: `float ${duration} ease-in-out ${delay} infinite`,
-          }}
-        >
-          <Icon className="w-16 h-16" />
-        </div>
-      ))}
 
       {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -262,7 +238,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, onServicesCli
 
       {/* Scroll Indicator */}
       <div 
-        className={`absolute bottom-8 left-1/2 -translate-x-1/2 transition-all duration-1000 delay-1200 ${
+        className={`absolute bottom-12 left-1/2 -translate-x-1/2 transition-all duration-1000 delay-1200 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
         }`}
       >

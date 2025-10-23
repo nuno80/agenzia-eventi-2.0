@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@heroui/navbar": "^2.2.25",
     "@radix-ui/react-label": "^2.1.7",
     "@tsparticles/engine": "^3.9.1",
     "@tsparticles/react": "^3.0.0",

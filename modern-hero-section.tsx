@@ -8,7 +8,7 @@ const ModernHeroSection = () => {
   useEffect(() => {
     setIsVisible(true);
     
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 20,
         y: (e.clientY / window.innerHeight) * 20,
