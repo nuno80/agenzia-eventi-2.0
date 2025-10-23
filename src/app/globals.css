@@ -119,3 +119,74 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom styles for blog content */
+.lead {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  color: #475569;
+  font-weight: 400;
+  margin-bottom: 2rem;
+  padding-left: 1rem;
+  border-left: 4px solid #d4af37;
+}
+
+.checklist-box {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-left: 4px solid #d4af37;
+  padding: 2rem;
+  margin: 2rem 0;
+  border-radius: 0.5rem;
+}
+
+.checklist-box h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.checklist-box h4:first-child {
+  margin-top: 0;
+}
+
+.checklist-box ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.checklist-box li {
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  color: #334155;
+}
+
+.cta-box {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  margin: 3rem 0;
+  text-align: center;
+}
+
+.cta-box strong {
+  font-size: 1.25rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #fbbf24;
+}
+
+.cta-box a {
+  color: #fbbf24;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: #fbbf24;
+  text-underline-offset: 4px;
+}
+
+.cta-box a:hover {
+  color: #f59e0b;
+  text-decoration-color: #f59e0b;
+}

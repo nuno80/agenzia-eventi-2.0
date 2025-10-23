@@ -3,14 +3,22 @@
 import React, { useState } from 'react';
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem } from "@heroui/navbar";
 import { ArrowRight, Phone } from 'lucide-react';
+import Link from 'next/link';
+
+type MenuItem = {
+  name: string;
+  id?: string;
+  href?: string;
+};
 
 const CustomNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const menuItems = [
+  const menuItems: MenuItem[] = [
     { name: "Servizi", id: "services" },
     { name: "Processo", id: "process" },
     { name: "Casi Studio", id: "case-studies" },
+    { name: "Blog", href: "/blog" },
     { name: "FAQ", id: "faq" },
     { name: "Contatti", id: "contact-form" },
   ];
@@ -42,12 +50,21 @@ const CustomNavbar = () => {
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         {menuItems.map((item, index) => (
           <NavbarItem key={index}>
-            <button
-              onClick={() => handleScrollToSection(item.id)}
-              className="text-slate-700 hover:text-amber-600 transition-colors"
-            >
-              {item.name}
-            </button>
+            {item.href ? (
+              <Link
+                href={item.href}
+                className="text-slate-700 hover:text-amber-600 transition-colors"
+              >
+                {item.name}
+              </Link>
+            ) : (
+              <button
+                onClick={() => item.id && handleScrollToSection(item.id)}
+                className="text-slate-700 hover:text-amber-600 transition-colors"
+              >
+                {item.name}
+              </button>
+            )}
           </NavbarItem>
         ))}
       </NavbarContent>
@@ -74,12 +91,21 @@ const CustomNavbar = () => {
       <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
-            <button
-              onClick={() => handleScrollToSection(item.id)}
-              className="w-full text-left py-2 text-slate-700 hover:text-amber-600 transition-colors"
-            >
-              {item.name}
-            </button>
+            {item.href ? (
+              <Link
+                href={item.href}
+                className="w-full text-left py-2 text-slate-700 hover:text-amber-600 transition-colors"
+              >
+                {item.name}
+              </Link>
+            ) : (
+              <button
+                onClick={() => item.id && handleScrollToSection(item.id)}
+                className="w-full text-left py-2 text-slate-700 hover:text-amber-600 transition-colors"
+              >
+                {item.name}
+              </button>
+            )}
           </NavbarMenuItem>
         ))}
         <NavbarMenuItem>
