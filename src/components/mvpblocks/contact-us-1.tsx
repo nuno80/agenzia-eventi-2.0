@@ -64,7 +64,7 @@ export default function ContactUs1() {
       <div className="relative z-10 container mx-auto px-4 md:px-6">
         <div className="border-border/40 bg-secondary/20 mx-auto max-w-5xl overflow-hidden rounded-[28px] border shadow-xl backdrop-blur-sm">
           <div className="grid md:grid-cols-2">
-            <div className="relative p-6 md:p-10" ref={formRef}>
+            <div className="relative p-6 md:p-10 bg-slate-50" ref={formRef}>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={
@@ -76,7 +76,7 @@ export default function ContactUs1() {
                 <h2 className="from-foreground to-foreground/80 mb-2 bg-linear-to-r bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
                   Contact
                 </h2>
-                <span className="text-primary relative z-10 w-full text-4xl font-bold tracking-tight italic md:text-5xl">
+                <span className="text-amber-500 relative z-10 w-full text-4xl font-bold tracking-tight italic md:text-5xl">
                   Us
                 </span>
                 <SparklesCore
@@ -110,13 +110,14 @@ export default function ContactUs1() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
                   >
-                    <Label htmlFor="name">Nome e Cognome *</Label>
+                    <Label htmlFor="name" className="text-slate-700">Nome e Cognome *</Label>
                     <Input
                       id="name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Mario Rossi"
                       required
+                      className="border-slate-300 focus:border-amber-500 focus:ring-amber-500/20"
                     />
                   </motion.div>
 
@@ -126,7 +127,7 @@ export default function ContactUs1() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
                   >
-                    <Label htmlFor="email">Email *</Label>
+                    <Label htmlFor="email" className="text-slate-700">Email *</Label>
                     <Input
                       id="email"
                       type="email"
@@ -134,6 +135,7 @@ export default function ContactUs1() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="mario.rossi@azienda.it"
                       required
+                      className="border-slate-300 focus:border-amber-500 focus:ring-amber-500/20"
                     />
                   </motion.div>
                 </div>
@@ -145,7 +147,7 @@ export default function ContactUs1() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
                   >
-                    <Label htmlFor="phone">Telefono *</Label>
+                    <Label htmlFor="phone" className="text-slate-700">Telefono *</Label>
                     <Input
                       id="phone"
                       type="tel"
@@ -153,6 +155,7 @@ export default function ContactUs1() {
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+39 340 123 4567"
                       required
+                      className="border-slate-300 focus:border-amber-500 focus:ring-amber-500/20"
                     />
                   </motion.div>
 
@@ -162,13 +165,13 @@ export default function ContactUs1() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 }}
                   >
-                    <Label htmlFor="eventType">Tipo di Evento *</Label>
+                    <Label htmlFor="eventType" className="text-slate-700">Tipo di Evento *</Label>
                     <select
                       id="eventType"
                       value={eventType}
                       onChange={(e) => setEventType(e.target.value)}
                       required
-                      className="flex h-9 w-full min-w-0 rounded-md border border-slate-300 bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 bg-white"
+                      className="flex h-9 w-full min-w-0 rounded-md border border-slate-300 bg-white px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
                     >
                       <option value="">Seleziona...</option>
                       <option value="congresso">Congresso / Convention</option>
@@ -187,14 +190,14 @@ export default function ContactUs1() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8 }}
                 >
-                  <Label htmlFor="message">Messaggio</Label>
+                  <Label htmlFor="message" className="text-slate-700">Messaggio</Label>
                   <Textarea
                     id="message"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Raccontaci brevemente del tuo progetto: data prevista, numero partecipanti, budget orientativo..."
                     rows={4}
-                    className="h-40 resize-none"
+                    className="h-40 resize-none border-slate-300 focus:border-amber-500 focus:ring-amber-500/20"
                   />
                 </motion.div>
 
@@ -209,7 +212,7 @@ export default function ContactUs1() {
                         <button
                           type="submit"
                           disabled={isSubmitting}
-                          className="w-full h-14 bg-linear-to-b from-rose-500 to-rose-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset] px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2"
+                          className="w-full h-14 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-xl"
                         >
                           {isSubmitting ? (
                             <span className="flex items-center justify-center">
@@ -240,7 +243,7 @@ export default function ContactUs1() {
                             const whatsappMessage = `Ciao! Sono ${name}. Interessato a: ${eventType}. Email: ${email}, Tel: ${phone}. Messaggio: ${message}`;
                             window.open(`https://wa.me/393401234567?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
                           }}
-                          className="w-full h-14 bg-linear-to-b from-rose-500 to-rose-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset] px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2"
+                          className="w-full h-14 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-xl"
                         >
                           <MessageCircle className="w-5 h-5" />
                           Send via WhatsApp
@@ -259,15 +262,25 @@ export default function ContactUs1() {
               className="relative my-8 flex items-center justify-center overflow-hidden pr-8"
             >
               <div className="flex flex-col items-center justify-center overflow-hidden">
-                <article className="relative mx-auto h-[350px] min-h-60 max-w-[450px] overflow-hidden rounded-3xl border bg-gradient-to-b from-[#e60a64] to-[#e60a64]/5 p-6 text-3xl tracking-tight text-white md:h-[450px] md:min-h-80 md:p-8 md:text-4xl md:leading-[1.05] lg:text-5xl">
+                <article className="relative mx-auto h-[350px] min-h-60 max-w-[450px] overflow-hidden rounded-3xl border bg-gradient-to-b from-amber-500 to-amber-600 p-6 text-3xl tracking-tight text-white md:h-[450px] md:min-h-80 md:p-8 md:text-4xl md:leading-[1.05] lg:text-5xl">
                   Richiedi un Preventivo Gratuito<br />
                   <span className="text-2xl">Raccontaci del tuo progetto e ti ricontatteremo entro 24 ore</span>
                   <div className="absolute -right-20 -bottom-20 z-10 mx-auto flex h-full w-full max-w-[300px] items-center justify-center transition-all duration-700 hover:scale-105 md:-right-28 md:-bottom-28 md:max-w-[550px]">
+                    {/* 
+                      Globe customization options:
+                      - scale: Controls the size of the globe (0.5 = 50% smaller)
+                      - baseColor: Changes the main color of the globe [R, G, B] values between 0-1
+                      - markerColor: Changes the color of markers [R, G, B] values between 0-1
+                      - glowColor: Changes the glow effect color [R, G, B] values between 0-1
+                      Current settings use amber colors to match the landing page theme:
+                      - baseColor: [1, 0.6, 0.2] = amber
+                      - glowColor: [1, 0.8, 0.4] = lighter amber
+                    */}
                     <Earth
-                      scale={1.1}
-                      baseColor={[1, 0, 0.3]}
-                      markerColor={[0, 0, 0]}
-                      glowColor={[1, 0.3, 0.4]}
+                      scale={0.5} // Made the globe 50% smaller as requested
+                      baseColor={[1, 0.6, 0.2]} // Amber color to match landing page
+                      markerColor={[0, 0, 0]} // Black markers
+                      glowColor={[1, 0.8, 0.4]} // Lighter amber glow
                     />
                   </div>
                 </article>
