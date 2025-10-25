@@ -22,16 +22,13 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Database Setup
 
-This project includes a fully configured SQLite database using Drizzle ORM with two options:
-
-1. **Better-SQLite3** (default) - High performance but requires native compilation
-2. **LibSQL** (Windows-friendly alternative) - Pure JavaScript implementation
+This project includes a fully configured database using Drizzle ORM with [Turso](https://turso.tech) as the backend storage.
 
 ### Initial Setup
 
 1. Install dependencies: `pnpm install`
-2. For Windows users or environments without build tools, use the libsql implementation
-3. For other environments, you can use the better-sqlite3 implementation
+2. Set up your Turso database credentials in `.env.local`
+3. Run database migrations: `pnpm db:migrate`
 
 ### Database Scripts
 
@@ -43,11 +40,8 @@ This project includes a fully configured SQLite database using Drizzle ORM with 
 ### Usage
 
 ```typescript
-// Using better-sqlite3 (default)
+// Using Turso database (libsql implementation)
 import { db, users } from '@/db';
-
-// Using libsql (Windows-friendly alternative)
-import { db, users } from '@/db/libsql';
 ```
 
 For more details, see [Database Setup Guide](./guide/database-setup.md).
