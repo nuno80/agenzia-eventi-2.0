@@ -20,6 +20,38 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Database Setup
+
+This project includes a fully configured SQLite database using Drizzle ORM with two options:
+
+1. **Better-SQLite3** (default) - High performance but requires native compilation
+2. **LibSQL** (Windows-friendly alternative) - Pure JavaScript implementation
+
+### Initial Setup
+
+1. Install dependencies: `pnpm install`
+2. For Windows users or environments without build tools, use the libsql implementation
+3. For other environments, you can use the better-sqlite3 implementation
+
+### Database Scripts
+
+- `pnpm db:generate` - Generate migrations based on schema changes
+- `pnpm db:migrate` - Apply migrations to the database
+- `pnpm db:studio` - Open Drizzle Studio to inspect the database
+- `pnpm db:seed` - Seed the database with sample data
+
+### Usage
+
+```typescript
+// Using better-sqlite3 (default)
+import { db, users } from '@/db';
+
+// Using libsql (Windows-friendly alternative)
+import { db, users } from '@/db/libsql';
+```
+
+For more details, see [Database Setup Guide](./guide/database-setup.md).
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
