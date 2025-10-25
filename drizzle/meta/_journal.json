@@ -15,6 +15,13 @@
       "when": 1761373083758,
       "tag": "0001_tense_magma",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1761378621412,
+      "tag": "0002_opposite_polaris",
+      "breakpoints": true
     }
   ]
 }

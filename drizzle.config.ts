@@ -5,7 +5,6 @@ export default defineConfig({
   out: './drizzle',
   dialect: 'sqlite',
   dbCredentials: {
-    url: process.env.TURSO_DATABASE_URL!,
-    token: process.env.TURSO_AUTH_TOKEN!
+    url: process.env.TURSO_DATABASE_URL ? process.env.TURSO_DATABASE_URL : 'file:test-libsql.db'
   }
 });
