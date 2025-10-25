@@ -1,130 +1,181 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Event Management Landing Page
 
-## Getting Started
+This is a modern Next.js 16 application for an event management company, implementing best practices from the Next.js 15+ architecture guide. The application features a landing page for event services along with a complete file management system using Vercel Blob storage.
 
-First, run the development server:
+## 🚀 Key Features
 
+### Modern Next.js Architecture
+- **Server-First Architecture**: Components default to Server Components with Client Components only when necessary
+- **Cache Components**: Next.js 16's implementation of Partial Pre-rendering for faster initial page loads
+- **Server Actions**: Replaced traditional API routes for mutations with Server Actions
+- **Data Access Layer (DAL)**: Centralized data access with proper server-only imports and security
+- **Route Protection**: Proxy-based route protection for secure access control
+
+### File Management System
+- **Vercel Blob Integration**: Secure file uploads with Vercel Blob storage
+- **Database Metadata**: File metadata stored in SQLite database via Drizzle ORM
+- **File Operations**: Complete CRUD functionality (Create, Read, Update, Delete)
+- **Validation**: File type and size validation (15MB limit)
+- **Responsive UI**: Mobile-friendly file management interface
+
+## 🛠️ Technology Stack
+
+- **Framework**: Next.js 16 with App Router
+- **Styling**: Tailwind CSS v4
+- **Database**: SQLite with Drizzle ORM
+- **File Storage**: Vercel Blob
+- **Authentication**: Placeholder system ready for Clerk integration
+- **Deployment**: Vercel-ready configuration
+
+## 📁 Project Structure
+
+```
+src/
+├── app/                 # Next.js App Router pages
+│   ├── api/            # API routes (legacy, being replaced by Server Actions)
+│   ├── files/          # File management pages
+│   └── server-demo/    # Demonstration of modern architecture
+├── components/         # React components
+│   ├── landing/        # Landing page components
+│   └── ui/             # Reusable UI components
+├── data/               # Data Access Layer (DAL)
+│   ├── files/          # File-related data operations
+│   ├── users/          # User-related data operations
+│   └── server-only.ts  # Authorization utilities
+└── db/                 # Database configuration
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18.18 or later
+- pnpm package manager
+
+### Installation
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Install dependencies
+pnpm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your actual values
+```
+
+### Environment Variables
+Create a `.env.local` file with:
+```env
+# Vercel Blob (required for file uploads)
+BLOB_READ_WRITE_TOKEN=your_actual_vercel_blob_token_here
+
+# Turso Database (optional, for production)
+# TURSO_DATABASE_URL=libsql://your-database.turso.io
+# TURSO_AUTH_TOKEN=your-auth-token
+```
+
+### Database Setup
+```bash
+# Create database tables
+pnpm db:create
+
+# Or generate and apply migrations
+pnpm db:generate
+pnpm db:migrate
+
+# View database in Drizzle Studio
+pnpm db:studio
+```
+
+### Development
+```bash
+# Start development server
 pnpm dev
-# or
-bun dev
+
+# Visit http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📤 File Upload Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Database Setup
-
-This project includes a fully configured database using Drizzle ORM with [Turso](https://turso.tech) as the backend storage.
-
-### Initial Setup
-
-1. Install dependencies: `pnpm install`
-2. Set up your Turso database credentials in `.env.local`
-3. Run database migrations: `pnpm db:migrate`
-
-### Database Scripts
-
-- `pnpm db:generate` - Generate migrations based on schema changes
-- `pnpm db:migrate` - Apply migrations to the database
-- `pnpm db:studio` - Open Drizzle Studio to inspect the database
-- `pnpm db:seed` - Seed the database with sample data
-
-### Usage
-
-```typescript
-// Using Turso database (libsql implementation)
-import { db, users } from '@/db';
-```
-
-For more details, see [Database Setup Guide](./guide/database-setup.md).
-
-## Vercel Blob File Upload
-
-This project includes a complete implementation of file upload functionality using Vercel Blob storage, following security and performance best practices.
-
-### Setup
-
-1. Create a `.env.local` file with your Vercel Blob token:
-   ```env
-   BLOB_READ_WRITE_TOKEN=your_actual_vercel_blob_token_here
-   ```
-   
-   **Important**: Replace `your_actual_vercel_blob_token_here` with your actual token from the Vercel Dashboard.
-   
-   To obtain your token:
-   - Visit the [Vercel Dashboard](https://vercel.com/dashboard)
-   - Select your project
-   - Go to the "Storage" tab
-   - Create a new Blob store or use an existing one
-   - Copy the `BLOB_READ_WRITE_TOKEN` value
-
-2. Run database migrations to create the files table:
-   ```bash
-   pnpm db:migrate
-   ```
-
-3. Start the development server:
-   ```bash
-   pnpm dev
-   ```
-
-4. Visit [http://localhost:3000/files](http://localhost:3000/files) to test the file upload functionality
-
-### Common Issues and Solutions
-
-**"Access denied" Error**: 
-If you see "Upload failed: Vercel Blob: Access denied, please provide a valid token for this resource", it means your `BLOB_READ_WRITE_TOKEN` is either:
-- Missing (still has the placeholder value)
-- Invalid (incorrect token)
-- Not properly formatted
-
-To fix this:
-1. Verify you've replaced the placeholder in `.env.local` with your actual token
-2. Ensure there are no extra spaces or quotes around the token
-3. Restart the development server after making changes
-
-### Features
-
-- **Secure Uploads**: All files are uploaded with random suffixes to prevent naming conflicts
-- **File Validation**: Supports images (JPG, PNG, WebP, GIF) and documents (PDF, DOC, DOCX, XLS, XLSX)
-- **Size Limits**: Maximum file size of 15MB for optimal performance
-- **Database Integration**: File metadata is stored in the database for easy retrieval
-- **File Management**: Complete CRUD operations for uploaded files
-- **Responsive UI**: Mobile-friendly interface with tabbed navigation
+### Supported File Types
+- Images: JPG, PNG, WebP, GIF
+- Documents: PDF, DOC, DOCX, XLS, XLSX
+- Maximum size: 15MB
 
 ### API Endpoints
-
-- `POST /api/files` - Upload a file with validation
-- `GET /api/files/list` - Retrieve all uploaded files
-- `DELETE /api/files/[id]` - Delete a file by ID from both storage and database
+- `POST /api/files` - Upload a file
+- `GET /api/files/list` - List all files
+- `DELETE /api/files/[id]` - Delete a file
 
 ### UI Components
+- `FileUploader` - Drag-and-drop file upload with validation
+- `FileList` - Responsive table of uploaded files
+- `FileManager` - Tabbed interface combining upload and list views
 
-- `FileUploader` - Handles file selection, validation, and upload with progress feedback
-- `FileList` - Displays uploaded files in a responsive table with view and delete options
-- `FileManager` - Tabbed interface combining both upload and list functionality
+## 🏗️ Modern Architecture Implementation
 
-For implementation details, see [Vercel Blob Implementation Guide](./README-VERCEL-BLOB.md).
+### Data Access Layer (DAL)
+Centralized data operations in `src/data/`:
+- Server-only imports prevent client-side leakage
+- React.cache() deduplication for authorization functions
+- Consistent error handling and return formats
+- Type-safe database operations with Drizzle ORM
 
-## Learn More
+### Component Architecture
+- Server Components by default for better performance
+- Client Components only where interactivity is needed
+- "Pass the Promise" pattern for optimized data fetching
+- Suspense boundaries with loading skeletons
 
-To learn more about Next.js, take a look at the following resources:
+### Server Actions
+- Replace API routes for mutations
+- Built-in validation and error handling
+- Cache invalidation with revalidatePath()
+- Serializable return values for client consumption
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛡️ Security Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Server-only data access prevents credential leakage
+- File type and size validation
+- Authorization checks at the data access layer
+- Route protection via proxy middleware
+- Secure Vercel Blob storage with random suffixes
 
-## Deploy on Vercel
+## 📱 Responsive Design
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Mobile-first approach with Tailwind CSS
+- Responsive file management interface
+- Accessible UI components
+- Optimized performance for all devices
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🚀 Deployment
+
+The application is configured for easy deployment to Vercel:
+
+1. Push to a GitHub repository
+2. Import project to Vercel
+3. Set environment variables in Vercel dashboard
+4. Deploy!
+
+## 📚 Additional Documentation
+
+- [Vercel Blob Implementation Guide](./README-VERCEL-BLOB.md) - Detailed file upload system documentation
+- [Database Setup Guide](./guide/database-setup.md) - Database configuration and management
+- [Next.js 15 Alignment Summary](./NEXTJS15_ALIGNMENT_SUMMARY.md) - Modernization implementation details
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## 📄 License
+
+This project is proprietary software developed for a specific client.
+
+## 🙏 Acknowledgments
+
+- Built with [Next.js](https://nextjs.org)
+- Styled with [Tailwind CSS](https://tailwindcss.com)
+- Database management with [Drizzle ORM](https://orm.drizzle.team)
+- File storage with [Vercel Blob](https://vercel.com/docs/storage/vercel-blob)

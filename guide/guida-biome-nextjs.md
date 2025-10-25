@@ -10,7 +10,7 @@ Guida dettagliata per configurare Biome come linter e formatter in un progetto N
 4. [Integrazione con Next.js](#integrazione-con-nextjs)
 5. [Configurazione VS Code](#configurazione-vs-code)
 6. [Script NPM](#script-npm)
-7. [Configurazione Avanzata](#configurazione-avanzata)
+7. [Configurazione Avanzata](#pnpm add --save-dev --save-exact @biomejs/biomeconfigurazione-avanzata)
 8. [Continuous Integration](#continuous-integration)
 9. [Migrazione da ESLint/Prettier](#migrazione-da-eslintprettier)
 

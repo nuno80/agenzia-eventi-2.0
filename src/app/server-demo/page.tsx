@@ -12,7 +12,7 @@ import ServerCaseStudiesSection from '@/components/landing/ServerCaseStudiesSect
 import ServerStatsSection from '@/components/landing/ServerStatsSection';
 import ServerFAQSection from '@/components/landing/ServerFAQSection';
 import ContactFormSection from '@/components/landing/ContactFormSection'; // This needs to remain a Client Component
-import ContactUsOne from '@/components/mvpblocks/contact-us-1'; // This needs to remain a Client Component
+import ContactUsOne from '@/components/landing/contact-us-1'; // This needs to remain a Client Component
 import ServerFooter from '@/components/landing/ServerFooter';
 import ServerWhatsAppButton from '@/components/landing/ServerWhatsAppButton';
 
