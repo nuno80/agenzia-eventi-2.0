@@ -1,3 +1,6 @@
+// src/components/landing/HeroSection.tsx
+// Hero section with animations and interactive elements
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -65,14 +68,15 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, onServicesCli
         {particles.map((particle) => (
           <div
             key={particle.id}
-            className="absolute rounded-full bg-amber-400"
+            className="absolute rounded-full bg-amber-400 twinkle float-particle"
             style={{
               width: `${particle.size}px`,
               height: `${particle.size}px`,
               left: `${particle.x}%`,
               top: `${particle.y}%`,
               opacity: particle.opacity,
-              animation: `twinkle ${particle.duration}s ease-in-out ${particle.delay}s infinite, float-particle ${particle.duration * 3}s ease-in-out ${particle.delay}s infinite`,
+              animationDuration: `${particle.duration}s, ${particle.duration * 3}s`,
+              animationDelay: `${particle.delay}s, ${particle.delay}s`,
               boxShadow: `0 0 ${particle.size * 2}px rgba(251, 191, 36, ${particle.opacity})`,
             }}
           />
@@ -247,104 +251,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, onServicesCli
           <ChevronDown className="w-6 h-6" />
         </div>
       </div>
-
-      {/* Custom CSS Animations */}
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-20px) rotate(5deg);
-          }
-        }
-
-        @keyframes pulse-slow {
-          0%, 100% {
-            opacity: 0.2;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 0.3;
-            transform: scale(1.1);
-          }
-        }
-
-        @keyframes pulse-slower {
-          0%, 100% {
-            opacity: 0.1;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 0.2;
-            transform: scale(1.15);
-          }
-        }
-
-        @keyframes bounce-slow {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-
-        @keyframes gradient {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
-
-        @keyframes twinkle {
-          0%, 100% {
-            opacity: 0.3;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 1;
-            transform: scale(1.5);
-          }
-        }
-
-        @keyframes float-particle {
-          0%, 100% {
-            transform: translateY(0px) translateX(0px);
-          }
-          25% {
-            transform: translateY(-30px) translateX(10px);
-          }
-          50% {
-            transform: translateY(-15px) translateX(-10px);
-          }
-          75% {
-            transform: translateY(-40px) translateX(5px);
-          }
-        }
-
-        .animate-pulse-slow {
-          animation: pulse-slow 8s ease-in-out infinite;
-        }
-
-        .animate-pulse-slower {
-          animation: pulse-slower 10s ease-in-out infinite;
-        }
-
-        .animate-bounce-slow {
-          animation: bounce-slow 3s ease-in-out infinite;
-        }
-
-        .animate-gradient {
-          background-size: 200% 200%;
-          animation: gradient 3s ease infinite;
-        }
-      `}</style>
     </section>
   );
 };
