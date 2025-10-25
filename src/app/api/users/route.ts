@@ -34,26 +34,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
   }
 }
-
-// DELETE /api/users/[id] - Delete a user
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  try {
-    const id = parseInt(params.id);
-    
-    if (isNaN(id)) {
-      return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 });
-    }
-
-    // Delete user
-    const deletedUser = await db.delete(users).where(eq(users.id, id)).returning();
-    
-    if (deletedUser.length === 0) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-    
-    return NextResponse.json({ message: 'User deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 });
-  }
-}

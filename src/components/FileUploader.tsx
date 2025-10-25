@@ -26,6 +26,7 @@ export default function FileUploader() {
 
     setUploading(true);
     setError(null);
+    setUploadedFile(null);
 
     try {
       const formData = new FormData();
@@ -39,7 +40,8 @@ export default function FileUploader() {
       // Check if response is JSON
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Server returned an invalid response. Please check that your BLOB_READ_WRITE_TOKEN is correctly set in .env.local');
+        const textResponse = await response.text();
+        throw new Error(textResponse || 'Server returned an invalid response. Please check that your BLOB_READ_WRITE_TOKEN is correctly set in .env.local');
       }
 
       const data = await response.json();
@@ -51,7 +53,7 @@ export default function FileUploader() {
         const fileInput = document.getElementById('file-input') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
       } else {
-        setError(data.error || 'Upload failed');
+        setError(data.error || data.message || 'Upload failed');
       }
     } catch (err: any) {
       console.error('Upload error:', err);
@@ -84,7 +86,7 @@ export default function FileUploader() {
         </div>
 
         {error && (
-          <div className="text-red-500 text-sm">{error}</div>
+          <div className="text-red-500 text-sm p-2 bg-red-50 rounded">{error}</div>
         )}
 
         <button

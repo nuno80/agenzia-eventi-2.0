@@ -3,25 +3,30 @@ import { NextResponse } from 'next/server';
 import { db, files } from '@/db/libsql';
 import { eq } from 'drizzle-orm';
 
+// Use Edge Runtime for better performance
+export const runtime = 'edge';
+
 // DELETE /api/files/[id] - Delete a file
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     // Check if BLOB_READ_WRITE_TOKEN is set
-    if (!process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_READ_WRITE_TOKEN === 'your_actual_vercel_blob_token_here') {
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
       return NextResponse.json(
-        { error: 'Server configuration error: Please set a valid BLOB_READ_WRITE_TOKEN in your .env.local file' },
+        { error: 'Server configuration error: Please set BLOB_READ_WRITE_TOKEN in your .env.local file' },
         { status: 500 }
       );
     }
 
-    const id = parseInt(params.id);
+    // Unwrap the params promise
+    const { id } = await params;
+    const fileId = parseInt(id);
     
-    if (isNaN(id)) {
+    if (isNaN(fileId)) {
       return NextResponse.json({ error: 'Invalid file ID' }, { status: 400 });
     }
 
     // First, get the file to retrieve the blob URL
-    const fileToDelete = await db.select().from(files).where(eq(files.id, id)).limit(1);
+    const fileToDelete = await db.select().from(files).where(eq(files.id, fileId)).limit(1);
     
     if (fileToDelete.length === 0) {
       return NextResponse.json({ error: 'File not found' }, { status: 404 });
@@ -31,8 +36,8 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     await del(fileToDelete[0].blobUrl);
 
     // Delete from database
-    const deletedFile = await db.delete(files).where(eq(files.id, id)).returning();
-    
+    await db.delete(files).where(eq(files.id, fileId));
+
     return NextResponse.json({ message: 'File deleted successfully' });
   } catch (error: any) {
     console.error('Error deleting file:', error);

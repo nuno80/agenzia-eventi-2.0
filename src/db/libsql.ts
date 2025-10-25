@@ -21,5 +21,8 @@ if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
 // Initialize drizzle with the libsql client and schema
 export const db = drizzle(client, { schema });
 
+// Export the raw client for cases where we need to execute raw SQL
+export { client };
+
 export * from './libsql-schemas';
 export * from 'drizzle-orm/sql';
