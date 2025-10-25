@@ -1,23 +1,21 @@
 // src/components/landing/ServerProcessSection.tsx
 // Server Component version of ProcessSection - no interactivity needed
 
-import React from 'react';
+import React from 'react'
 
 const processSteps = [
   { title: 'Briefing', description: 'Analizziamo obiettivi, target e budget' },
   { title: 'Strategia', description: 'Progettiamo soluzioni su misura' },
   { title: 'Execution', description: 'Realizziamo con precisione ECM' },
-  { title: 'Follow-up', description: 'Misuriamo risultati e ROI' }
-];
+  { title: 'Follow-up', description: 'Misuriamo risultati e ROI' },
+]
 
 const ServerProcessSection = () => {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-            Il Nostro Metodo
-          </h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Il Nostro Metodo</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
             Quattro fasi per trasformare la tua idea in un evento di successo
           </p>
@@ -41,7 +39,7 @@ const ServerProcessSection = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default ServerProcessSection;
+export default ServerProcessSection

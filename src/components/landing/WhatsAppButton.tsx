@@ -1,12 +1,15 @@
-"use client";
+'use client'
 
-import React from 'react';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle } from 'lucide-react'
+import React from 'react'
 
 const WhatsAppButton = () => {
   const handleWhatsAppClick = () => {
-    window.open('https://wa.me/393401234567?text=Ciao!%20Vorrei%20informazioni%20sui%20vostri%20servizi%20di%20organizzazione%20eventi', '_blank');
-  };
+    window.open(
+      'https://wa.me/393401234567?text=Ciao!%20Vorrei%20informazioni%20sui%20vostri%20servizi%20di%20organizzazione%20eventi',
+      '_blank'
+    )
+  }
 
   return (
     <button
@@ -19,7 +22,7 @@ const WhatsAppButton = () => {
         Chatta con noi!
       </span>
     </button>
-  );
-};
+  )
+}
 
-export default WhatsAppButton;
+export default WhatsAppButton

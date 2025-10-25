@@ -1,18 +1,18 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import CustomNavbar from '@/components/landing/Navbar';
-import FileManager from '@/components/FileManager';
+import { useEffect, useState } from 'react'
+import FileManager from '@/components/FileManager'
+import CustomNavbar from '@/components/landing/Navbar'
 
 export default function FilesPage() {
-  const [isClient, setIsClient] = useState(false);
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    setIsClient(true)
+  }, [])
 
   if (!isClient) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>
   }
 
   return (
@@ -22,5 +22,5 @@ export default function FilesPage() {
         <FileManager />
       </div>
     </div>
-  );
+  )
 }

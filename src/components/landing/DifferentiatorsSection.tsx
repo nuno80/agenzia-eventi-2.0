@@ -1,30 +1,30 @@
-"use client";
+'use client'
 
-import React from 'react';
-import { Target, Video, GraduationCap, TrendingUp } from 'lucide-react';
+import { GraduationCap, Target, TrendingUp, Video } from 'lucide-react'
+import React from 'react'
 
 const differentiators = [
   {
     icon: Target,
     title: 'Esperienza in Eventi Complessi',
-    description: 'Background in eventi medici ECM: la stessa precisione per il tuo business'
+    description: 'Background in eventi medici ECM: la stessa precisione per il tuo business',
   },
   {
     icon: Video,
     title: 'Nativi Digitali',
-    description: 'Eventi ibridi e piattaforme online: raggiungi più clienti con meno budget'
+    description: 'Eventi ibridi e piattaforme online: raggiungi più clienti con meno budget',
   },
   {
     icon: GraduationCap,
     title: 'Formazione Integrata',
-    description: 'Formiamo il tuo team per brillare: public speaking, portamento, networking'
+    description: 'Formiamo il tuo team per brillare: public speaking, portamento, networking',
   },
   {
     icon: TrendingUp,
     title: 'Focus PMI',
-    description: 'Budget ottimizzati 5-15k: massimo risultato, zero spreco'
-  }
-];
+    description: 'Budget ottimizzati 5-15k: massimo risultato, zero spreco',
+  },
+]
 
 const DifferentiatorsSection = () => {
   return (
@@ -35,13 +35,14 @@ const DifferentiatorsSection = () => {
             Perché Siamo Diversi
           </h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Non solo organizziamo eventi: creiamo ecosistemi integrati che generano risultati misurabili per il tuo business
+            Non solo organizziamo eventi: creiamo ecosistemi integrati che generano risultati
+            misurabili per il tuo business
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {differentiators.map((item, idx) => {
-            const Icon = item.icon;
+            const Icon = item.icon
             return (
               <div key={idx} className="group hover:scale-105 transition-transform duration-300">
                 <div className="bg-slate-50 rounded-xl p-6 h-full border border-slate-200 hover:border-amber-500/50 hover:shadow-lg transition-all duration-300">
@@ -52,12 +53,12 @@ const DifferentiatorsSection = () => {
                   <p className="text-slate-600">{item.description}</p>
                 </div>
               </div>
-            );
+            )
           })}
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default DifferentiatorsSection;
+export default DifferentiatorsSection

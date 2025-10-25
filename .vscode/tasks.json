@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "biome-format-check",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "format:check"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$biome-format"]
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 // src/components/landing/ServerServicesSection.tsx
 // Server Component version of ServicesSection - static version without interactivity
 
-import React from 'react';
-import { Users, Video, GraduationCap, CheckCircle2, Award } from 'lucide-react';
+import { Award, CheckCircle2, GraduationCap, Users, Video } from 'lucide-react'
+import React from 'react'
 
 const services = [
   {
@@ -15,8 +15,8 @@ const services = [
       'App evento con networking B2B integrato',
       'Tecnologia AV professionale e regia',
       'Follow-up automatizzato post-evento',
-      'Location corporate a Roma e dintorni'
-    ]
+      'Location corporate a Roma e dintorni',
+    ],
   },
   {
     id: 'hybrid',
@@ -28,8 +28,8 @@ const services = [
       'Streaming multi-camera e regia live',
       'Interazione in tempo reale (Q&A, poll, chat)',
       'Registrazioni e contenuti on-demand',
-      'Integrazione fisica + digitale seamless'
-    ]
+      'Integrazione fisica + digitale seamless',
+    ],
   },
   {
     id: 'training',
@@ -41,8 +41,8 @@ const services = [
       'Workshop portamento e business etiquette',
       'Preparazione pitch e presentazioni efficaci',
       'Coaching personalizzato pre-evento',
-      'Certificazioni e materiali didattici'
-    ]
+      'Certificazioni e materiali didattici',
+    ],
   },
   {
     id: 'staff',
@@ -54,30 +54,29 @@ const services = [
       'Hostess congressuali e promoter',
       'Accoglienza multilingue',
       'Gestione registrazioni e badge',
-      'Servizio premium per eventi VIP'
-    ]
-  }
-];
+      'Servizio premium per eventi VIP',
+    ],
+  },
+]
 
 const ServerServicesSection = () => {
   return (
     <section id="services" className="py-20 bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-            I Nostri Servizi
-          </h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">I Nostri Servizi</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Soluzioni complete per eventi corporate che funzionano: dal concept alla misurazione dei risultati
+            Soluzioni complete per eventi corporate che funzionano: dal concept alla misurazione dei
+            risultati
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {services.map((service) => {
-            const Icon = service.icon;
-            
+            const Icon = service.icon
+
             return (
-              <div 
+              <div
                 key={service.id}
                 className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300"
               >
@@ -91,7 +90,7 @@ const ServerServicesSection = () => {
                       <p className="text-slate-600">{service.subtitle}</p>
                     </div>
                   </div>
-                  
+
                   <div className="pt-4 border-t border-slate-100 space-y-2">
                     {service.features.map((feature, idx) => (
                       <div key={idx} className="flex items-start gap-2">
@@ -102,12 +101,12 @@ const ServerServicesSection = () => {
                   </div>
                 </div>
               </div>
-            );
+            )
           })}
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default ServerServicesSection;
+export default ServerServicesSection

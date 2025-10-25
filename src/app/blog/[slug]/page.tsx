@@ -1,8 +1,8 @@
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { Calendar, Clock, User, Share2, ArrowLeft, ArrowRight } from 'lucide-react';
-import Link from 'next/link';
-import Navbar from '@/components/landing/Navbar';
+import { ArrowLeft, ArrowRight, Calendar, Clock, Share2, User } from 'lucide-react'
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import Navbar from '@/components/landing/Navbar'
 
 type Props = {
   params: { slug: string }
@@ -15,8 +15,16 @@ const blogPosts = [
     slug: 'eventi-ibridi-vs-fisici-guida-pmi-2025',
     title: 'Eventi Ibridi vs Fisici: Guida Completa per PMI 2025',
     seoTitle: 'Eventi Ibridi vs Fisici: Quale Scegliere per la Tua PMI? [Guida 2025]',
-    metaDescription: 'Confronto completo tra eventi fisici, online e ibridi: costi, ROI, engagement. Scopri quale formato genera più risultati per la tua azienda con budget 5-15k.',
-    keywords: ['eventi ibridi', 'eventi fisici vs online', 'organizzare eventi aziendali', 'costi eventi corporate', 'ROI eventi', 'eventi PMI Roma'],
+    metaDescription:
+      'Confronto completo tra eventi fisici, online e ibridi: costi, ROI, engagement. Scopri quale formato genera più risultati per la tua azienda con budget 5-15k.',
+    keywords: [
+      'eventi ibridi',
+      'eventi fisici vs online',
+      'organizzare eventi aziendali',
+      'costi eventi corporate',
+      'ROI eventi',
+      'eventi PMI Roma',
+    ],
     category: 'Guide',
     readTime: '8 min',
     publishedAt: '2025-01-15T10:00:00Z',
@@ -278,29 +286,29 @@ const blogPosts = [
     `,
   },
   // Additional posts would be added here
-];
+]
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = blogPosts.find(post => post.slug === params.slug);
-  
+  const post = blogPosts.find((post) => post.slug === params.slug)
+
   if (!post) {
     return {
       title: 'Articolo non trovato',
-    };
+    }
   }
 
   return {
     title: `${post.seoTitle} | EventiPro Roma Blog`,
     description: post.metaDescription,
     keywords: post.keywords.join(', '),
-  };
+  }
 }
 
 export default function BlogPostPage({ params }: Props) {
-  const post = blogPosts.find(post => post.slug === params.slug);
+  const post = blogPosts.find((post) => post.slug === params.slug)
 
   if (!post) {
-    notFound();
+    notFound()
   }
 
   return (
@@ -309,7 +317,7 @@ export default function BlogPostPage({ params }: Props) {
       {/* Hero Article */}
       <header className="bg-slate-900 text-white py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link 
+          <Link
             href="/blog"
             className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 mb-6"
           >
@@ -323,9 +331,7 @@ export default function BlogPostPage({ params }: Props) {
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl font-bold mb-6 leading-tight">
-            {post.title}
-          </h1>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-6 leading-tight">{post.title}</h1>
 
           <div className="flex flex-wrap items-center gap-6 text-slate-300">
             <div className="flex items-center gap-2">
@@ -338,7 +344,7 @@ export default function BlogPostPage({ params }: Props) {
                 {new Date(post.publishedAt).toLocaleDateString('it-IT', {
                   day: 'numeric',
                   month: 'long',
-                  year: 'numeric'
+                  year: 'numeric',
                 })}
               </time>
             </div>
@@ -352,7 +358,7 @@ export default function BlogPostPage({ params }: Props) {
 
       {/* Article Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div 
+        <div
           className="prose prose-lg prose-slate max-w-none
             prose-headings:font-bold prose-headings:text-slate-900
             prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
@@ -398,9 +404,7 @@ export default function BlogPostPage({ params }: Props) {
       {/* CTA Section */}
       <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            Hai Bisogno di Aiuto per il Tuo Evento?
-          </h2>
+          <h2 className="text-3xl font-bold mb-4">Hai Bisogno di Aiuto per il Tuo Evento?</h2>
           <p className="text-xl text-slate-300 mb-8">
             Offriamo consulenze gratuite per PMI romane. Parliamo del tuo progetto.
           </p>
@@ -414,5 +418,5 @@ export default function BlogPostPage({ params }: Props) {
         </div>
       </div>
     </article>
-  );
+  )
 }

@@ -1,94 +1,96 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import CustomNavbar from '@/components/landing/Navbar';
+import { useEffect, useState } from 'react'
+import CustomNavbar from '@/components/landing/Navbar'
 
 interface FileItem {
-  id: number;
-  filename: string;
-  blobUrl: string;
-  contentType: string;
-  size: number;
-  uploadedAt: string;
+  id: number
+  filename: string
+  blobUrl: string
+  contentType: string
+  size: number
+  uploadedAt: string
 }
 
 export default function FilesListPage() {
-  const [files, setFiles] = useState<FileItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [files, setFiles] = useState<FileItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<number | null>(null)
 
   useEffect(() => {
-    fetchFiles();
-  }, []);
+    fetchFiles()
+  }, [])
 
   const fetchFiles = async () => {
     try {
-      setLoading(true);
-      setError(null);
-      const response = await fetch('/api/files/list');
-      const data = await response.json();
-      
+      setLoading(true)
+      setError(null)
+      const response = await fetch('/api/files/list')
+      const data = await response.json()
+
       if (response.ok) {
-        setFiles(data);
+        setFiles(data)
       } else {
-        setError(data.error || 'Failed to fetch files');
+        setError(data.error || 'Failed to fetch files')
       }
     } catch (err: any) {
-      console.error('Fetch error:', err);
-      setError('An error occurred while fetching files: ' + (err.message || 'Unknown error'));
+      console.error('Fetch error:', err)
+      setError('An error occurred while fetching files: ' + (err.message || 'Unknown error'))
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleDelete = async (id: number, filename: string) => {
-    const confirmed = confirm(`Are you sure you want to delete "${filename}"?`);
-    if (!confirmed) return;
+    const confirmed = confirm(`Are you sure you want to delete "${filename}"?`)
+    if (!confirmed) return
 
     try {
-      setDeletingId(id);
+      setDeletingId(id)
       const response = await fetch(`/api/files/${id}`, {
-        method: 'DELETE'
-      });
+        method: 'DELETE',
+      })
 
       if (response.ok) {
         // Remove file from state
-        setFiles(files.filter(file => file.id !== id));
-        alert('File deleted successfully!');
+        setFiles(files.filter((file) => file.id !== id))
+        alert('File deleted successfully!')
       } else {
-        const data = await response.json();
-        alert(data.error || 'Failed to delete file');
+        const data = await response.json()
+        alert(data.error || 'Failed to delete file')
       }
     } catch (err: any) {
-      console.error('Delete error:', err);
-      alert('An error occurred while deleting the file: ' + (err.message || 'Unknown error'));
+      console.error('Delete error:', err)
+      alert('An error occurred while deleting the file: ' + (err.message || 'Unknown error'))
     } finally {
-      setDeletingId(null);
+      setDeletingId(null)
     }
-  };
+  }
 
   const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i]
+  }
 
-  if (loading) return (
-    <div>
-      <CustomNavbar />
-      <div className="max-w-4xl mx-auto p-6">Loading files...</div>
-    </div>
-  );
+  if (loading)
+    return (
+      <div>
+        <CustomNavbar />
+        <div className="max-w-4xl mx-auto p-6">Loading files...</div>
+      </div>
+    )
 
-  if (error) return (
-    <div>
-      <CustomNavbar />
-      <div className="max-w-4xl mx-auto p-6 text-red-500">Error: {error}</div>
-    </div>
-  );
+  if (error)
+    return (
+      <div>
+        <CustomNavbar />
+        <div className="max-w-4xl mx-auto p-6 text-red-500">Error: {error}</div>
+      </div>
+    )
 
   return (
     <div>
@@ -122,24 +124,18 @@ export default function FilesListPage() {
                 {files.map((file) => (
                   <tr key={file.id} className="border-b hover:bg-gray-50">
                     <td className="py-2 px-4">
-                      <a 
-                        href={file.blobUrl} 
-                        target="_blank" 
+                      <a
+                        href={file.blobUrl}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:underline"
                       >
                         {file.filename}
                       </a>
                     </td>
-                    <td className="py-2 px-4">
-                      {formatFileSize(file.size)}
-                    </td>
-                    <td className="py-2 px-4">
-                      {file.contentType}
-                    </td>
-                    <td className="py-2 px-4">
-                      {new Date(file.uploadedAt).toLocaleDateString()}
-                    </td>
+                    <td className="py-2 px-4">{formatFileSize(file.size)}</td>
+                    <td className="py-2 px-4">{file.contentType}</td>
+                    <td className="py-2 px-4">{new Date(file.uploadedAt).toLocaleDateString()}</td>
                     <td className="py-2 px-4">
                       <a
                         href={file.blobUrl}
@@ -172,5 +168,5 @@ export default function FilesListPage() {
         )}
       </div>
     </div>
-  );
+  )
 }

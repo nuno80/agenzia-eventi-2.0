@@ -1,9 +1,9 @@
 // src/components/landing/PromiseFileList.tsx
 // Server Component that implements the "Pass the Promise" pattern
 
-import { fetchAllFiles } from '@/data/files/actions';
-import ClientFileList from './ClientFileList';
-import { Suspense } from 'react';
+import { Suspense } from 'react'
+import { fetchAllFiles } from '@/data/files/actions'
+import ClientFileList from './ClientFileList'
 
 // Loading skeleton component
 function FileListSkeleton() {
@@ -45,17 +45,17 @@ function FileListSkeleton() {
         </table>
       </div>
     </div>
-  );
+  )
 }
 
 // Server Component that starts the fetch but doesn't await it
 export default function PromiseFileList() {
   // Start the fetch but don't await it - pass the promise to the Client Component
-  const filesPromise = fetchAllFiles();
-  
+  const filesPromise = fetchAllFiles()
+
   return (
     <Suspense fallback={<FileListSkeleton />}>
       <ClientFileList filesPromise={filesPromise} />
     </Suspense>
-  );
+  )
 }

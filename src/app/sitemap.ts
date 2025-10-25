@@ -1,4 +1,4 @@
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // In production, these would come from a CMS or database
@@ -15,14 +15,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       slug: 'formazione-corporate-roi-eventi',
       lastModified: '2025-01-05',
     },
-  ];
+  ]
 
   const blogUrls = blogPosts.map((post) => ({
     url: `https://tuosito.it/blog/${post.slug}`,
     lastModified: new Date(post.lastModified),
     changeFrequency: 'monthly' as const,
     priority: 0.8,
-  }));
+  }))
 
   return [
     {
@@ -50,5 +50,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     },
-  ];
+  ]
 }

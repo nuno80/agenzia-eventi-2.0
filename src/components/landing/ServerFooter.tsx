@@ -1,8 +1,8 @@
 // src/components/landing/ServerFooter.tsx
 // Server Component version of Footer - no interactivity needed
 
-import React from 'react';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react'
+import React from 'react'
 
 const ServerFooter = () => {
   return (
@@ -13,7 +13,9 @@ const ServerFooter = () => {
           <div className="col-span-1 md:col-span-2">
             <h3 className="text-2xl font-bold mb-4 text-amber-400">EventiPro Roma</h3>
             <p className="text-slate-300 mb-6 leading-relaxed">
-              Agenzia specializzata in organizzazione eventi corporate, formazione aziendale ed eventi ibridi per PMI a Roma. Con la precisione degli eventi ECM, al servizio del tuo business.
+              Agenzia specializzata in organizzazione eventi corporate, formazione aziendale ed
+              eventi ibridi per PMI a Roma. Con la precisione degli eventi ECM, al servizio del tuo
+              business.
             </p>
             <div className="space-y-3">
               <div className="flex items-center gap-3">
@@ -35,11 +37,21 @@ const ServerFooter = () => {
           <div>
             <h4 className="text-lg font-bold mb-4">Servizi</h4>
             <ul className="space-y-2">
-              <li><span className="text-slate-300">Eventi Aziendali</span></li>
-              <li><span className="text-slate-300">Eventi Online & Ibridi</span></li>
-              <li><span className="text-slate-300">Formazione Corporate</span></li>
-              <li><span className="text-slate-300">Hostess & Personale</span></li>
-              <li><span className="text-slate-300">Congressi ECM</span></li>
+              <li>
+                <span className="text-slate-300">Eventi Aziendali</span>
+              </li>
+              <li>
+                <span className="text-slate-300">Eventi Online & Ibridi</span>
+              </li>
+              <li>
+                <span className="text-slate-300">Formazione Corporate</span>
+              </li>
+              <li>
+                <span className="text-slate-300">Hostess & Personale</span>
+              </li>
+              <li>
+                <span className="text-slate-300">Congressi ECM</span>
+              </li>
             </ul>
           </div>
 
@@ -47,11 +59,21 @@ const ServerFooter = () => {
           <div>
             <h4 className="text-lg font-bold mb-4">Link Utili</h4>
             <ul className="space-y-2">
-              <li><span className="text-slate-300">Chi Siamo</span></li>
-              <li><span className="text-slate-300">Contatti</span></li>
-              <li><span className="text-slate-300">Portfolio</span></li>
-              <li><span className="text-slate-300">Blog</span></li>
-              <li><span className="text-slate-300">Privacy Policy</span></li>
+              <li>
+                <span className="text-slate-300">Chi Siamo</span>
+              </li>
+              <li>
+                <span className="text-slate-300">Contatti</span>
+              </li>
+              <li>
+                <span className="text-slate-300">Portfolio</span>
+              </li>
+              <li>
+                <span className="text-slate-300">Blog</span>
+              </li>
+              <li>
+                <span className="text-slate-300">Privacy Policy</span>
+              </li>
             </ul>
           </div>
         </div>
@@ -63,21 +85,15 @@ const ServerFooter = () => {
               © 2025 EventiPro Roma. P.IVA 12345678901 - Tutti i diritti riservati.
             </p>
             <div className="flex gap-6">
-              <span className="text-slate-400 text-sm">
-                Privacy Policy
-              </span>
-              <span className="text-slate-400 text-sm">
-                Cookie Policy
-              </span>
-              <span className="text-slate-400 text-sm">
-                Termini di Servizio
-              </span>
+              <span className="text-slate-400 text-sm">Privacy Policy</span>
+              <span className="text-slate-400 text-sm">Cookie Policy</span>
+              <span className="text-slate-400 text-sm">Termini di Servizio</span>
             </div>
           </div>
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}
 
-export default ServerFooter;
+export default ServerFooter

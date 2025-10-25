@@ -1,18 +1,18 @@
 // src/components/landing/ServerFileList.tsx
 // Server Component version of FileList
 
-import { fetchAllFiles, deleteFileAction } from '@/data/files/actions';
-import { Suspense } from 'react';
+import { Suspense } from 'react'
+import { deleteFileAction, fetchAllFiles } from '@/data/files/actions'
 
 // Define the FileItem type to match the database structure
 interface FileItem {
-  id: number;
-  userId: number | null;
-  filename: string;
-  blobUrl: string;
-  contentType: string;
-  size: number;
-  uploadedAt: number; // This is a number in the database (Unix timestamp)
+  id: number
+  userId: number | null
+  filename: string
+  blobUrl: string
+  contentType: string
+  size: number
+  uploadedAt: number // This is a number in the database (Unix timestamp)
 }
 
 // Loading skeleton component
@@ -55,26 +55,26 @@ function FileListSkeleton() {
         </table>
       </div>
     </div>
-  );
+  )
 }
 
 // Server component to display files
 async function ServerFileListContent() {
-  const result = await fetchAllFiles();
-  
+  const result = await fetchAllFiles()
+
   if (!result.success) {
-    return <p className="text-red-500">Error: {result.error}</p>;
+    return <p className="text-red-500">Error: {result.error}</p>
   }
-  
-  const files: FileItem[] = result.data || [];
-  
+
+  const files: FileItem[] = result.data || []
+
   const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i]
+  }
 
   return (
     <div className="max-w-6xl mx-auto p-4">
@@ -100,21 +100,17 @@ async function ServerFileListContent() {
               {files.map((file) => (
                 <tr key={file.id} className="border-b hover:bg-gray-50">
                   <td className="py-2 px-4">
-                    <a 
-                      href={file.blobUrl} 
-                      target="_blank" 
+                    <a
+                      href={file.blobUrl}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:underline"
                     >
                       {file.filename}
                     </a>
                   </td>
-                  <td className="py-2 px-4">
-                    {formatFileSize(file.size)}
-                  </td>
-                  <td className="py-2 px-4">
-                    {file.contentType}
-                  </td>
+                  <td className="py-2 px-4">{formatFileSize(file.size)}</td>
+                  <td className="py-2 px-4">{file.contentType}</td>
                   <td className="py-2 px-4">
                     {new Date(file.uploadedAt * 1000).toLocaleDateString()}
                   </td>
@@ -134,16 +130,16 @@ async function ServerFileListContent() {
                     >
                       Download
                     </a>
-                    <form action={async () => {
-                      'use server';
-                      if (confirm(`Are you sure you want to delete "${file.filename}"?`)) {
-                        await deleteFileAction(file.id);
-                      }
-                    }} className="inline">
-                      <button
-                        type="submit"
-                        className="text-red-600 hover:text-red-800"
-                      >
+                    <form
+                      action={async () => {
+                        'use server'
+                        if (confirm(`Are you sure you want to delete "${file.filename}"?`)) {
+                          await deleteFileAction(file.id)
+                        }
+                      }}
+                      className="inline"
+                    >
+                      <button type="submit" className="text-red-600 hover:text-red-800">
                         Delete
                       </button>
                     </form>
@@ -155,7 +151,7 @@ async function ServerFileListContent() {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // Main ServerFileList component with Suspense boundary
@@ -164,5 +160,5 @@ export default function ServerFileList() {
     <Suspense fallback={<FileListSkeleton />}>
       <ServerFileListContent />
     </Suspense>
-  );
+  )
 }

@@ -1,20 +1,20 @@
 // src/components/landing/ServerNavbar.tsx
 // Server Component version of Navbar - static version without interactivity
 
-import React from 'react';
-import Link from 'next/link';
-import { Phone } from 'lucide-react';
+import { Phone } from 'lucide-react'
+import Link from 'next/link'
+import React from 'react'
 
 const ServerNavbar = () => {
   const menuItems = [
-    { name: "Servizi", href: "#services" },
-    { name: "Processo", href: "#process" },
-    { name: "Casi Studio", href: "#case-studies" },
-    { name: "Blog", href: "/blog" },
-    { name: "Files", href: "/files" },
-    { name: "FAQ", href: "#faq" },
-    { name: "Contatti", href: "#contact-form" },
-  ];
+    { name: 'Servizi', href: '#services' },
+    { name: 'Processo', href: '#process' },
+    { name: 'Casi Studio', href: '#case-studies' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Files', href: '/files' },
+    { name: 'FAQ', href: '#faq' },
+    { name: 'Contatti', href: '#contact-form' },
+  ]
 
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b border-slate-200/50 sticky top-0 z-50">
@@ -38,7 +38,7 @@ const ServerNavbar = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="hidden lg:flex items-center space-x-4">
             <Link
               href="#contact-form"
@@ -53,7 +53,7 @@ const ServerNavbar = () => {
               <Phone size={18} />
             </a>
           </div>
-          
+
           <div className="sm:hidden flex items-center">
             <a
               href="tel:+393401234567"
@@ -65,7 +65,7 @@ const ServerNavbar = () => {
         </div>
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default ServerNavbar;
+export default ServerNavbar

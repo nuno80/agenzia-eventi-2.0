@@ -93,6 +93,50 @@ pnpm dev
 # Visit http://localhost:3000
 ```
 
+## 🎨 Code Quality Tools
+
+### Biome.js
+This project uses [Biome.js](https://biomejs.dev/) for code formatting and linting. Biome is a fast formatter and linter that replaces Prettier and ESLint with a single tool.
+
+#### Available Scripts
+```bash
+# Format code and fix issues
+pnpm format
+
+# Check formatting without making changes
+pnpm format:check
+
+# Lint code
+pnpm lint
+
+# Fix linting issues
+pnpm lint:fix
+
+# Run all checks
+pnpm check
+
+# Fix all issues
+pnpm check:fix
+```
+
+#### VS Code Integration
+The project includes VS Code settings that configure Biome as the default formatter:
+- Format on save is enabled
+- Automatic import organization
+- Quick fixes on save
+
+To use Biome in VS Code:
+1. Install the [Biome VS Code extension](https://marketplace.visualstudio.com/items?itemName=biomejs.biome)
+2. Ensure "Biome" is set as the default formatter in VS Code settings
+
+### Pre-commit Hooks
+This project uses [Husky](https://typicode.github.io/husky/) to run pre-commit hooks that ensure code quality:
+
+- **Format Check**: Before each commit, the project runs `npm run format:check` to ensure all files are properly formatted
+- **Prevents Unformatted Code**: This prevents unformatted code from being committed to the repository
+
+The pre-commit hook is automatically set up when you install dependencies. You can modify the hook in `.husky/pre-commit`.
+
 ## 📤 File Upload Features
 
 ### Supported File Types

@@ -193,7 +193,8 @@
 
 /* Hero section animations */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
   }
   50% {
@@ -202,7 +203,8 @@
 }
 
 @keyframes pulse-slow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.2;
     transform: scale(1);
   }
@@ -213,7 +215,8 @@
 }
 
 @keyframes pulse-slower {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.1;
     transform: scale(1);
   }
@@ -224,7 +227,8 @@
 }
 
 @keyframes bounce-slow {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -245,7 +249,8 @@
 }
 
 @keyframes twinkle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.3;
     transform: scale(1);
   }
@@ -256,7 +261,8 @@
 }
 
 @keyframes float-particle {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) translateX(0px);
   }
   25% {

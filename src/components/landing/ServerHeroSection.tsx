@@ -1,15 +1,15 @@
 // src/components/landing/ServerHeroSection.tsx
 // Server Component version of HeroSection - simplified static version
 
-import React from 'react';
-import { ArrowRight, Award, Calendar, Users } from 'lucide-react';
+import { ArrowRight, Award, Calendar, Users } from 'lucide-react'
+import React from 'react'
 
 const ServerHeroSection = () => {
   const stats = [
     { number: '15+', label: 'Anni Esperienza', icon: Award },
     { number: '200+', label: 'Eventi Gestiti', icon: Calendar },
     { number: '5.000+', label: 'Partecipanti', icon: Users },
-  ];
+  ]
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-950 pt-20 pb-32">
@@ -46,14 +46,14 @@ const ServerHeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <a 
+            <a
               href="#contact-form"
               className="group relative bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 px-8 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-2xl shadow-amber-500/25 hover:shadow-amber-500/40"
             >
               <span>Richiedi un Preventivo Gratuito</span>
               <ArrowRight className="w-5 h-5" />
             </a>
-            <a 
+            <a
               href="#services"
               className="group relative bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/20 hover:border-amber-500/50 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300"
             >
@@ -64,7 +64,7 @@ const ServerHeroSection = () => {
           {/* Bento Grid Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-12">
             {stats.map((stat, idx) => {
-              const Icon = stat.icon;
+              const Icon = stat.icon
               return (
                 <div
                   key={idx}
@@ -72,21 +72,17 @@ const ServerHeroSection = () => {
                 >
                   <div className="relative">
                     <Icon className="w-8 h-8 text-amber-400 mb-3" />
-                    <div className="text-4xl font-bold text-white mb-1">
-                      {stat.number}
-                    </div>
-                    <div className="text-sm text-slate-400">
-                      {stat.label}
-                    </div>
+                    <div className="text-4xl font-bold text-white mb-1">{stat.number}</div>
+                    <div className="text-sm text-slate-400">{stat.label}</div>
                   </div>
                 </div>
-              );
+              )
             })}
           </div>
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default ServerHeroSection;
+export default ServerHeroSection

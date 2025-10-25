@@ -1,50 +1,50 @@
-'use client';
+'use client'
 
-import { useState, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import Earth from '@/components/ui/globe';
-import { SparklesCore } from '@/components/ui/sparkles';
-import { Label } from '@/components/ui/label';
-import { Check, Loader2, MessageCircle } from 'lucide-react';
+import { motion, useInView } from 'framer-motion'
+import { Check, Loader2, MessageCircle } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import Earth from '@/components/ui/globe'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { SparklesCore } from '@/components/ui/sparkles'
+import { Textarea } from '@/components/ui/textarea'
 
 export default function ContactUs1() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [eventType, setEventType] = useState('');
-  const [message, setMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [eventType, setEventType] = useState('')
+  const [message, setMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
-  const formRef = useRef(null);
-  const isInView = useInView(formRef, { once: true, amount: 0.3 });
+  const formRef = useRef(null)
+  const isInView = useInView(formRef, { once: true, amount: 0.3 })
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+    e.preventDefault()
+    setIsSubmitting(true)
 
     try {
       // Perform form submission logic here
-      console.log('Form submitted:', { name, email, phone, eventType, message });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setName('');
-      setEmail('');
-      setPhone('');
-      setEventType('');
-      setMessage('');
-      setIsSubmitted(true);
+      console.log('Form submitted:', { name, email, phone, eventType, message })
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      setName('')
+      setEmail('')
+      setPhone('')
+      setEventType('')
+      setMessage('')
+      setIsSubmitted(true)
       setTimeout(() => {
-        setIsSubmitted(false);
-      }, 5000);
+        setIsSubmitted(false)
+      }, 5000)
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Error submitting form:', error)
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
     <section className="bg-background relative w-full overflow-hidden py-16 md:py-24">
@@ -67,9 +67,7 @@ export default function ContactUs1() {
             <div className="relative p-6 md:p-10 bg-slate-50" ref={formRef}>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
-                animate={
-                  isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-                }
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
                 className="flex w-full gap-2"
               >
@@ -92,16 +90,17 @@ export default function ContactUs1() {
 
               <motion.form
                 initial={{ opacity: 0, y: 20 }}
-                animate={
-                  isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-                }
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
                 onSubmit={handleSubmit}
                 className="mt-8 space-y-6"
               >
                 <p className="text-lg text-slate-600">
-                  Richiedi un Preventivo Gratuito<br />
-                  <span className="text-base">Raccontaci del tuo progetto e ti ricontatteremo entro 24 ore</span>
+                  Richiedi un Preventivo Gratuito
+                  <br />
+                  <span className="text-base">
+                    Raccontaci del tuo progetto e ti ricontatteremo entro 24 ore
+                  </span>
                 </p>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <motion.div
@@ -110,7 +109,9 @@ export default function ContactUs1() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
                   >
-                    <Label htmlFor="name" className="text-slate-700">Nome e Cognome *</Label>
+                    <Label htmlFor="name" className="text-slate-700">
+                      Nome e Cognome *
+                    </Label>
                     <Input
                       id="name"
                       value={name}
@@ -127,7 +128,9 @@ export default function ContactUs1() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
                   >
-                    <Label htmlFor="email" className="text-slate-700">Email *</Label>
+                    <Label htmlFor="email" className="text-slate-700">
+                      Email *
+                    </Label>
                     <Input
                       id="email"
                       type="email"
@@ -147,7 +150,9 @@ export default function ContactUs1() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
                   >
-                    <Label htmlFor="phone" className="text-slate-700">Telefono *</Label>
+                    <Label htmlFor="phone" className="text-slate-700">
+                      Telefono *
+                    </Label>
                     <Input
                       id="phone"
                       type="tel"
@@ -165,7 +170,9 @@ export default function ContactUs1() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 }}
                   >
-                    <Label htmlFor="eventType" className="text-slate-700">Tipo di Evento *</Label>
+                    <Label htmlFor="eventType" className="text-slate-700">
+                      Tipo di Evento *
+                    </Label>
                     <select
                       id="eventType"
                       value={eventType}
@@ -190,7 +197,9 @@ export default function ContactUs1() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8 }}
                 >
-                  <Label htmlFor="message" className="text-slate-700">Messaggio</Label>
+                  <Label htmlFor="message" className="text-slate-700">
+                    Messaggio
+                  </Label>
                   <Textarea
                     id="message"
                     value={message}
@@ -230,7 +239,7 @@ export default function ContactUs1() {
                         </button>
                       </motion.div>
                     </div>
-                    
+
                     <div className="flex-1">
                       <motion.div
                         whileHover={{ scale: 1.02 }}
@@ -240,8 +249,11 @@ export default function ContactUs1() {
                         <button
                           type="button"
                           onClick={() => {
-                            const whatsappMessage = `Ciao! Sono ${name}. Interessato a: ${eventType}. Email: ${email}, Tel: ${phone}. Messaggio: ${message}`;
-                            window.open(`https://wa.me/393401234567?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+                            const whatsappMessage = `Ciao! Sono ${name}. Interessato a: ${eventType}. Email: ${email}, Tel: ${phone}. Messaggio: ${message}`
+                            window.open(
+                              `https://wa.me/393401234567?text=${encodeURIComponent(whatsappMessage)}`,
+                              '_blank'
+                            )
                           }}
                           className="w-full h-14 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-xl"
                         >
@@ -263,8 +275,11 @@ export default function ContactUs1() {
             >
               <div className="flex flex-col items-center justify-center overflow-hidden">
                 <article className="relative mx-auto h-[350px] min-h-60 max-w-[450px] overflow-hidden rounded-3xl border bg-gradient-to-b from-amber-500 to-amber-600 p-6 text-3xl tracking-tight text-white md:h-[450px] md:min-h-80 md:p-8 md:text-4xl md:leading-[1.05] lg:text-5xl">
-                  Richiedi un Preventivo Gratuito<br />
-                  <span className="text-2xl">Raccontaci del tuo progetto e ti ricontatteremo entro 24 ore</span>
+                  Richiedi un Preventivo Gratuito
+                  <br />
+                  <span className="text-2xl">
+                    Raccontaci del tuo progetto e ti ricontatteremo entro 24 ore
+                  </span>
                   <div className="absolute -right-20 -bottom-20 z-10 mx-auto flex h-full w-full max-w-[300px] items-center justify-center transition-all duration-700 hover:scale-105 md:-right-28 md:-bottom-28 md:max-w-[550px]">
                     {/* 
                       Globe customization options:
@@ -290,5 +305,5 @@ export default function ContactUs1() {
         </div>
       </div>
     </section>
-  );
+  )
 }

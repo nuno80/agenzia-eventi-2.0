@@ -1,20 +1,20 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
   experimental: {
     serverActions: {
-      bodySizeLimit: '20mb'
-    }
+      bodySizeLimit: '20mb',
+    },
   },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '**.public.blob.vercel-storage.com',
-      }
-    ]
-  }
-};
+      },
+    ],
+  },
+}
 
-export default nextConfig;
+export default nextConfig

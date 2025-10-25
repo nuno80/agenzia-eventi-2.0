@@ -1,17 +1,24 @@
 {
-  "name": "landingpage-maria",
+  "name": "starter-kit_4.0",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "ci": "biome ci .",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx src/db/seed.ts",
-    "db:create": "tsx src/scripts/create-tables.ts"
+    "db:create": "tsx src/scripts/create-tables.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "@heroui/navbar": "^2.2.25",
@@ -43,6 +50,7 @@
     "drizzle-kit": "^0.31.5",
     "eslint": "^9",
     "eslint-config-next": "16.0.0",
+    "husky": "^9.1.7",
     "tailwindcss": "^4",
     "tsx": "^4.20.6",
     "typescript": "^5"

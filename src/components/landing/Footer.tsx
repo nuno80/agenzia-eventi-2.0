@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import React from 'react';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react'
+import React from 'react'
 
 const Footer = () => {
   return (
@@ -12,7 +12,9 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2">
             <h3 className="text-2xl font-bold mb-4 text-amber-400">EventiPro Roma</h3>
             <p className="text-slate-300 mb-6 leading-relaxed">
-              Agenzia specializzata in organizzazione eventi corporate, formazione aziendale ed eventi ibridi per PMI a Roma. Con la precisione degli eventi ECM, al servizio del tuo business.
+              Agenzia specializzata in organizzazione eventi corporate, formazione aziendale ed
+              eventi ibridi per PMI a Roma. Con la precisione degli eventi ECM, al servizio del tuo
+              business.
             </p>
             <div className="space-y-3">
               <div className="flex items-center gap-3">
@@ -21,13 +23,19 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-amber-400 flex-shrink-0" />
-                <a href="tel:+393401234567" className="text-slate-300 hover:text-amber-400 transition-colors">
+                <a
+                  href="tel:+393401234567"
+                  className="text-slate-300 hover:text-amber-400 transition-colors"
+                >
                   +39 340 123 4567
                 </a>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-amber-400 flex-shrink-0" />
-                <a href="mailto:info@eventipro-roma.it" className="text-slate-300 hover:text-amber-400 transition-colors">
+                <a
+                  href="mailto:info@eventipro-roma.it"
+                  className="text-slate-300 hover:text-amber-400 transition-colors"
+                >
                   info@eventipro-roma.it
                 </a>
               </div>
@@ -38,11 +46,46 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-bold mb-4">Servizi</h4>
             <ul className="space-y-2">
-              <li><a href="#services" className="text-slate-300 hover:text-amber-400 transition-colors">Eventi Aziendali</a></li>
-              <li><a href="#services" className="text-slate-300 hover:text-amber-400 transition-colors">Eventi Online & Ibridi</a></li>
-              <li><a href="#services" className="text-slate-300 hover:text-amber-400 transition-colors">Formazione Corporate</a></li>
-              <li><a href="#services" className="text-slate-300 hover:text-amber-400 transition-colors">Hostess & Personale</a></li>
-              <li><a href="#services" className="text-slate-300 hover:text-amber-400 transition-colors">Congressi ECM</a></li>
+              <li>
+                <a
+                  href="#services"
+                  className="text-slate-300 hover:text-amber-400 transition-colors"
+                >
+                  Eventi Aziendali
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#services"
+                  className="text-slate-300 hover:text-amber-400 transition-colors"
+                >
+                  Eventi Online & Ibridi
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#services"
+                  className="text-slate-300 hover:text-amber-400 transition-colors"
+                >
+                  Formazione Corporate
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#services"
+                  className="text-slate-300 hover:text-amber-400 transition-colors"
+                >
+                  Hostess & Personale
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#services"
+                  className="text-slate-300 hover:text-amber-400 transition-colors"
+                >
+                  Congressi ECM
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -50,11 +93,37 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-bold mb-4">Link Utili</h4>
             <ul className="space-y-2">
-              <li><a href="#services" className="text-slate-300 hover:text-amber-400 transition-colors">Chi Siamo</a></li>
-              <li><a href="#contact-form" className="text-slate-300 hover:text-amber-400 transition-colors">Contatti</a></li>
-              <li><a href="#" className="text-slate-300 hover:text-amber-400 transition-colors">Portfolio</a></li>
-              <li><a href="#" className="text-slate-300 hover:text-amber-400 transition-colors">Blog</a></li>
-              <li><a href="#" className="text-slate-300 hover:text-amber-400 transition-colors">Privacy Policy</a></li>
+              <li>
+                <a
+                  href="#services"
+                  className="text-slate-300 hover:text-amber-400 transition-colors"
+                >
+                  Chi Siamo
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#contact-form"
+                  className="text-slate-300 hover:text-amber-400 transition-colors"
+                >
+                  Contatti
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-slate-300 hover:text-amber-400 transition-colors">
+                  Portfolio
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-slate-300 hover:text-amber-400 transition-colors">
+                  Blog
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-slate-300 hover:text-amber-400 transition-colors">
+                  Privacy Policy
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -80,7 +149,7 @@ const Footer = () => {
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

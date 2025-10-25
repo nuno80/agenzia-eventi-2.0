@@ -1,29 +1,26 @@
 // src/data/users/index.ts
 // Data Access Layer for Users
-import 'server-only';
-import { db, users } from '@/db';
-import { eq } from 'drizzle-orm';
-import { requireUser, requireAdminUser } from '../server-only';
+import 'server-only'
+import { eq } from 'drizzle-orm'
+import { db, users } from '@/db'
+import { requireAdminUser, requireUser } from '../server-only'
 
 // Type definitions
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
+export type User = typeof users.$inferSelect
+export type NewUser = typeof users.$inferInsert
 
 // Get all users
 export async function getAllUsers() {
   try {
     // Only admin users should be able to fetch all users
     // const adminUser = await requireAdminUser();
-    
-    const allUsers = await db
-      .select()
-      .from(users)
-      .orderBy(users.createdAt);
-    
-    return { success: true, data: allUsers };
+
+    const allUsers = await db.select().from(users).orderBy(users.createdAt)
+
+    return { success: true, data: allUsers }
   } catch (error) {
-    console.error('Error fetching users:', error);
-    return { success: false, error: 'Failed to fetch users' };
+    console.error('Error fetching users:', error)
+    return { success: false, error: 'Failed to fetch users' }
   }
 }
 
@@ -33,21 +30,17 @@ export async function getUserById(id: number) {
     // Regular users can fetch their own data, admins can fetch any user
     // const currentUser = await requireUser();
     // Add authorization logic here
-    
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, id))
-      .limit(1);
-    
+
+    const [user] = await db.select().from(users).where(eq(users.id, id)).limit(1)
+
     if (!user) {
-      return { success: false, error: 'User not found' };
+      return { success: false, error: 'User not found' }
     }
-    
-    return { success: true, data: user };
+
+    return { success: true, data: user }
   } catch (error) {
-    console.error('Error fetching user:', error);
-    return { success: false, error: 'Failed to fetch user' };
+    console.error('Error fetching user:', error)
+    return { success: false, error: 'Failed to fetch user' }
   }
 }
 
@@ -56,16 +49,13 @@ export async function createUser(userData: NewUser) {
   try {
     // In a real implementation, we might have different rules for user creation
     // For example, only admins can create users, or users can register themselves
-    
-    const [newUser] = await db
-      .insert(users)
-      .values(userData)
-      .returning();
-    
-    return { success: true, data: newUser };
+
+    const [newUser] = await db.insert(users).values(userData).returning()
+
+    return { success: true, data: newUser }
   } catch (error) {
-    console.error('Error creating user:', error);
-    return { success: false, error: 'Failed to create user' };
+    console.error('Error creating user:', error)
+    return { success: false, error: 'Failed to create user' }
   }
 }
 
@@ -75,21 +65,17 @@ export async function updateUser(id: number, userData: Partial<User>) {
     // Users can update their own data, admins can update any user
     // const currentUser = await requireUser();
     // Add authorization logic here
-    
-    const [updatedUser] = await db
-      .update(users)
-      .set(userData)
-      .where(eq(users.id, id))
-      .returning();
-    
+
+    const [updatedUser] = await db.update(users).set(userData).where(eq(users.id, id)).returning()
+
     if (!updatedUser) {
-      return { success: false, error: 'User not found' };
+      return { success: false, error: 'User not found' }
     }
-    
-    return { success: true, data: updatedUser };
+
+    return { success: true, data: updatedUser }
   } catch (error) {
-    console.error('Error updating user:', error);
-    return { success: false, error: 'Failed to update user' };
+    console.error('Error updating user:', error)
+    return { success: false, error: 'Failed to update user' }
   }
 }
 
@@ -98,19 +84,16 @@ export async function deleteUser(id: number) {
   try {
     // Only admin users should be able to delete users
     // const adminUser = await requireAdminUser();
-    
-    const [deletedUser] = await db
-      .delete(users)
-      .where(eq(users.id, id))
-      .returning();
-    
+
+    const [deletedUser] = await db.delete(users).where(eq(users.id, id)).returning()
+
     if (!deletedUser) {
-      return { success: false, error: 'User not found' };
+      return { success: false, error: 'User not found' }
     }
-    
-    return { success: true, data: deletedUser };
+
+    return { success: true, data: deletedUser }
   } catch (error) {
-    console.error('Error deleting user:', error);
-    return { success: false, error: 'Failed to delete user' };
+    console.error('Error deleting user:', error)
+    return { success: false, error: 'Failed to delete user' }
   }
 }

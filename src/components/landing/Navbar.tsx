@@ -1,46 +1,54 @@
-"use client";
+'use client'
 
-import React, { useState } from 'react';
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem } from "@heroui/navbar";
-import { ArrowRight, Phone } from 'lucide-react';
-import Link from 'next/link';
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle,
+} from '@heroui/navbar'
+import { ArrowRight, Phone } from 'lucide-react'
+import Link from 'next/link'
+import React, { useState } from 'react'
 
 type MenuItem = {
-  name: string;
-  id?: string;
-  href?: string;
-};
+  name: string
+  id?: string
+  href?: string
+}
 
 const CustomNavbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const menuItems: MenuItem[] = [
-    { name: "Servizi", id: "services" },
-    { name: "Processo", id: "process" },
-    { name: "Casi Studio", id: "case-studies" },
-    { name: "Blog", href: "/blog" },
-    { name: "Files", href: "/files" },
-    { name: "FAQ", id: "faq" },
-    { name: "Contatti", id: "contact-form" },
-  ];
+    { name: 'Servizi', id: 'services' },
+    { name: 'Processo', id: 'process' },
+    { name: 'Casi Studio', id: 'case-studies' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Files', href: '/files' },
+    { name: 'FAQ', id: 'faq' },
+    { name: 'Contatti', id: 'contact-form' },
+  ]
 
   const handleScrollToSection = (id: string) => {
-    const element = document.getElementById(id);
+    const element = document.getElementById(id)
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setIsMenuOpen(false);
+      element.scrollIntoView({ behavior: 'smooth' })
+      setIsMenuOpen(false)
     }
-  };
+  }
 
   return (
-    <Navbar 
+    <Navbar
       onMenuOpenChange={setIsMenuOpen}
       maxWidth="xl"
       className="bg-white/80 backdrop-blur-md border-b border-slate-200/50 sticky top-0 z-50"
     >
       <NavbarContent>
         <NavbarMenuToggle
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           className="sm:hidden"
         />
         <NavbarBrand>
@@ -69,10 +77,10 @@ const CustomNavbar = () => {
           </NavbarItem>
         ))}
       </NavbarContent>
-      
+
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          <button 
+          <button
             onClick={() => handleScrollToSection('contact-form')}
             className="bg-amber-500 hover:bg-amber-600 text-slate-900 px-4 py-2 rounded-md font-medium transition-colors"
           >
@@ -88,7 +96,7 @@ const CustomNavbar = () => {
           </a>
         </NavbarItem>
       </NavbarContent>
-      
+
       <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
@@ -110,7 +118,7 @@ const CustomNavbar = () => {
           </NavbarMenuItem>
         ))}
         <NavbarMenuItem>
-          <button 
+          <button
             onClick={() => handleScrollToSection('contact-form')}
             className="w-full mt-4 bg-amber-500 hover:bg-amber-600 text-slate-900 px-4 py-2 rounded-md font-medium transition-colors flex items-center justify-center"
           >
@@ -120,7 +128,7 @@ const CustomNavbar = () => {
         </NavbarMenuItem>
       </NavbarMenu>
     </Navbar>
-  );
-};
+  )
+}
 
-export default CustomNavbar;
+export default CustomNavbar
