@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import CustomNavbar from '@/components/landing/Navbar';
 import FileManager from '@/components/FileManager';
 
 export default function FilesPage() {
@@ -15,8 +16,11 @@ export default function FilesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <FileManager />
+    <div className="min-h-screen bg-gray-50">
+      <CustomNavbar />
+      <div className="py-12">
+        <FileManager />
+      </div>
     </div>
   );
 }

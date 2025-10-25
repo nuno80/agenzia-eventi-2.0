@@ -19,6 +19,7 @@ const CustomNavbar = () => {
     { name: "Processo", id: "process" },
     { name: "Casi Studio", id: "case-studies" },
     { name: "Blog", href: "/blog" },
+    { name: "Files", href: "/files" },
     { name: "FAQ", id: "faq" },
     { name: "Contatti", id: "contact-form" },
   ];
