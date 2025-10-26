@@ -86,7 +86,8 @@ export function EventForm({ event, isEditing = false }: EventFormProps) {
     endDate: event?.endDate ? new Date(event.endDate) : undefined,
     capacity: event?.capacity,
     budget: event?.budget,
-    status: event?.status as 'draft' | 'upcoming' | 'active' | 'completed' | 'cancelled' || 'draft',
+    status:
+      (event?.status as 'draft' | 'upcoming' | 'active' | 'completed' | 'cancelled') || 'draft',
   }
 
   // Initialize the form

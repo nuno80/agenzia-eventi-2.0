@@ -167,12 +167,8 @@
           "name": "agenda_sessions_event_id_events_id_fk",
           "tableFrom": "agenda_sessions",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -265,12 +261,8 @@
           "name": "session_registrations_session_id_agenda_sessions_id_fk",
           "tableFrom": "session_registrations",
           "tableTo": "agenda_sessions",
-          "columnsFrom": [
-            "session_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["session_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -348,12 +340,8 @@
           "name": "budget_categories_event_id_events_id_fk",
           "tableFrom": "budget_categories",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -495,12 +483,8 @@
           "name": "budget_items_category_id_budget_categories_id_fk",
           "tableFrom": "budget_items",
           "tableTo": "budget_categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -657,12 +641,8 @@
           "name": "checkins_event_id_events_id_fk",
           "tableFrom": "checkins",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -814,12 +794,8 @@
           "name": "communications_event_id_events_id_fk",
           "tableFrom": "communications",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -956,12 +932,8 @@
           "name": "deadlines_event_id_events_id_fk",
           "tableFrom": "deadlines",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1186,9 +1158,7 @@
       "indexes": {
         "users_email_unique": {
           "name": "users_email_unique",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": true
         }
       },
@@ -1331,12 +1301,8 @@
           "name": "participants_event_id_events_id_fk",
           "tableFrom": "participants",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1512,12 +1478,8 @@
           "name": "speakers_event_id_events_id_fk",
           "tableFrom": "speakers",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1686,12 +1648,8 @@
           "name": "sponsors_event_id_events_id_fk",
           "tableFrom": "sponsors",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1861,12 +1819,8 @@
           "name": "services_event_id_events_id_fk",
           "tableFrom": "services",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1964,12 +1918,8 @@
           "name": "survey_responses_survey_id_surveys_id_fk",
           "tableFrom": "survey_responses",
           "tableTo": "surveys",
-          "columnsFrom": [
-            "survey_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["survey_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2107,12 +2057,8 @@
           "name": "surveys_event_id_events_id_fk",
           "tableFrom": "surveys",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }

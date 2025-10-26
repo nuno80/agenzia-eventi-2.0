@@ -1,42 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, Users, Video, GraduationCap, ArrowRight, Sparkles, Award, MapPin, Target, ChevronDown } from 'lucide-react';
+import React, { useState, useEffect } from 'react'
+import {
+  Calendar,
+  Users,
+  Video,
+  GraduationCap,
+  ArrowRight,
+  Sparkles,
+  Award,
+  MapPin,
+  Target,
+  ChevronDown,
+} from 'lucide-react'
 
 const ModernHeroSection = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
-    setIsVisible(true);
-    
+    setIsVisible(true)
+
     const handleMouseMove = (e) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 20,
         y: (e.clientY / window.innerHeight) * 20,
-      });
-    };
+      })
+    }
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
 
   const floatingIcons = [
     { Icon: Calendar, delay: '0s', duration: '20s' },
     { Icon: Users, delay: '2s', duration: '18s' },
     { Icon: Video, delay: '4s', duration: '22s' },
     { Icon: GraduationCap, delay: '6s', duration: '19s' },
-  ];
+  ]
 
   const stats = [
     { number: '15+', label: 'Anni Esperienza', icon: Award },
     { number: '200+', label: 'Eventi Gestiti', icon: Calendar },
     { number: '5.000+', label: 'Partecipanti', icon: Users },
-  ];
+  ]
 
   const trustSignals = [
     { icon: Award, text: 'Esperienza Eventi ECM' },
     { icon: MapPin, text: 'Base a Roma' },
     { icon: Target, text: 'Focus PMI & Corporate' },
-  ];
+  ]
 
   // Generate random particles/stars
   const particles = Array.from({ length: 50 }, (_, i) => ({
@@ -47,7 +58,7 @@ const ModernHeroSection = () => {
     duration: Math.random() * 3 + 2,
     delay: Math.random() * 2,
     opacity: Math.random() * 0.5 + 0.3,
-  }));
+  }))
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-950">
@@ -71,7 +82,7 @@ const ModernHeroSection = () => {
       </div>
       {/* Animated Gradient Background */}
       <div className="absolute inset-0">
-        <div 
+        <div
           className="absolute inset-0 opacity-50"
           style={{
             background: `
@@ -89,13 +100,13 @@ const ModernHeroSection = () => {
             transition: 'background 0.3s ease',
           }}
         />
-        
+
         {/* Animated Gradient Orbs */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/20 rounded-full blur-3xl animate-pulse-slow" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-600/10 rounded-full blur-3xl animate-pulse-slower" />
-        
+
         {/* Grid Pattern Overlay */}
-        <div 
+        <div
           className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: `
@@ -126,7 +137,7 @@ const ModernHeroSection = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center">
           {/* Eyebrow */}
-          <div 
+          <div
             className={`inline-flex items-center gap-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 mb-8 transition-all duration-1000 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
@@ -138,7 +149,7 @@ const ModernHeroSection = () => {
           </div>
 
           {/* Main Headline */}
-          <h1 
+          <h1
             className={`text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight transition-all duration-1000 delay-200 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
@@ -153,7 +164,7 @@ const ModernHeroSection = () => {
           </h1>
 
           {/* Subheadline */}
-          <p 
+          <p
             className={`text-xl sm:text-2xl text-slate-300 mb-12 max-w-4xl mx-auto leading-relaxed transition-all duration-1000 delay-400 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
@@ -167,32 +178,28 @@ const ModernHeroSection = () => {
           </p>
 
           {/* CTA Buttons */}
-          <div 
+          <div
             className={`flex flex-col sm:flex-row gap-4 justify-center mb-16 transition-all duration-1000 delay-600 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
           >
-            <button 
-              className="group relative bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 px-8 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-2xl shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105"
-            >
+            <button className="group relative bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 px-8 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-2xl shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105">
               <span>Richiedi un Preventivo Gratuito</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
-            <button 
-              className="group relative bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/20 hover:border-amber-500/50 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105"
-            >
+            <button className="group relative bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/20 hover:border-amber-500/50 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105">
               Scopri Come Lavoriamo
             </button>
           </div>
 
           {/* Bento Grid Stats */}
-          <div 
+          <div
             className={`grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-12 transition-all duration-1000 delay-800 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
           >
             {stats.map((stat, idx) => {
-              const Icon = stat.icon;
+              const Icon = stat.icon
               return (
                 <div
                   key={idx}
@@ -204,35 +211,28 @@ const ModernHeroSection = () => {
                     <div className="text-4xl font-bold text-white mb-1 group-hover:text-amber-400 transition-colors">
                       {stat.number}
                     </div>
-                    <div className="text-sm text-slate-400">
-                      {stat.label}
-                    </div>
+                    <div className="text-sm text-slate-400">{stat.label}</div>
                   </div>
                 </div>
-              );
+              )
             })}
           </div>
 
           {/* Trust Bar */}
-          <div 
+          <div
             className={`bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 max-w-4xl mx-auto transition-all duration-1000 delay-1000 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {trustSignals.map((signal, idx) => {
-                const Icon = signal.icon;
+                const Icon = signal.icon
                 return (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-center gap-3 group"
-                  >
+                  <div key={idx} className="flex items-center justify-center gap-3 group">
                     <Icon className="w-6 h-6 text-amber-400 group-hover:scale-110 transition-transform" />
-                    <span className="text-slate-200 font-medium">
-                      {signal.text}
-                    </span>
+                    <span className="text-slate-200 font-medium">{signal.text}</span>
                   </div>
-                );
+                )
               })}
             </div>
           </div>
@@ -240,7 +240,7 @@ const ModernHeroSection = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <div 
+      <div
         className={`absolute bottom-8 left-1/2 -translate-x-1/2 transition-all duration-1000 delay-1200 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
         }`}
@@ -349,7 +349,7 @@ const ModernHeroSection = () => {
         }
       `}</style>
     </section>
-  );
-};
+  )
+}
 
-export default ModernHeroSection;
+export default ModernHeroSection
