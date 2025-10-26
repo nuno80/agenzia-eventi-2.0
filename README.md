@@ -26,6 +26,7 @@ This is a modern Next.js 16 application for an event management company, impleme
 - **File Storage**: Vercel Blob
 - **Authentication**: Placeholder system ready for Clerk integration
 - **Deployment**: Vercel-ready configuration
+- **PNPM**: USA SOLO PNPM PER LE INSTALLAZIONI
 
 ## 📁 Project Structure
 

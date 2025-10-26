@@ -1,0 +1,255 @@
+Fase Attuale: ✅ Completata
+
+
+✅ Prototipo UI/UX con V0 (validazione flussi)
+✅ Identificazione features/moduli MVP
+✅ Documentazione dettagliata Feature Slice (esempio: Gestione Utenti)
+
+
+Prossimi Passi Consigliati
+STEP 4: Completare Feature Slices per Tutti i Moduli
+Prima di scrivere codice, documenta ogni modulo con lo stesso livello di dettaglio del file "Gestione Utenti".
+Per ogni modulo crea:
+
+High-Fidelity UI/UX Design (screens chiave)
+Technical Specification (API, Database, Frontend, Security, Testing)
+
+Ordine di priorità suggerito:
+
+Modulo 1: Gestione Eventi (fondamento di tutto)
+Modulo 2: Gestione Utenti (già fatto ✅)
+Modulo 3: Comunicazioni (critico per MVP)
+Modulo 4: Budget/Sponsor (può essere semplificato per MVP)
+Modulo 5: Questionari (può slittare post-MVP)
+
+Perché farlo ora?
+
+Identifichi inconsistenze architetturali prima di codificare
+Hai una mappa completa per stimare tempi e complessità
+Ogni modulo diventa un prompt chiaro per l'AI durante lo sviluppo
+
+
+STEP 5: Design System e Component Library Base
+Prima di implementare le features, costruisci la fondazione visiva e tecnica.
+Crea:
+
+Tailwind Config Customizzato
+
+Palette colori definita (Primary, Success, Warning, Error, Neutrals)
+Spacing scale
+Typography scale (font sizes, weights, line heights)
+Breakpoints (già standard Tailwind)
+
+
+Componenti Primitivi Riutilizzabili (con V0 o manualmente)
+
+Button (variants: Primary, Secondary, Danger, Ghost)
+Input/Textarea con validation states
+Select/Dropdown
+Badge (con variants per stati)
+Card container
+Modal/Dialog
+Toast notifications
+Table responsive
+Empty states template
+
+
+Layout Components
+
+AdminLayout (con sidebar)
+PublicLayout (senza sidebar)
+PageHeader standard
+Breadcrumbs
+
+
+
+Deliverable: Una cartella /components/ui o uso di Shadcn/ui pre-configurato
+Perché farlo ora?
+
+Eviti duplicazione di codice
+Mantieni consistenza visiva
+Acceleri lo sviluppo delle features (componenti ready-to-use)
+
+
+STEP 6: Setup Infrastruttura & Boilerplate
+Prepara l'ambiente di sviluppo prima di implementare logica business.
+Setup tecnico:
+
+Inizializza progetto Next.js 15
+
+   - App Router
+   - TypeScript strict mode
+   - ESLint + Prettier
+   - Tailwind CSS
+
+Configura Database
+
+Better-SQLite3 iniziale
+Drizzle ORM setup
+Script per migrations
+Seed data per sviluppo
+
+
+Configura Better Auth
+
+Session management
+Ruoli base (Admin, Staff, User)
+Middleware per protected routes
+
+
+Setup Testing Environment
+
+Vitest per unit tests
+Playwright per E2E tests
+Mock data utilities
+
+
+CI/CD Base
+
+GitHub Actions per lint/test
+Preview deployments su VPS (opzionale per MVP)
+
+
+
+Deliverable: Repository funzionante con scheletro base
+
+STEP 7: Sviluppo Iterativo per Modulo
+Ora puoi codificare, un modulo alla volta, seguendo questo pattern:
+Per ogni modulo (es. Gestione Eventi):
+
+Database First
+
+Crea schema Drizzle per quel modulo
+Migrazione + seed data
+Testa query base
+
+
+Backend Logic
+
+Server Actions / API Routes
+Validazione input (Zod)
+RBAC checks
+Error handling
+
+
+Frontend Implementation
+
+Pagine e routing
+Componenti specifici modulo
+Integrazione con Server Actions
+TanStack Query per state management
+
+
+Testing
+
+Unit tests per business logic
+Integration tests per API
+E2E test per flusso critico
+
+
+Review & Refinement
+
+Test manuale su UI
+Fix UX issues
+Ottimizzazioni performance
+
+
+
+Ripeti per ogni modulo in ordine di priorità
+
+STEP 8: Integrazione e Testing Cross-Modulo
+Quando tutti i moduli core sono implementati:
+
+Integration Testing
+
+Testa flussi che attraversano più moduli
+Es: Creare evento → Invitare relatori → Gestire budget
+
+
+User Acceptance Testing (UAT)
+
+Fai testare l'app a 2-3 organizzatori reali
+Raccogli feedback su usabilità
+
+
+Performance & Security Audit
+
+Ottimizza query lente
+Verifica implementazione RBAC
+Test con dati realistici (300 partecipanti)
+
+
+
+
+STEP 9: Deployment Beta su VPS
+Prepara l'ambiente di produzione:
+
+Setup VPS (Hetzner CPX21)
+
+Ubuntu 22.04
+Nginx reverse proxy
+SSL con Certbot
+PM2 per Next.js
+
+
+Database Setup
+
+Better-SQLite3 in produzione
+Backup automatici giornalieri
+
+
+Monitoring Base
+
+Log aggregation
+Uptime monitoring (es. UptimeRobot gratuito)
+
+
+Deploy & Test
+
+Deploy applicazione
+Smoke tests in produzione
+Invita beta testers
+
+
+
+
+Strategia di Utilizzo AI durante lo Sviluppo
+Per ogni task di sviluppo:
+
+Fornisci contesto chiaro
+
+Feature Slice document
+Design System reference
+Database schema attuale
+
+
+Chiedi implementazioni specifiche
+
+"Implementa la Server Action per importazione CSV secondo spec X"
+"Crea il componente ParticipantsTable seguendo il Design System"
+
+
+Review AI-generated code
+
+Verifica security (SQL injection, XSS)
+Verifica consistenza con architettura
+Testa approfonditamente
+
+
+
+
+Timeline Stimata (per 2 mesi MVP)
+Settimane 1-2: Steps 4-6 (Documentazione + Setup)
+Settimane 3-4: Modulo 1 (Gestione Eventi)
+Settimane 5-6: Modulo 2 (Gestione Utenti) + Modulo 3 (Comunicazioni base)
+Settimana 7: Modulo 4 (Budget semplificato)
+Settimana 8: Testing, refinement, deployment beta
+
+Checklist Immediata (questa settimana)
+
+ Completa Feature Slice per Modulo 1 (Gestione Eventi)
+ Completa Feature Slice per Modulo 3 (Comunicazioni)
+ Crea Tailwind config customizzato
+ Costruisci con V0 i componenti UI primitivi (Button, Input, Card, Badge)
+ Inizializza repository Next.js 15 + Drizzle + Better Auth
+ Crea schema database completo per tutti i moduli MVP

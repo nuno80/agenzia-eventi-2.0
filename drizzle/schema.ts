@@ -1,47 +1,283 @@
-// lib/schema.ts
+import { sqliteTable, AnySQLiteColumn, uniqueIndex, integer, text, index, real } from "drizzle-orm/sqlite-core"
+  import { sql } from "drizzle-orm"
 
-import { sql } from 'drizzle-orm'
-import { integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
+export const users = sqliteTable("users", {
+	id: integer().primaryKey(),
+	name: text().notNull(),
+	email: text().notNull(),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+},
+(table) => [
+	uniqueIndex("users_email_unique").on(table.email),
+]);
 
-// 🔐 IMPORTANTE: Quando implementi Clerk, userId diventa TEXT
-// Clerk usa stringhe come "user_2abc123xyz" non numeri
-export const files = sqliteTable('files', {
-  id: integer().primaryKey({ autoIncrement: true }).notNull(),
+export const files = sqliteTable("files", {
+	id: integer().primaryKey({ autoIncrement: true }),
+	userId: integer("user_id"),
+	filename: text().notNull(),
+	blobUrl: text("blob_url").notNull(),
+	contentType: text("content_type").notNull(),
+	size: integer().notNull(),
+	uploadedAt: integer("uploaded_at").default(sql`(unixepoch())`).notNull(),
+});
 
-  // 🔐 STEP CLERK: Cambia da integer a text quando implementi Clerk
-  // PRIMA (attuale - per test):
-  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }),
+export const events = sqliteTable("events", {
+	id: text().primaryKey().notNull(),
+	name: text().notNull(),
+	type: text().notNull(),
+	description: text(),
+	location: text().notNull(),
+	startDate: integer("start_date").notNull(),
+	endDate: integer("end_date").notNull(),
+	capacity: integer().notNull(),
+	registeredCount: integer("registered_count").default(0).notNull(),
+	budget: real().notNull(),
+	spent: real().notNull(),
+	status: text().default("draft").notNull(),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
+	deletedAt: integer("deleted_at"),
+},
+(table) => [
+	index("events_type_idx").on(table.type),
+	index("events_start_date_idx").on(table.startDate),
+	index("events_status_idx").on(table.status),
+]);
 
-  // DOPO (con Clerk - decommenta e rimuovi la riga sopra):
-  // userId: text("user_id").notNull(),
-  // NON serve più la foreign key perché Clerk gestisce gli utenti esternamente
+export const participants = sqliteTable("participants", {
+	id: text().primaryKey().notNull(),
+	eventId: text("event_id").notNull(),
+	firstName: text("first_name").notNull(),
+	lastName: text("last_name").notNull(),
+	email: text().notNull(),
+	phone: text(),
+	company: text(),
+	jobTitle: text("job_title"),
+	registrationDate: integer("registration_date").default(sql`(unixepoch())`).notNull(),
+	status: text().default("registered").notNull(),
+	checkedIn: integer("checked_in").default(0).notNull(),
+	checkinTime: integer("checkin_time"),
+	notes: text(),
+	dietaryRequirements: text("dietary_requirements"),
+	specialNeeds: text("special_needs"),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
+});
 
-  filename: text().notNull(),
-  blobUrl: text('blob_url').notNull(),
-  contentType: text('content_type').notNull(),
-  size: integer().notNull(),
-  uploadedAt: integer('uploaded_at').default(sql`(unixepoch())`).notNull(),
-})
+export const speakers = sqliteTable("speakers", {
+	id: text().primaryKey().notNull(),
+	eventId: text("event_id").notNull(),
+	firstName: text("first_name").notNull(),
+	lastName: text("last_name").notNull(),
+	email: text().notNull(),
+	phone: text(),
+	company: text(),
+	jobTitle: text("job_title"),
+	bio: text(),
+	photoUrl: text("photo_url"),
+	presentationTitle: text("presentation_title"),
+	presentationDescription: text("presentation_description"),
+	presentationDuration: integer("presentation_duration"),
+	presentationDate: integer("presentation_date"),
+	presentationSlot: text("presentation_slot"),
+	status: text().default("invited").notNull(),
+	notes: text(),
+	travelArrangements: text("travel_arrangements"),
+	accommodationNeeds: text("accommodation_needs"),
+	dietaryRequirements: text("dietary_requirements"),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
+});
 
-// 🔐 OPZIONALE: Puoi mantenere questa tabella per dati extra degli utenti
-// o eliminarla completamente se usi solo Clerk
-export const users = sqliteTable(
-  'users',
-  {
-    id: integer().primaryKey().notNull(),
-    name: text().notNull(),
-    email: text().notNull(),
-    createdAt: integer('created_at').default(sql`(unixepoch())`).notNull(),
-  },
-  (table) => [uniqueIndex('users_email_unique').on(table.email)]
-)
+export const sponsors = sqliteTable("sponsors", {
+	id: text().primaryKey().notNull(),
+	eventId: text("event_id").notNull(),
+	name: text().notNull(),
+	type: text().notNull(),
+	logoUrl: text("logo_url"),
+	website: text(),
+	contactName: text("contact_name"),
+	contactEmail: text("contact_email").notNull(),
+	contactPhone: text("contact_phone"),
+	amount: real().notNull(),
+	benefits: text(),
+	boothLocation: text("booth_location"),
+	boothSize: text("booth_size"),
+	status: text().default("prospect").notNull(),
+	invoiceNumber: text("invoice_number"),
+	invoiceDate: integer("invoice_date"),
+	paymentDate: integer("payment_date"),
+	paymentMethod: text("payment_method"),
+	notes: text(),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
+});
 
-// 🔐 ALTERNATIVA CON CLERK: Tabella per metadata aggiuntivi degli utenti
-// Crea questa tabella se vuoi salvare dati extra non gestiti da Clerk
-// export const userMetadata = sqliteTable("user_metadata", {
-//   id: integer().primaryKey({ autoIncrement: true }).notNull(),
-//   clerkUserId: text("clerk_user_id").notNull().unique(), // ID di Clerk
-//   preferences: text().default('{}'), // JSON stringificato
-//   quota: integer().default(0), // es. spazio usato
-//   createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
-// });
+export const services = sqliteTable("services", {
+	id: text().primaryKey().notNull(),
+	eventId: text("event_id").notNull(),
+	name: text().notNull(),
+	type: text().notNull(),
+	description: text(),
+	providerName: text("provider_name").notNull(),
+	providerContact: text("provider_contact"),
+	providerEmail: text("provider_email"),
+	providerPhone: text("provider_phone"),
+	cost: real().notNull(),
+	isPaid: integer("is_paid").default(0).notNull(),
+	paymentDate: integer("payment_date"),
+	invoiceNumber: text("invoice_number"),
+	scheduledDate: integer("scheduled_date"),
+	scheduledStartTime: text("scheduled_start_time"),
+	scheduledEndTime: text("scheduled_end_time"),
+	status: text().default("requested").notNull(),
+	notes: text(),
+	attachments: text(),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
+});
+
+export const agendaSessions = sqliteTable("agenda_sessions", {
+	id: text().primaryKey().notNull(),
+	eventId: text("event_id").notNull(),
+	title: text().notNull(),
+	description: text(),
+	type: text().notNull(),
+	startTime: integer("start_time").notNull(),
+	endTime: integer("end_time").notNull(),
+	day: integer().notNull(),
+	location: text(),
+	room: text(),
+	capacity: integer(),
+	speakerIds: text("speaker_ids"),
+	speakerNames: text("speaker_names"),
+	status: text().default("draft").notNull(),
+	tags: text(),
+	materials: text(),
+	isPublic: integer("is_public").default(1).notNull(),
+	requiresRegistration: integer("requires_registration").default(0).notNull(),
+	registrationCount: integer("registration_count").default(0),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
+});
+
+export const sessionRegistrations = sqliteTable("session_registrations", {
+	id: text().primaryKey().notNull(),
+	sessionId: text("session_id").notNull(),
+	participantId: text("participant_id").notNull(),
+	participantName: text("participant_name").notNull(),
+	participantEmail: text("participant_email"),
+	registeredAt: integer("registered_at").default(sql`(unixepoch())`).notNull(),
+	status: text().default("registered").notNull(),
+	attendedAt: integer("attended_at"),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
+});
+
+export const budgetCategories = sqliteTable("budget_categories", {
+	id: text().primaryKey().notNull(),
+	eventId: text("event_id").notNull(),
+	name: text().notNull(),
+	description: text(),
+	budgetAllocated: real("budget_allocated").notNull(),
+	budgetSpent: real("budget_spent").notNull(),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
+});
+
+export const budgetItems = sqliteTable("budget_items", {
+	id: text().primaryKey().notNull(),
+	categoryId: text("category_id").notNull(),
+	name: text().notNull(),
+	description: text(),
+	estimatedCost: real("estimated_cost").notNull(),
+	actualCost: real("actual_cost"),
+	quantity: integer().default(1).notNull(),
+	status: text().default("planned").notNull(),
+	vendorName: text("vendor_name"),
+	invoiceNumber: text("invoice_number"),
+	invoiceDate: integer("invoice_date"),
+	paymentDate: integer("payment_date"),
+	paymentMethod: text("payment_method"),
+	notes: text(),
+	attachments: text(),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
+});
+
+export const checkins = sqliteTable("checkins", {
+	id: text().primaryKey().notNull(),
+	eventId: text("event_id").notNull(),
+	personId: text("person_id").notNull(),
+	personType: text("person_type").notNull(),
+	personName: text("person_name").notNull(),
+	personEmail: text("person_email"),
+	checkedInAt: integer("checked_in_at").notNull(),
+	checkedInBy: text("checked_in_by"),
+	checkoutAt: integer("checkout_at"),
+	status: text().default("checked_in").notNull(),
+	verificationMethod: text("verification_method").default("manual").notNull(),
+	verificationCode: text("verification_code"),
+	notes: text(),
+	badgePrinted: integer("badge_printed").default(0).notNull(),
+	materialsProvided: text("materials_provided"),
+	locationId: text("location_id"),
+	locationName: text("location_name"),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
+});
+
+export const communications = sqliteTable("communications", {
+	id: text().primaryKey().notNull(),
+	eventId: text("event_id").notNull(),
+	title: text().notNull(),
+	content: text().notNull(),
+	type: text().notNull(),
+	recipientType: text("recipient_type").notNull(),
+	recipientFilter: text("recipient_filter"),
+	recipientCount: integer("recipient_count").default(0),
+	scheduledAt: integer("scheduled_at"),
+	sentAt: integer("sent_at"),
+	status: text().default("draft").notNull(),
+	openCount: integer("open_count").default(0),
+	clickCount: integer("click_count").default(0),
+	bounceCount: integer("bounce_count").default(0),
+	attachments: text(),
+	metadata: text(),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
+});
+
+export const surveys = sqliteTable("surveys", {
+	id: text().primaryKey().notNull(),
+	eventId: text("event_id").notNull(),
+	title: text().notNull(),
+	description: text(),
+	type: text().notNull(),
+	status: text().default("draft").notNull(),
+	startDate: integer("start_date"),
+	endDate: integer("end_date"),
+	isAnonymous: integer("is_anonymous").default(0).notNull(),
+	allowMultipleResponses: integer("allow_multiple_responses").default(0).notNull(),
+	questions: text().notNull(),
+	responseCount: integer("response_count").default(0),
+	completionRate: real("completion_rate"),
+	averageRating: real("average_rating"),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
+});
+
+export const surveyResponses = sqliteTable("survey_responses", {
+	id: text().primaryKey().notNull(),
+	surveyId: text("survey_id").notNull(),
+	respondentId: text("respondent_id"),
+	respondentType: text("respondent_type"),
+	respondentEmail: text("respondent_email"),
+	answers: text().notNull(),
+	completedAt: integer("completed_at").notNull(),
+	ipAddress: text("ip_address"),
+	userAgent: text("user_agent"),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
+});
+
