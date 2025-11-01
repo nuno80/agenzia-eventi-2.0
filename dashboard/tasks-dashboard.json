@@ -1,7 +1,7 @@
 {
   "project": "EventHub Dashboard",
   "lastUpdated": "2024-11-05",
-  "overallProgress": 35,
+  "overallProgress": 37,
   "modules": [
     {
       "id": "core",
@@ -37,7 +37,7 @@
     {
       "id": "database",
       "name": "Database Schema",
-      "progress": 100,
+      "progress": 88,
       "tasks": [
         {
           "id": "db-1",
@@ -72,7 +72,7 @@
         {
           "id": "db-6",
           "name": "Staff + StaffAssignments tables",
-          "status": "completed",
+          "status": "pending",
           "complexity": "medium"
         },
         {
@@ -338,18 +338,18 @@
     {
       "id": "staff",
       "name": "Personale/Staff",
-      "progress": 40,
+      "progress": 30,
       "tasks": [
         {
           "id": "staff-1",
           "name": "DAL staff.ts",
-          "status": "completed",
+          "status": "pending",
           "complexity": "medium"
         },
         {
           "id": "staff-2",
           "name": "DAL staffAssignments.ts",
-          "status": "completed",
+          "status": "pending",
           "complexity": "medium"
         },
         {
@@ -361,7 +361,7 @@
         {
           "id": "staff-4",
           "name": "Validation schema staff (Zod)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "easy",
           "componentType": "Validation",
           "description": "Schema per staff: nome, email, ruolo, rate, tags"
@@ -377,7 +377,7 @@
         {
           "id": "staff-6",
           "name": "Server Actions staff.ts",
-          "status": "pending",
+          "status": "completed",
           "complexity": "easy",
           "componentType": "Server Action",
           "description": "create, update, delete, toggleActive staff"
@@ -385,7 +385,7 @@
         {
           "id": "staff-7",
           "name": "Server Actions staffAssignments.ts",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server Action",
           "description": "create, update, delete, markPaid, postponePayment assignments"
@@ -650,14 +650,14 @@
     {
       "priority": 1,
       "module": "staff",
-      "tasks": ["staff-4", "staff-5", "staff-6", "staff-7"],
-      "rationale": "Validations + Actions necessari per qualsiasi UI staff"
+      "tasks": ["staff-1", "staff-2", "staff-5"],
+      "rationale": "Priorità su DAL (staff, assignments) e validation mancante; le Actions sono già pronte"
     },
     {
       "priority": 2,
       "module": "staff",
       "tasks": ["staff-8", "staff-9", "staff-10", "staff-11"],
-      "rationale": "UI lista staff completa per iniziare a usare il sistema"
+      "rationale": "UI lista staff completa; dipende dal completamento DAL e validation"
     },
     {
       "priority": 3,
@@ -729,8 +729,8 @@
   },
   "nextSteps": {
     "immediate": [
-      "Creare validations/staff.ts e validations/staffAssignments.ts (Zod)",
-      "Creare actions/staff.ts e actions/staffAssignments.ts (Server Actions)",
+      "Creare validations/staffAssignments.ts (Zod)",
+      "Creare DAL staff.ts e DAL staffAssignments.ts",
       "Creare pagina /personale lista staff con filtri"
     ],
     "shortTerm": [

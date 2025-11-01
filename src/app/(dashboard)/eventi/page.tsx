@@ -13,12 +13,13 @@
 import { PlusIcon } from 'lucide-react'
 import Link from 'next/link'
 import { Suspense } from 'react'
-import { EventFilters } from '@/components/dashboard/events/EventFilters'
-import { EventsTable } from '@/components/dashboard/events/EventsTable'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { getAllEvents } from '@/lib/dal/events'
+import { EventsListClient } from './EventsListClient'
 
-export default function EventsPage() {
+export default async function EventsPage() {
+  const events = await getAllEvents()
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -33,12 +34,8 @@ export default function EventsPage() {
       </div>
 
       <Card className="p-6">
-        <Suspense fallback={<div>Caricamento filtri...</div>}>
-          <EventFilters />
-        </Suspense>
-
         <Suspense fallback={<div>Caricamento eventi...</div>}>
-          <EventsTable />
+          <EventsListClient events={events} />
         </Suspense>
       </Card>
     </div>

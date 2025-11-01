@@ -24,8 +24,8 @@
 import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { db } from '@/lib/db'
-import { staffAssignments } from '@/lib/db/schema'
+import { db } from '@/db'
+import { staffAssignments } from '@/db'
 import { calculatePaymentDueDate, calculatePaymentStatus } from '@/lib/utils'
 import {
   createStaffAssignmentSchema,

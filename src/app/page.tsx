@@ -1,4 +1,4 @@
-import EventManagementDashboard from '@/components/dashboard/EventManagementDashboard'
+import EventManagementLanding from '@/components/EventManagementLanding'
 
 export const metadata = {
   title: 'Dashboard - Event Management System',
@@ -16,7 +16,7 @@ export const metadata = {
 export default function Home() {
   return (
     <div>
-      <EventManagementDashboard />
+      <EventManagementLanding />
     </div>
   )
 }

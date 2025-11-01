@@ -42,7 +42,7 @@ import {
   Tag,
   Users,
 } from 'lucide-react'
-import type { Event } from '@/lib/db/schema'
+import type { Event } from '@/db'
 import { formatDate, formatDateTime } from '@/lib/utils'
 
 interface OverviewTabProps {

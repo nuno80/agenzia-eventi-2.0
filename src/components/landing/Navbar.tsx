@@ -23,6 +23,7 @@ const CustomNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const menuItems: MenuItem[] = [
+    { name: 'Dashboard', href: '/eventi' },
     { name: 'Servizi', id: 'services' },
     { name: 'Processo', id: 'process' },
     { name: 'Casi Studio', id: 'case-studies' },

@@ -23,8 +23,8 @@
 import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { db } from '@/lib/db'
-import { staff } from '@/lib/db/schema'
+import { db } from '@/db'
+import { staff } from '@/db'
 import { createStaffSchema, updateStaffSchema } from '@/lib/validations/staff'
 
 /**

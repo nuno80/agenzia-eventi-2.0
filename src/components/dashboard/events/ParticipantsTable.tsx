@@ -41,7 +41,7 @@ import {
   XCircle,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import type { Participant } from '@/lib/db/schema'
+import type { Participant } from '@/db'
 import { formatDate, getPaymentStatusLabel, getRegistrationStatusLabel } from '@/lib/utils'
 
 interface ParticipantsTableProps {

@@ -39,7 +39,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { DuplicateEventButton } from '@/components/dashboard/events/DuplicateEventButton'
-import type { Event } from '@/lib/db/schema'
+import type { Event } from '@/db'
 import {
   formatCurrency,
   formatDate,

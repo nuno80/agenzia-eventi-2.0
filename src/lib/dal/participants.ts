@@ -20,8 +20,8 @@
 
 import { and, asc, desc, eq, sql } from 'drizzle-orm'
 import { cache } from 'react'
-import { db } from '@/lib/db'
-import { events, participants } from '@/lib/db/schema'
+import { db } from '@/db'
+import { events, participants } from '@/db'
 
 // ============================================================================
 // BASIC QUERIES

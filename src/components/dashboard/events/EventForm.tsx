@@ -34,7 +34,7 @@ import { AlertCircle, Loader2, Plus, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { createEvent, updateEvent } from '@/app/actions/events'
-import type { Event } from '@/lib/db/schema'
+import type { Event } from '@/db'
 
 interface EventFormProps {
   mode: 'create' | 'edit'

@@ -18,7 +18,7 @@
 
 import { and, asc, count, desc, eq, gte, lte, sql } from 'drizzle-orm'
 import { cache } from 'react'
-import { db } from '@/lib/db'
+import { db } from '@/db'
 import {
   agenda,
   budgetCategories,
@@ -30,7 +30,7 @@ import {
   services,
   speakers,
   sponsors,
-} from '@/lib/db/schema'
+} from '@/db'
 
 // ============================================================================
 // BASIC QUERIES

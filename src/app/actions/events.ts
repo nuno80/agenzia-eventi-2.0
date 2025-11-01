@@ -24,8 +24,8 @@ import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
-import { db } from '@/lib/db'
-import { events } from '@/lib/db/schema'
+import { db } from '@/db'
+import { events } from '@/db'
 import { createEventSchema, updateEventSchema } from '@/lib/validations/events'
 
 /**
@@ -290,7 +290,7 @@ export async function duplicateEvent(eventId: string): Promise<ActionResult> {
 
     // Import relations from schema
     const { speakers, sponsors, budgetCategories, budgetItems, services, agenda, deadlines } =
-      await import('@/lib/db/schema')
+      await import('@/db')
 
     // Create duplicate event
     const { id, createdAt, updatedAt, currentParticipants, currentSpent, ...eventData } =
