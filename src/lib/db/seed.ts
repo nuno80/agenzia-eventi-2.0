@@ -20,7 +20,7 @@
  * - Agenda sessions
  */
 
-import { db } from './index'
+import { db } from '../../db'
 import {
   agenda,
   budgetCategories,
@@ -31,7 +31,7 @@ import {
   services,
   speakers,
   sponsors,
-} from './schema'
+} from '../../db/libsql-schemas'
 
 async function seed() {
   console.log('🌱 Starting database seed...\n')
