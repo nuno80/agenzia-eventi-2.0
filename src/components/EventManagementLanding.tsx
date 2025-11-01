@@ -12,7 +12,7 @@ import ProcessSection from './landing/ProcessSection'
 import ServicesSection from './landing/ServicesSection'
 import StatsSection from './landing/StatsSection'
 import WhatsAppButton from './landing/WhatsAppButton'
-import ContactUs1 from './mvpblocks/contact-us-1'
+import ContactUs1 from './landing/contact-us-1'
 
 const EventManagementLanding = () => {
   const handleContactClick = () => {

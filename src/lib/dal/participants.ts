@@ -1,360 +1,303 @@
-// ============================================================================
-// DATA ACCESS LAYER - PARTICIPANTS
-// ============================================================================
-// FILE: src/lib/dal/participants.ts
-//
-// PURPOSE: Centralizes all database queries related to event participants
-// BENEFITS:
-// - Type safety with TypeScript
-// - Request deduplication with React cache()
-// - Single source of truth for data fetching
-// - Easy testing and maintenance
-//
-// USAGE:
-// In Server Components:
-//   import { getParticipantById } from '@/lib/dal/participants';
-//   const participant = await getParticipantById('123');
-// ============================================================================
+/**
+ * FILE: src/lib/dal/participants.ts
+ *
+ * DATA ACCESS LAYER: Participants
+ *
+ * PURPOSE:
+ * - Centralize all database queries for participants
+ * - Use React cache() to deduplicate requests
+ * - Provide type-safe data fetching
+ *
+ * PATTERN:
+ * - All functions wrapped in cache() for automatic deduplication
+ * - Used in Server Components and Server Actions
+ * - Never call directly from Client Components
+ *
+ * USAGE:
+ * import { getParticipantsByEvent } from '@/lib/dal/participants';
+ * const participants = await getParticipantsByEvent('event_123');
+ */
 
 import { cache } from 'react'
-import { db } from '@/db'
-import { participants, events } from '@/db/libsql-schemas'
-import { eq, gte, lte, desc, asc, and, or, like, sql } from 'drizzle-orm'
+import { db } from '@/lib/db'
+import { participants, events } from '@/lib/db/schema'
+import { eq, desc, asc, and, sql } from 'drizzle-orm'
 
 // ============================================================================
-// TYPES & INTERFACES
-// ============================================================================
-
-/**
- * Participant status enum
- * Represents the registration status of a participant
- */
-export type ParticipantStatus = 'registered' | 'confirmed' | 'cancelled' | 'attended' | 'no_show'
-
-/**
- * Filter options for participant queries
- */
-export interface ParticipantFilters {
-  eventId?: string
-  status?: ParticipantStatus | ParticipantStatus[]
-  registrationDateFrom?: Date
-  registrationDateTo?: Date
-  searchQuery?: string
-}
-
-/**
- * Sort options for participant queries
- */
-export interface ParticipantSortOptions {
-  field: 'name' | 'email' | 'registrationDate' | 'status'
-  order: 'asc' | 'desc'
-}
-
-// ============================================================================
-// READ OPERATIONS (Queries)
+// BASIC QUERIES
 // ============================================================================
 
 /**
- * Get a single participant by ID
- *
- * CACHE: Uses React cache() to deduplicate requests within a single render
- * USE CASE: Participant detail pages, forms that need participant info
- *
- * @param id - Participant ID
- * @returns Participant object or null if not found
- *
- * @example
- * const participant = await getParticipantById('part_123');
- * if (!participant) return notFound();
+ * Get single participant by ID
  */
 export const getParticipantById = cache(async (id: string) => {
-  try {
-    const participant = await db.query.participants.findFirst({
-      where: eq(participants.id, id),
-      with: {
-        event: true,
-      },
-    })
+  const participant = await db.query.participants.findFirst({
+    where: eq(participants.id, id),
+    with: {
+      event: true,
+    },
+  })
 
-    return participant || null
-  } catch (error) {
-    console.error('Error fetching participant by ID:', error)
-    throw new Error('Failed to fetch participant')
-  }
+  return participant || null
 })
 
 /**
- * Get all participants with optional filters and sorting
- *
- * CACHE: Uses React cache() for deduplication
- * USE CASE: Participant list page, dashboard overview
- *
- * @param filters - Optional filters
- * @param sort - Optional sort configuration
- * @returns Array of participants
- *
- * @example
- * const participantsList = await getAllParticipants({ status: 'confirmed' }, { field: 'name', order: 'asc' });
+ * Get all participants for a specific event
+ * Ordered by last name
  */
-export const getAllParticipants = cache(
-  async (
-    filters?: ParticipantFilters,
-    sort: ParticipantSortOptions = { field: 'registrationDate', order: 'desc' }
-  ) => {
-    try {
-      // Build where conditions
-      const conditions = []
+export const getParticipantsByEvent = cache(async (eventId: string) => {
+  const eventParticipants = await db.query.participants.findMany({
+    where: eq(participants.eventId, eventId),
+    orderBy: [asc(participants.lastName), asc(participants.firstName)],
+  })
 
-      if (filters?.eventId) {
-        conditions.push(eq(participants.eventId, filters.eventId))
-      }
+  return eventParticipants
+})
 
-      if (filters?.status) {
-        if (Array.isArray(filters.status)) {
-          conditions.push(or(...filters.status.map((s) => eq(participants.status, s))))
-        } else {
-          conditions.push(eq(participants.status, filters.status))
-        }
-      }
+/**
+ * Get all participants across all events
+ */
+export const getAllParticipants = cache(async () => {
+  const allParticipants = await db.query.participants.findMany({
+    orderBy: [desc(participants.registrationDate)],
+    with: {
+      event: true,
+    },
+  })
 
-      if (filters?.registrationDateFrom) {
-        conditions.push(gte(participants.registrationDate, filters.registrationDateFrom))
-      }
+  return allParticipants
+})
 
-      if (filters?.registrationDateTo) {
-        conditions.push(lte(participants.registrationDate, filters.registrationDateTo))
-      }
+// ============================================================================
+// FILTERED QUERIES
+// ============================================================================
 
-      if (filters?.searchQuery) {
-        const searchTerm = `%${filters.searchQuery}%`
-        conditions.push(
-          or(
-            like(participants.name, searchTerm),
-            like(participants.email, searchTerm),
-            like(participants.phone, searchTerm),
-            like(participants.company, searchTerm)
-          )
-        )
-      }
+/**
+ * Get participants by registration status
+ */
+export const getParticipantsByStatus = cache(
+  async (eventId: string, status: 'pending' | 'confirmed' | 'cancelled' | 'waitlist') => {
+    const filtered = await db.query.participants.findMany({
+      where: and(eq(participants.eventId, eventId), eq(participants.registrationStatus, status)),
+      orderBy: [asc(participants.lastName)],
+    })
 
-      // Build order by
-      const orderByField = participants[sort.field]
-      const orderFn = sort.order === 'asc' ? asc : desc
-
-      const allParticipants = await db.query.participants.findMany({
-        where: conditions.length > 0 ? and(...conditions) : undefined,
-        orderBy: orderFn(orderByField),
-        with: {
-          event: {
-            columns: {
-              id: true,
-              name: true,
-            },
-          },
-        },
-      })
-
-      return allParticipants
-    } catch (error) {
-      console.error('Error fetching all participants:', error)
-      throw new Error('Failed to fetch participants')
-    }
+    return filtered
   }
 )
 
 /**
- * Get participants for a specific event
- *
- * CACHE: Uses React cache()
- * USE CASE: Event detail page, participant management
- *
- * @param eventId - Event ID
- * @param status - Optional status filter
- * @returns Array of participants for the specified event
- *
- * @example
- * const eventParticipants = await getParticipantsByEventId('evt_123');
+ * Get participants by payment status
  */
-export const getParticipantsByEventId = cache(
-  async (eventId: string, status?: ParticipantStatus | ParticipantStatus[]) => {
-    try {
-      const conditions = [eq(participants.eventId, eventId)]
+export const getParticipantsByPaymentStatus = cache(
+  async (eventId: string, paymentStatus: 'pending' | 'paid' | 'refunded' | 'free') => {
+    const filtered = await db.query.participants.findMany({
+      where: and(eq(participants.eventId, eventId), eq(participants.paymentStatus, paymentStatus)),
+      orderBy: [asc(participants.lastName)],
+    })
 
-      if (status) {
-        if (Array.isArray(status)) {
-          conditions.push(or(...status.map((s) => eq(participants.status, s))))
-        } else {
-          conditions.push(eq(participants.status, status))
-        }
-      }
-
-      const eventParticipants = await db.query.participants.findMany({
-        where: and(...conditions),
-        orderBy: asc(participants.name),
-      })
-
-      return eventParticipants
-    } catch (error) {
-      console.error('Error fetching participants by event ID:', error)
-      throw new Error('Failed to fetch event participants')
-    }
+    return filtered
   }
 )
+
+/**
+ * Get checked-in participants
+ */
+export const getCheckedInParticipants = cache(async (eventId: string) => {
+  const checkedIn = await db.query.participants.findMany({
+    where: and(eq(participants.eventId, eventId), eq(participants.checkedIn, true)),
+    orderBy: [desc(participants.checkinTime)],
+  })
+
+  return checkedIn
+})
+
+/**
+ * Get participants who haven't checked in yet
+ */
+export const getPendingCheckinParticipants = cache(async (eventId: string) => {
+  const pending = await db.query.participants.findMany({
+    where: and(
+      eq(participants.eventId, eventId),
+      eq(participants.checkedIn, false),
+      eq(participants.registrationStatus, 'confirmed')
+    ),
+    orderBy: [asc(participants.lastName)],
+  })
+
+  return pending
+})
+
+// ============================================================================
+// STATISTICS
+// ============================================================================
 
 /**
  * Get participant statistics for an event
- *
- * CACHE: Uses React cache()
- * USE CASE: Event dashboard, analytics
- *
- * @param eventId - Event ID
- * @returns Object with participant statistics
- *
- * @example
- * const stats = await getParticipantStatsByEventId('evt_123');
- * console.log(`Confirmed participants: ${stats.confirmedCount}`);
  */
-export const getParticipantStatsByEventId = cache(async (eventId: string) => {
-  try {
-    const eventParticipants = await db.query.participants.findMany({
-      where: eq(participants.eventId, eventId),
-    })
+export const getParticipantStats = cache(async (eventId: string) => {
+  const allParticipants = await getParticipantsByEvent(eventId)
 
-    // Calculate statistics
-    const stats = {
-      totalCount: eventParticipants.length,
-      registeredCount: eventParticipants.filter((p) => p.status === 'registered').length,
-      confirmedCount: eventParticipants.filter((p) => p.status === 'confirmed').length,
-      cancelledCount: eventParticipants.filter((p) => p.status === 'cancelled').length,
-      attendedCount: eventParticipants.filter((p) => p.status === 'attended').length,
-      noShowCount: eventParticipants.filter((p) => p.status === 'no_show').length,
-    }
+  const stats = {
+    total: allParticipants.length,
+    confirmed: allParticipants.filter((p) => p.registrationStatus === 'confirmed').length,
+    pending: allParticipants.filter((p) => p.registrationStatus === 'pending').length,
+    cancelled: allParticipants.filter((p) => p.registrationStatus === 'cancelled').length,
+    waitlist: allParticipants.filter((p) => p.registrationStatus === 'waitlist').length,
+    checkedIn: allParticipants.filter((p) => p.checkedIn).length,
+    paid: allParticipants.filter((p) => p.paymentStatus === 'paid').length,
+    pendingPayment: allParticipants.filter((p) => p.paymentStatus === 'pending').length,
+    free: allParticipants.filter((p) => p.paymentStatus === 'free').length,
+    refunded: allParticipants.filter((p) => p.paymentStatus === 'refunded').length,
+  }
 
-    // Calculate attendance rate
-    const expectedAttendees = stats.confirmedCount + stats.attendedCount + stats.noShowCount
-    stats.attendanceRate =
-      expectedAttendees > 0 ? Math.round((stats.attendedCount / expectedAttendees) * 100) : 0
+  // Calculate revenue
+  const totalRevenue = allParticipants
+    .filter((p) => p.paymentStatus === 'paid')
+    .reduce((sum, p) => sum + (p.ticketPrice || 0), 0)
 
-    return stats
-  } catch (error) {
-    console.error('Error fetching participant stats:', error)
-    throw new Error('Failed to fetch participant statistics')
+  const pendingRevenue = allParticipants
+    .filter((p) => p.paymentStatus === 'pending')
+    .reduce((sum, p) => sum + (p.ticketPrice || 0), 0)
+
+  return {
+    ...stats,
+    totalRevenue,
+    pendingRevenue,
+    totalPotentialRevenue: totalRevenue + pendingRevenue,
   }
 })
+
+/**
+ * Get participants by ticket type
+ */
+export const getParticipantsByTicketType = cache(async (eventId: string) => {
+  const allParticipants = await getParticipantsByEvent(eventId)
+
+  // Group by ticket type
+  const byTicketType = allParticipants.reduce(
+    (acc, p) => {
+      const type = p.ticketType || 'Nessuno'
+      if (!acc[type]) {
+        acc[type] = []
+      }
+      acc[type].push(p)
+      return acc
+    },
+    {} as Record<string, typeof allParticipants>
+  )
+
+  return byTicketType
+})
+
+// ============================================================================
+// SEARCH
+// ============================================================================
 
 /**
  * Search participants by name or email
- *
- * CACHE: Uses React cache()
- * USE CASE: Search functionality, autocomplete
- *
- * @param query - Search query string
- * @param eventId - Optional event ID to limit search scope
- * @returns Array of matching participants
- *
- * @example
- * const results = await searchParticipants('mario rossi');
  */
-export const searchParticipants = cache(async (query: string, eventId?: string) => {
-  try {
-    if (!query || query.trim().length < 2) {
-      return []
-    }
+export const searchParticipants = cache(async (eventId: string, query: string) => {
+  const allParticipants = await getParticipantsByEvent(eventId)
 
-    const searchTerm = `%${query.trim()}%`
-    const conditions = [
-      or(
-        like(participants.name, searchTerm),
-        like(participants.email, searchTerm),
-        like(participants.phone, searchTerm)
-      ),
-    ]
+  const searchLower = query.toLowerCase()
+  const filtered = allParticipants.filter(
+    (p) =>
+      p.firstName.toLowerCase().includes(searchLower) ||
+      p.lastName.toLowerCase().includes(searchLower) ||
+      p.email.toLowerCase().includes(searchLower) ||
+      p.company?.toLowerCase().includes(searchLower)
+  )
 
-    if (eventId) {
-      conditions.push(eq(participants.eventId, eventId))
-    }
+  return filtered
+})
 
-    const results = await db.query.participants.findMany({
-      where: and(...conditions),
-      orderBy: [asc(participants.name)],
-      limit: 20,
-      with: {
-        event: {
-          columns: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    })
+// ============================================================================
+// AGGREGATIONS
+// ============================================================================
 
-    return results
-  } catch (error) {
-    console.error('Error searching participants:', error)
-    throw new Error('Failed to search participants')
+/**
+ * Get company distribution
+ * Returns list of companies with participant counts
+ */
+export const getCompanyDistribution = cache(async (eventId: string) => {
+  const allParticipants = await getParticipantsByEvent(eventId)
+
+  const companies = allParticipants.reduce(
+    (acc, p) => {
+      const company = p.company || 'Nessuna azienda'
+      acc[company] = (acc[company] || 0) + 1
+      return acc
+    },
+    {} as Record<string, number>
+  )
+
+  // Convert to array and sort by count
+  return Object.entries(companies)
+    .map(([company, count]) => ({ company, count }))
+    .sort((a, b) => b.count - a.count)
+})
+
+/**
+ * Get dietary requirements summary
+ */
+export const getDietaryRequirementsSummary = cache(async (eventId: string) => {
+  const allParticipants = await getParticipantsByEvent(eventId)
+
+  const withRequirements = allParticipants.filter((p) => p.dietaryRequirements)
+
+  return {
+    total: withRequirements.length,
+    requirements: withRequirements.map((p) => ({
+      name: `${p.firstName} ${p.lastName}`,
+      requirement: p.dietaryRequirements,
+    })),
   }
 })
 
 /**
- * Check if participant exists
- *
- * CACHE: Uses React cache()
- * USE CASE: Validation, duplicate checking
- *
- * @param id - Participant ID to check
- * @returns Boolean indicating if participant exists
- *
- * @example
- * const exists = await participantExists('part_123');
- * if (!exists) throw new Error('Participant not found');
+ * Get special needs summary
  */
-export const participantExists = cache(async (id: string): Promise<boolean> => {
-  try {
-    const participant = await db.query.participants.findFirst({
-      where: eq(participants.id, id),
-      columns: { id: true }, // Only fetch ID for efficiency
-    })
+export const getSpecialNeedsSummary = cache(async (eventId: string) => {
+  const allParticipants = await getParticipantsByEvent(eventId)
 
-    return !!participant
-  } catch (error) {
-    console.error('Error checking participant existence:', error)
-    return false
+  const withNeeds = allParticipants.filter((p) => p.specialNeeds)
+
+  return {
+    total: withNeeds.length,
+    needs: withNeeds.map((p) => ({
+      name: `${p.firstName} ${p.lastName}`,
+      need: p.specialNeeds,
+    })),
   }
 })
 
+// ============================================================================
+// RECENT ACTIVITY
+// ============================================================================
+
 /**
- * Check if email is already registered for an event
- *
- * CACHE: Uses React cache()
- * USE CASE: Registration form validation
- *
- * @param email - Email address to check
- * @param eventId - Event ID
- * @param excludeParticipantId - Optional participant ID to exclude from check (for updates)
- * @returns Boolean indicating if email is already registered
- *
- * @example
- * const isDuplicate = await isEmailRegisteredForEvent('mario@example.com', 'evt_123');
- * if (isDuplicate) throw new Error('Email already registered');
+ * Get recently registered participants
  */
-export const isEmailRegisteredForEvent = cache(
-  async (email: string, eventId: string, excludeParticipantId?: string): Promise<boolean> => {
-    try {
-      const conditions = [eq(participants.email, email), eq(participants.eventId, eventId)]
+export const getRecentRegistrations = cache(async (eventId: string, limit: number = 10) => {
+  const recent = await db.query.participants.findMany({
+    where: eq(participants.eventId, eventId),
+    orderBy: [desc(participants.registrationDate)],
+    limit,
+  })
 
-      if (excludeParticipantId) {
-        conditions.push(sql`${participants.id} != ${excludeParticipantId}`)
-      }
+  return recent
+})
 
-      const existingParticipant = await db.query.participants.findFirst({
-        where: and(...conditions),
-        columns: { id: true }, // Only fetch ID for efficiency
-      })
+/**
+ * Get recently checked-in participants
+ */
+export const getRecentCheckins = cache(async (eventId: string, limit: number = 10) => {
+  const recent = await db.query.participants.findMany({
+    where: and(eq(participants.eventId, eventId), eq(participants.checkedIn, true)),
+    orderBy: [desc(participants.checkinTime)],
+    limit,
+  })
 
-      return !!existingParticipant
-    } catch (error) {
-      console.error('Error checking email registration:', error)
-      return false
-    }
-  }
-)
+  return recent
+})

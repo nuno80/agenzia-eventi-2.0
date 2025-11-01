@@ -52,6 +52,14 @@ src/
 │       └── sponsors.ts                          🔴 DA FARE (Server Actions) - MEDIO
 │
 ├── components/
+│   │
+│   └── ui/
+│   │   ├── Button.tsx                       ⚪ shadcn/ui
+│   │   ├── Card.tsx                         ⚪ shadcn/ui
+│   │   ├── Badge.tsx                        ⚪ shadcn/ui
+│   │   ├── Table.tsx                        ⚪ shadcn/ui
+│   │   └── ...                              ⚪ shadcn/ui (altri componenti)
+│   │ 
 │   └── dashboard/
 │       ├── layout/
 │       │   ├── Sidebar.tsx                      ✅ CREATO (Client)
@@ -95,13 +103,7 @@ src/
 │       │   ├── StaffAssignmentModal.tsx         🟡 DA FARE (Client) - MEDIO
 │       │   ├── PaymentStatusBadge.tsx           🟡 DA FARE (Server) - FACILE
 │       │   └── index.ts                         🟢 DA FARE - FACILE (exports)
-│       │
-│       └── ui/
-│           ├── Button.tsx                       ⚪ shadcn/ui
-│           ├── Card.tsx                         ⚪ shadcn/ui
-│           ├── Badge.tsx                        ⚪ shadcn/ui
-│           ├── Table.tsx                        ⚪ shadcn/ui
-│           └── ...                              ⚪ shadcn/ui (altri componenti)
+
 │
 ├── lib/
 │   ├── db/

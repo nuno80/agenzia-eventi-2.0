@@ -1,468 +1,536 @@
-// ============================================================================
-// DATA ACCESS LAYER - EVENTS
-// ============================================================================
-// FILE: src/lib/dal/events.ts
-//
-// PURPOSE: Centralizes all database queries related to events
-// BENEFITS:
-// - Type safety with TypeScript
-// - Request deduplication with React cache()
-// - Single source of truth for data fetching
-// - Easy testing and maintenance
-//
-// USAGE:
-// In Server Components:
-//   import { getEventById } from '@/lib/dal/events';
-//   const event = await getEventById('123');
-// ============================================================================
+/**
+ * DATA ACCESS LAYER: Events
+ *
+ * PURPOSE:
+ * - Centralize all database queries for events
+ * - Use React cache() to deduplicate requests
+ * - Provide type-safe data fetching
+ *
+ * PATTERN:
+ * - All functions are wrapped in cache() for automatic deduplication
+ * - Used in Server Components and Server Actions
+ * - Never call directly from Client Components
+ *
+ * USAGE:
+ * import { getEventById } from '@/lib/dal/events';
+ * const event = await getEventById('event_123');
+ */
 
 import { cache } from 'react'
-import { db } from '@/db'
-import { events } from '@/db/libsql-schemas'
-import { eq, gte, lte, desc, asc, and, or, like, sql } from 'drizzle-orm'
+import { db } from '@/lib/db'
+import {
+  events,
+  participants,
+  speakers,
+  sponsors,
+  deadlines,
+  budgetCategories,
+  budgetItems,
+  agenda,
+  services,
+  communications,
+} from '@/lib/db/schema'
+import { eq, desc, asc, and, gte, lte, sql, count } from 'drizzle-orm'
 
 // ============================================================================
-// TYPES & INTERFACES
-// ============================================================================
-
-/**
- * Event status enum
- * Represents the lifecycle of an event
- */
-export type EventStatus = 'draft' | 'upcoming' | 'active' | 'completed' | 'cancelled'
-
-/**
- * Event type enum
- * Categorizes different event formats
- */
-export type EventType = 'congresso_medico' | 'conferenza_aziendale' | 'workshop' | 'fiera'
-
-/**
- * Filter options for event queries
- */
-export interface EventFilters {
-  status?: EventStatus | EventStatus[]
-  type?: EventType
-  startDateFrom?: Date
-  startDateTo?: Date
-  searchQuery?: string
-}
-
-/**
- * Sort options for event queries
- */
-export interface EventSortOptions {
-  field: 'startDate' | 'name' | 'capacity' | 'budget'
-  order: 'asc' | 'desc'
-}
-
-// ============================================================================
-// READ OPERATIONS (Queries)
+// BASIC QUERIES
 // ============================================================================
 
 /**
- * Get a single event by ID
- *
- * CACHE: Uses React cache() to deduplicate requests within a single render
- * USE CASE: Event detail pages, tabs that need event info
- *
- * @param id - Event ID
- * @returns Event object or null if not found
- *
- * @example
- * const event = await getEventById('evt_123');
- * if (!event) return notFound();
+ * Get single event by ID
+ * Returns null if not found
  */
 export const getEventById = cache(async (id: string) => {
-  try {
-    const event = await db.query.events.findFirst({
-      where: eq(events.id, id),
-      // Include related data if needed
-      // with: {
-      //   participants: true,
-      //   speakers: true,
-      //   sponsors: true,
-      // }
-    })
+  const event = await db.query.events.findFirst({
+    where: eq(events.id, id),
+  })
 
-    return event || null
-  } catch (error) {
-    console.error('Error fetching event by ID:', error)
-    throw new Error('Failed to fetch event')
-  }
+  return event || null
 })
 
 /**
- * Get all events with optional filters and sorting
- *
- * CACHE: Uses React cache() for deduplication
- * USE CASE: Event list page, dashboard overview
- *
- * @param filters - Optional filters
- * @param sort - Optional sort configuration
- * @returns Array of events
- *
- * @example
- * const events = await getAllEvents({ status: 'upcoming' }, { field: 'startDate', order: 'asc' });
+ * Get all events
+ * Ordered by start date (newest first)
  */
-export const getAllEvents = cache(
-  async (
-    filters?: EventFilters,
-    sort: EventSortOptions = { field: 'startDate', order: 'desc' }
-  ) => {
-    try {
-      // Build where conditions
-      const conditions = []
+export const getAllEvents = cache(async () => {
+  const allEvents = await db.query.events.findMany({
+    orderBy: [desc(events.startDate)],
+  })
 
-      if (filters?.status) {
-        if (Array.isArray(filters.status)) {
-          conditions.push(or(...filters.status.map((s) => eq(events.status, s))))
-        } else {
-          conditions.push(eq(events.status, filters.status))
-        }
-      }
-
-      if (filters?.type) {
-        conditions.push(eq(events.type, filters.type))
-      }
-
-      if (filters?.startDateFrom) {
-        conditions.push(gte(events.startDate, filters.startDateFrom))
-      }
-
-      if (filters?.startDateTo) {
-        conditions.push(lte(events.startDate, filters.startDateTo))
-      }
-
-      if (filters?.searchQuery) {
-        conditions.push(like(events.name, `%${filters.searchQuery}%`))
-      }
-
-      // Build order by
-      const orderByField = events[sort.field]
-      const orderFn = sort.order === 'asc' ? asc : desc
-
-      const allEvents = await db.query.events.findMany({
-        where: conditions.length > 0 ? and(...conditions) : undefined,
-        orderBy: orderFn(orderByField),
-      })
-
-      return allEvents
-    } catch (error) {
-      console.error('Error fetching all events:', error)
-      throw new Error('Failed to fetch events')
-    }
-  }
-)
-
-/**
- * Get upcoming events (next 30 days)
- *
- * CACHE: Uses React cache()
- * USE CASE: Dashboard home page
- *
- * @param daysAhead - Number of days to look ahead (default: 30)
- * @returns Array of upcoming events
- *
- * @example
- * const upcomingEvents = await getUpcomingEvents();
- */
-export const getUpcomingEvents = cache(async (daysAhead: number = 30) => {
-  try {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-
-    const futureDate = new Date()
-    futureDate.setDate(futureDate.getDate() + daysAhead)
-    futureDate.setHours(23, 59, 59, 999)
-
-    const upcomingEvents = await db.query.events.findMany({
-      where: and(
-        or(eq(events.status, 'upcoming'), eq(events.status, 'active')),
-        gte(events.startDate, today),
-        lte(events.startDate, futureDate)
-      ),
-      orderBy: asc(events.startDate),
-    })
-
-    return upcomingEvents
-  } catch (error) {
-    console.error('Error fetching upcoming events:', error)
-    throw new Error('Failed to fetch upcoming events')
-  }
-})
-
-/**
- * Get active events (currently happening)
- *
- * CACHE: Uses React cache()
- * USE CASE: Dashboard stats, real-time monitoring
- *
- * @returns Array of active events
- *
- * @example
- * const activeEvents = await getActiveEvents();
- */
-export const getActiveEvents = cache(async () => {
-  try {
-    const today = new Date()
-
-    const activeEvents = await db.query.events.findMany({
-      where: and(
-        eq(events.status, 'active'),
-        lte(events.startDate, today),
-        gte(events.endDate, today)
-      ),
-      orderBy: asc(events.startDate),
-    })
-
-    return activeEvents
-  } catch (error) {
-    console.error('Error fetching active events:', error)
-    throw new Error('Failed to fetch active events')
-  }
-})
-
-/**
- * Get event statistics
- *
- * CACHE: Uses React cache()
- * USE CASE: Dashboard overview cards
- *
- * @returns Object with event statistics
- *
- * @example
- * const stats = await getEventStats();
- * console.log(`Active events: ${stats.activeCount}`);
- */
-export const getEventStats = cache(async () => {
-  try {
-    const allEvents = await db.query.events.findMany()
-
-    // Calculate statistics
-    const stats = {
-      totalEvents: allEvents.length,
-      activeCount: allEvents.filter((e) => e.status === 'active').length,
-      upcomingCount: allEvents.filter((e) => e.status === 'upcoming').length,
-      completedCount: allEvents.filter((e) => e.status === 'completed').length,
-      totalParticipants: allEvents.reduce((sum, e) => sum + (e.registeredCount || 0), 0),
-      totalBudget: allEvents.reduce((sum, e) => sum + (e.budget || 0), 0),
-      totalSpent: allEvents.reduce((sum, e) => sum + (e.spent || 0), 0),
-    }
-
-    // Calculate budget utilization percentage
-    stats.budgetUtilization =
-      stats.totalBudget > 0 ? Math.round((stats.totalSpent / stats.totalBudget) * 100) : 0
-
-    return stats
-  } catch (error) {
-    console.error('Error fetching event stats:', error)
-    throw new Error('Failed to fetch event statistics')
-  }
+  return allEvents
 })
 
 /**
  * Get events by status
- *
- * CACHE: Uses React cache()
- * USE CASE: Filtered lists, status-specific views
- *
- * @param status - Event status to filter by
- * @returns Array of events with specified status
- *
- * @example
- * const draftEvents = await getEventsByStatus('draft');
+ * @param status - Event status filter
  */
-export const getEventsByStatus = cache(async (status: EventStatus) => {
-  try {
-    const filteredEvents = await db.query.events.findMany({
+export const getEventsByStatus = cache(
+  async (status: 'draft' | 'planning' | 'open' | 'ongoing' | 'completed' | 'cancelled') => {
+    const filtered = await db.query.events.findMany({
       where: eq(events.status, status),
-      orderBy: desc(events.createdAt),
+      orderBy: [desc(events.startDate)],
     })
 
-    return filteredEvents
-  } catch (error) {
-    console.error('Error fetching events by status:', error)
-    throw new Error('Failed to fetch events by status')
+    return filtered
   }
+)
+
+/**
+ * Get events by priority
+ * @param priority - Priority level filter
+ */
+export const getEventsByPriority = cache(async (priority: 'low' | 'medium' | 'high' | 'urgent') => {
+  const filtered = await db.query.events.findMany({
+    where: eq(events.priority, priority),
+    orderBy: [asc(events.startDate)],
+  })
+
+  return filtered
+})
+
+// ============================================================================
+// DASHBOARD STATS
+// ============================================================================
+
+/**
+ * Get event statistics for dashboard overview
+ * Returns counts by status and totals
+ */
+export const getEventStats = cache(async () => {
+  const now = new Date()
+
+  // Get all events
+  const allEvents = await db.select().from(events)
+
+  // Calculate stats
+  const stats = {
+    total: allEvents.length,
+    draft: allEvents.filter((e) => e.status === 'draft').length,
+    planning: allEvents.filter((e) => e.status === 'planning').length,
+    open: allEvents.filter((e) => e.status === 'open').length,
+    ongoing: allEvents.filter((e) => e.status === 'ongoing').length,
+    completed: allEvents.filter((e) => e.status === 'completed').length,
+    cancelled: allEvents.filter((e) => e.status === 'cancelled').length,
+    upcoming: allEvents.filter(
+      (e) => e.startDate && new Date(e.startDate) > now && e.status !== 'cancelled'
+    ).length,
+    past: allEvents.filter((e) => e.endDate && new Date(e.endDate) < now).length,
+  }
+
+  return stats
 })
 
 /**
- * Get events by type
- *
- * CACHE: Uses React cache()
- * USE CASE: Type-specific reports, category views
- *
- * @param type - Event type to filter by
- * @returns Array of events with specified type
- *
- * @example
- * const medicalConferences = await getEventsByType('congresso_medico');
+ * Get upcoming events (future events only)
+ * @param limit - Number of events to return (default: 5)
  */
-export const getEventsByType = cache(async (type: EventType) => {
-  try {
-    const filteredEvents = await db.query.events.findMany({
-      where: eq(events.type, type),
-      orderBy: desc(events.startDate),
-    })
+export const getUpcomingEvents = cache(async (limit: number = 5) => {
+  const now = new Date()
 
-    return filteredEvents
-  } catch (error) {
-    console.error('Error fetching events by type:', error)
-    throw new Error('Failed to fetch events by type')
-  }
+  const upcoming = await db.query.events.findMany({
+    where: and(gte(events.startDate, now), eq(events.status, 'open')),
+    orderBy: [asc(events.startDate)],
+    limit,
+  })
+
+  return upcoming
 })
 
 /**
- * Check if event exists
- *
- * CACHE: Uses React cache()
- * USE CASE: Validation, duplicate checking
- *
- * @param id - Event ID to check
- * @returns Boolean indicating if event exists
- *
- * @example
- * const exists = await eventExists('evt_123');
- * if (!exists) throw new Error('Event not found');
+ * Get ongoing events (currently happening)
  */
-export const eventExists = cache(async (id: string): Promise<boolean> => {
-  try {
-    const event = await db.query.events.findFirst({
-      where: eq(events.id, id),
-      columns: { id: true }, // Only fetch ID for efficiency
-    })
+export const getOngoingEvents = cache(async () => {
+  const now = new Date()
 
-    return !!event
-  } catch (error) {
-    console.error('Error checking event existence:', error)
-    return false
-  }
+  const ongoing = await db.query.events.findMany({
+    where: and(lte(events.startDate, now), gte(events.endDate, now), eq(events.status, 'ongoing')),
+    orderBy: [asc(events.startDate)],
+  })
+
+  return ongoing
 })
 
 /**
- * Get event with full details (including relations)
- *
- * CACHE: Uses React cache()
- * USE CASE: Detail pages that need all related data
- *
- * @param id - Event ID
- * @returns Event with all related data or null
- *
- * @example
- * const fullEvent = await getEventWithDetails('evt_123');
- * console.log(`Participants: ${fullEvent.participants.length}`);
+ * Get recent events (last 30 days)
  */
-export const getEventWithDetails = cache(async (id: string) => {
-  try {
-    const event = await db.query.events.findFirst({
-      where: eq(events.id, id),
-      with: {
-        participants: {
-          orderBy: (participants, { asc }) => [asc(participants.name)],
-        },
-        speakers: {
-          orderBy: (speakers, { asc }) => [asc(speakers.name)],
-        },
-        sponsors: {
-          orderBy: (sponsors, { desc }) => [desc(sponsors.amount)],
-        },
-        services: true,
-        budgetCategories: true,
-        deadlines: {
-          where: (deadlines, { eq }) => eq(deadlines.status, 'pending'),
-          orderBy: (deadlines, { asc }) => [asc(deadlines.dueDate)],
+export const getRecentEvents = cache(async () => {
+  const thirtyDaysAgo = new Date()
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+
+  const recent = await db.query.events.findMany({
+    where: gte(events.createdAt, thirtyDaysAgo),
+    orderBy: [desc(events.createdAt)],
+    limit: 10,
+  })
+
+  return recent
+})
+
+// ============================================================================
+// EVENTS WITH RELATIONS
+// ============================================================================
+
+/**
+ * Get event with all participants
+ * Includes participant count and details
+ */
+export const getEventWithParticipants = cache(async (eventId: string) => {
+  const event = await db.query.events.findFirst({
+    where: eq(events.id, eventId),
+    with: {
+      participants: {
+        orderBy: [asc(participants.lastName)],
+      },
+    },
+  })
+
+  return event || null
+})
+
+/**
+ * Get event with all speakers
+ */
+export const getEventWithSpeakers = cache(async (eventId: string) => {
+  const event = await db.query.events.findFirst({
+    where: eq(events.id, eventId),
+    with: {
+      speakers: {
+        orderBy: [asc(speakers.lastName)],
+      },
+    },
+  })
+
+  return event || null
+})
+
+/**
+ * Get event with all sponsors
+ */
+export const getEventWithSponsors = cache(async (eventId: string) => {
+  const event = await db.query.events.findFirst({
+    where: eq(events.id, eventId),
+    with: {
+      sponsors: {
+        orderBy: [desc(sponsors.sponsorshipAmount)],
+      },
+    },
+  })
+
+  return event || null
+})
+
+/**
+ * Get event with agenda/schedule
+ */
+export const getEventWithAgenda = cache(async (eventId: string) => {
+  const event = await db.query.events.findFirst({
+    where: eq(events.id, eventId),
+    with: {
+      agenda: {
+        orderBy: [asc(agenda.startTime)],
+        with: {
+          speaker: true,
         },
       },
-    })
+    },
+  })
 
-    return event || null
-  } catch (error) {
-    console.error('Error fetching event with details:', error)
-    throw new Error('Failed to fetch event details')
-  }
+  return event || null
 })
 
 /**
- * Search events by name or location
- *
- * CACHE: Uses React cache()
- * USE CASE: Search functionality, autocomplete
- *
- * @param query - Search query string
- * @returns Array of matching events
- *
- * @example
- * const results = await searchEvents('cardiologia');
+ * Get event with services
+ */
+export const getEventWithServices = cache(async (eventId: string) => {
+  const event = await db.query.events.findFirst({
+    where: eq(events.id, eventId),
+    with: {
+      services: {
+        orderBy: [asc(services.serviceName)],
+      },
+    },
+  })
+
+  return event || null
+})
+
+/**
+ * Get event with complete budget breakdown
+ * Includes categories and all items
+ */
+export const getEventWithBudget = cache(async (eventId: string) => {
+  const event = await db.query.events.findFirst({
+    where: eq(events.id, eventId),
+    with: {
+      budgetCategories: {
+        with: {
+          items: {
+            orderBy: [desc(budgetItems.actualCost)],
+          },
+        },
+      },
+    },
+  })
+
+  return event || null
+})
+
+/**
+ * Get event with all deadlines
+ */
+export const getEventWithDeadlines = cache(async (eventId: string) => {
+  const event = await db.query.events.findFirst({
+    where: eq(events.id, eventId),
+    with: {
+      deadlines: {
+        orderBy: [asc(deadlines.dueDate)],
+      },
+    },
+  })
+
+  return event || null
+})
+
+/**
+ * Get event with communications history
+ */
+export const getEventWithCommunications = cache(async (eventId: string) => {
+  const event = await db.query.events.findFirst({
+    where: eq(events.id, eventId),
+    with: {
+      communications: {
+        orderBy: [desc(communications.sentDate)],
+      },
+    },
+  })
+
+  return event || null
+})
+
+/**
+ * Get complete event details with ALL relations
+ * Use sparingly - heavy query
+ */
+export const getEventComplete = cache(async (eventId: string) => {
+  const event = await db.query.events.findFirst({
+    where: eq(events.id, eventId),
+    with: {
+      participants: true,
+      speakers: true,
+      sponsors: true,
+      agenda: {
+        with: {
+          speaker: true,
+        },
+      },
+      services: true,
+      budgetCategories: {
+        with: {
+          items: true,
+        },
+      },
+      deadlines: true,
+      communications: true,
+    },
+  })
+
+  return event || null
+})
+
+// ============================================================================
+// PARTICIPANT STATS
+// ============================================================================
+
+/**
+ * Get participant statistics for an event
+ */
+export const getEventParticipantStats = cache(async (eventId: string) => {
+  const allParticipants = await db.query.participants.findMany({
+    where: eq(participants.eventId, eventId),
+  })
+
+  const stats = {
+    total: allParticipants.length,
+    confirmed: allParticipants.filter((p) => p.registrationStatus === 'confirmed').length,
+    pending: allParticipants.filter((p) => p.registrationStatus === 'pending').length,
+    cancelled: allParticipants.filter((p) => p.registrationStatus === 'cancelled').length,
+    waitlist: allParticipants.filter((p) => p.registrationStatus === 'waitlist').length,
+    checkedIn: allParticipants.filter((p) => p.checkedIn).length,
+    paid: allParticipants.filter((p) => p.paymentStatus === 'paid').length,
+    pending_payment: allParticipants.filter((p) => p.paymentStatus === 'pending').length,
+  }
+
+  return stats
+})
+
+// ============================================================================
+// BUDGET STATS
+// ============================================================================
+
+/**
+ * Get budget summary for an event
+ */
+export const getEventBudgetSummary = cache(async (eventId: string) => {
+  const event = await getEventById(eventId)
+  if (!event) return null
+
+  const categories = await db.query.budgetCategories.findMany({
+    where: eq(budgetCategories.eventId, eventId),
+    with: {
+      items: true,
+    },
+  })
+
+  const totalAllocated = categories.reduce((sum, cat) => sum + (cat.allocatedAmount || 0), 0)
+  const totalSpent = categories.reduce((sum, cat) => sum + (cat.spentAmount || 0), 0)
+
+  return {
+    totalBudget: event.totalBudget || 0,
+    totalAllocated,
+    totalSpent,
+    remaining: (event.totalBudget || 0) - totalSpent,
+    percentageUsed: event.totalBudget ? (totalSpent / event.totalBudget) * 100 : 0,
+    categories: categories.map((cat) => ({
+      id: cat.id,
+      name: cat.name,
+      allocated: cat.allocatedAmount,
+      spent: cat.spentAmount,
+      remaining: (cat.allocatedAmount || 0) - (cat.spentAmount || 0),
+      itemCount: cat.items.length,
+    })),
+  }
+})
+
+// ============================================================================
+// DEADLINES
+// ============================================================================
+
+/**
+ * Get urgent deadlines across all events
+ * Returns deadlines due in next 7 days
+ */
+export const getUrgentDeadlines = cache(async () => {
+  const now = new Date()
+  const sevenDaysFromNow = new Date()
+  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7)
+
+  const urgent = await db.query.deadlines.findMany({
+    where: and(
+      gte(deadlines.dueDate, now),
+      lte(deadlines.dueDate, sevenDaysFromNow),
+      eq(deadlines.status, 'pending')
+    ),
+    orderBy: [asc(deadlines.dueDate)],
+    with: {
+      event: true,
+    },
+  })
+
+  return urgent
+})
+
+/**
+ * Get overdue deadlines
+ */
+export const getOverdueDeadlines = cache(async () => {
+  const now = new Date()
+
+  const overdue = await db.query.deadlines.findMany({
+    where: and(lte(deadlines.dueDate, now), eq(deadlines.status, 'pending')),
+    orderBy: [asc(deadlines.dueDate)],
+    with: {
+      event: true,
+    },
+  })
+
+  return overdue
+})
+
+// ============================================================================
+// SEARCH & FILTERS
+// ============================================================================
+
+/**
+ * Search events by title or description
+ * Simple text matching (can be enhanced with full-text search)
  */
 export const searchEvents = cache(async (query: string) => {
-  try {
-    if (!query || query.trim().length < 2) {
-      return []
-    }
+  const allEvents = await getAllEvents()
 
-    const searchTerm = `%${query.trim()}%`
+  const searchLower = query.toLowerCase()
+  const filtered = allEvents.filter(
+    (event) =>
+      event.title.toLowerCase().includes(searchLower) ||
+      event.description?.toLowerCase().includes(searchLower) ||
+      event.location.toLowerCase().includes(searchLower)
+  )
 
-    const results = await db.query.events.findMany({
-      where: or(
-        like(events.name, searchTerm),
-        like(events.location, searchTerm),
-        like(events.description, searchTerm)
-      ),
-      orderBy: [desc(events.startDate), asc(events.name)],
-      limit: 20,
-    })
-
-    return results
-  } catch (error) {
-    console.error('Error searching events:', error)
-    throw new Error('Failed to search events')
-  }
+  return filtered
 })
 
 /**
- * Get events with upcoming deadlines
- *
- * CACHE: Uses React cache()
- * USE CASE: Dashboard alerts, deadline tracking
- *
- * @param daysAhead - Number of days to look ahead (default: 14)
- * @returns Array of events with upcoming deadlines
- *
- * @example
- * const eventsWithDeadlines = await getEventsWithUpcomingDeadlines(7);
+ * Get events within date range
  */
-export const getEventsWithUpcomingDeadlines = cache(async (daysAhead: number = 14) => {
-  try {
-    const today = new Date()
-    const futureDate = new Date()
-    futureDate.setDate(futureDate.getDate() + daysAhead)
+export const getEventsByDateRange = cache(async (startDate: Date, endDate: Date) => {
+  const filtered = await db.query.events.findMany({
+    where: and(gte(events.startDate, startDate), lte(events.endDate, endDate)),
+    orderBy: [asc(events.startDate)],
+  })
 
-    // This is a more complex query that requires joining with deadlines table
-    // Implementation depends on the specific schema relationships
-    // This is a simplified example
-    const eventsWithDeadlines = await db.query.events.findMany({
-      with: {
-        deadlines: {
-          where: (deadlines, { and, gte, lte, eq }) =>
-            and(
-              gte(deadlines.dueDate, today),
-              lte(deadlines.dueDate, futureDate),
-              eq(deadlines.status, 'pending')
-            ),
-        },
-      },
-      // Only include events that have at least one upcoming deadline
-      where: (events, { exists, sql }) =>
-        exists(
-          sql`SELECT 1 FROM ${deadlines} WHERE ${deadlines.eventId} = ${events.id} AND ${deadlines.status} = 'pending' AND ${deadlines.dueDate} >= ${today} AND ${deadlines.dueDate} <= ${futureDate}`
-        ),
-    })
-
-    // Filter out events with no deadlines (should not happen due to exists clause, but just in case)
-    return eventsWithDeadlines.filter((event) => event.deadlines.length > 0)
-  } catch (error) {
-    console.error('Error fetching events with upcoming deadlines:', error)
-    throw new Error('Failed to fetch events with upcoming deadlines')
-  }
+  return filtered
 })
+
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
+/**
+ * Check if event registration is open
+ */
+export const isRegistrationOpen = (event: typeof events.$inferSelect): boolean => {
+  const now = new Date()
+
+  // Check if registration dates are set
+  if (!event.registrationOpenDate || !event.registrationCloseDate) {
+    return event.status === 'open'
+  }
+
+  // Check date range
+  const isInRange =
+    new Date(event.registrationOpenDate) <= now && new Date(event.registrationCloseDate) >= now
+
+  // Check capacity
+  const hasCapacity =
+    !event.maxParticipants || (event.currentParticipants || 0) < event.maxParticipants
+
+  return isInRange && hasCapacity && event.status === 'open'
+}
+
+/**
+ * Get days until event
+ */
+export const getDaysUntilEvent = (event: typeof events.$inferSelect): number => {
+  const now = new Date()
+  const start = new Date(event.startDate)
+  const diffTime = start.getTime() - now.getTime()
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  return diffDays
+}
+
+/**
+ * Calculate event progress percentage
+ * Based on current date vs start/end dates
+ */
+export const getEventProgress = (event: typeof events.$inferSelect): number => {
+  const now = new Date()
+  const start = new Date(event.startDate)
+  const end = new Date(event.endDate)
+
+  if (now < start) return 0
+  if (now > end) return 100
+
+  const total = end.getTime() - start.getTime()
+  const elapsed = now.getTime() - start.getTime()
+
+  return Math.round((elapsed / total) * 100)
+}

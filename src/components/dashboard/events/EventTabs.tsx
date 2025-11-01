@@ -1,87 +1,155 @@
-// ============================================================================
-// EVENT TABS COMPONENT
-// ============================================================================
-// FILE: src/components/dashboard/events/EventTabs.tsx
-//
-// PURPOSE: Tabs for navigating between different sections of event details
-// FEATURES:
-// - Tab navigation for event details, participants, speakers, etc.
-// - Active tab highlighting
-// ============================================================================
+/**
+ * FILE: src/components/dashboard/events/EventTabs.tsx
+ *
+ * COMPONENT: EventTabs
+ * TYPE: Client Component
+ *
+ * WHY CLIENT:
+ * - Uses usePathname() to highlight active tab
+ * - Interactive tab navigation
+ * - Responsive scroll behavior
+ *
+ * PROPS:
+ * - eventId: string - Event ID for building URLs
+ * - currentTab: string - Currently active tab slug
+ *
+ * FEATURES:
+ * - 10 tabs for different event sections
+ * - Active tab highlighting
+ * - Responsive: horizontal scroll on mobile
+ * - Icons for each tab
+ *
+ * TABS:
+ * - overview: Panoramica generale
+ * - partecipanti: Lista partecipanti
+ * - relatori: Speaker/relatori
+ * - sponsor: Sponsor evento
+ * - agenda: Programma/schedule
+ * - servizi: Servizi (catering, AV, etc.)
+ * - budget: Budget dettagliato
+ * - comunicazioni: Email/notifiche
+ * - sondaggi: Questionari feedback
+ * - checkin: Check-in partecipanti
+ *
+ * USAGE:
+ * <EventTabs eventId={event.id} currentTab={tab} />
+ */
 
-'use client'
+'use client';
 
-import { usePathname } from 'next/navigation'
-import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  LayoutDashboard,
+  Users,
+  Mic,
+  Building2,
+  CalendarDays,
+  Wrench,
+  Euro,
+  Mail,
+  FileText,
+  QrCode
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-type EventTabsProps = {
-  eventId: string
+interface Tab {
+  slug: string;
+  label: string;
+  icon: React.ElementType;
 }
 
-type Tab = {
-  label: string
-  href: string
-  exact?: boolean
+const tabs: Tab[] = [
+  {
+    slug: 'overview',
+    label: 'Overview',
+    icon: LayoutDashboard,
+  },
+  {
+    slug: 'partecipanti',
+    label: 'Partecipanti',
+    icon: Users,
+  },
+  {
+    slug: 'relatori',
+    label: 'Relatori',
+    icon: Mic,
+  },
+  {
+    slug: 'sponsor',
+    label: 'Sponsor',
+    icon: Building2,
+  },
+  {
+    slug: 'agenda',
+    label: 'Agenda',
+    icon: CalendarDays,
+  },
+  {
+    slug: 'servizi',
+    label: 'Servizi',
+    icon: Wrench,
+  },
+  {
+    slug: 'budget',
+    label: 'Budget',
+    icon: Euro,
+  },
+  {
+    slug: 'comunicazioni',
+    label: 'Comunicazioni',
+    icon: Mail,
+  },
+  {
+    slug: 'sondaggi',
+    label: 'Sondaggi',
+    icon: FileText,
+  },
+  {
+    slug: 'checkin',
+    label: 'Check-in',
+    icon: QrCode,
+  },
+];
+
+interface EventTabsProps {
+  eventId: string;
+  currentTab: string;
 }
 
-export function EventTabs({ eventId }: EventTabsProps) {
-  const pathname = usePathname()
-
-  const tabs: Tab[] = [
-    {
-      label: 'Dettagli',
-      href: `/eventi/${eventId}`,
-      exact: true,
-    },
-    {
-      label: 'Partecipanti',
-      href: `/eventi/${eventId}/partecipanti`,
-    },
-    {
-      label: 'Relatori',
-      href: `/eventi/${eventId}/relatori`,
-    },
-    {
-      label: 'Sponsor',
-      href: `/eventi/${eventId}/sponsor`,
-    },
-    {
-      label: 'Budget',
-      href: `/eventi/${eventId}/budget`,
-    },
-    {
-      label: 'Scadenze',
-      href: `/eventi/${eventId}/scadenze`,
-    },
-    {
-      label: 'Agenda',
-      href: `/eventi/${eventId}/agenda`,
-    },
-  ]
+export function EventTabs({ eventId, currentTab }: EventTabsProps) {
+  const pathname = usePathname();
 
   return (
-    <div className="border-b">
-      <nav className="flex overflow-x-auto">
-        {tabs.map((tab) => {
-          const isActive = tab.exact ? pathname === tab.href : pathname.startsWith(tab.href)
+    <div className="bg-white border-b border-gray-200 sticky top-16 z-20">
+      {/* Tabs container with horizontal scroll */}
+      <div className="overflow-x-auto scrollbar-hide">
+        <nav className="flex space-x-1 px-4 lg:px-6 min-w-max">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = currentTab === tab.slug;
 
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              className={cn(
-                'px-4 py-2 text-sm font-medium whitespace-nowrap',
-                isActive
-                  ? 'border-b-2 border-primary text-primary'
-                  : 'text-gray-500 hover:text-gray-700 hover:border-b-2 hover:border-gray-300'
-              )}
-            >
-              {tab.label}
-            </Link>
-          )
-        })}
-      </nav>
+            return (
+              <Link
+                key={tab.slug}
+                href={`/eventi/${eventId}/${tab.slug}`}
+                className={cn(
+                  'flex items-center space-x-2 px-4 py-4 border-b-2 text-sm font-medium transition-colors whitespace-nowrap',
+                  isActive
+                    ? 'border-blue-600 text-blue-600'
+                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
+                )}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{tab.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Mobile: Scroll indicator hint */}
+      <div className="lg:hidden absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none" />
     </div>
-  )
+  );
 }

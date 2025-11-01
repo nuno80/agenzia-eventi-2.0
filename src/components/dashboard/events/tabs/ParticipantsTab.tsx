@@ -1,302 +1,272 @@
-// ============================================================================
-// PARTICIPANTS TAB COMPONENT
-// ============================================================================
-// FILE: src/components/dashboard/events/tabs/ParticipantsTab.tsx
-//
-// PURPOSE: Display and manage participants for an event
-// FEATURES:
-// - List of participants with key information
-// - Filtering and sorting options
-// - Actions (add, edit, delete participants)
-// ============================================================================
+/**
+ * FILE: src/components/dashboard/events/tabs/ParticipantsTab.tsx
+ *
+ * COMPONENT: ParticipantsTab
+ * TYPE: Server Component
+ *
+ * WHY SERVER:
+ * - Fetches participant data and stats
+ * - Renders stats cards (display only)
+ * - Passes data to Client Component (ParticipantsTable)
+ *
+ * PROPS:
+ * - eventId: string - Event ID
+ *
+ * FEATURES:
+ * - Statistics cards (total, confirmed, checked-in, revenue)
+ * - Registration status breakdown
+ * - Payment status breakdown
+ * - Interactive participants table
+ *
+ * USAGE:
+ * <ParticipantsTab eventId={event.id} />
+ */
 
-'use client'
+import {
+  Users,
+  CheckCircle,
+  Clock,
+  Euro,
+  UserCheck,
+  UserX,
+  UserPlus,
+  Hourglass
+} from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
+import { getParticipantsByEvent, getParticipantStats } from '@/lib/dal/participants';
+import { ParticipantsTable } from '@/components/dashboard/events/ParticipantsTable';
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/components/ui/use-toast'
-import { MoreHorizontal, Plus, Search, UserPlus } from 'lucide-react'
-
-// Mock data for participants - in a real app, this would come from an API call
-type Participant = {
-  id: string
-  name: string
-  email: string
-  phone?: string
-  status: 'confirmed' | 'pending' | 'cancelled'
-  role?: string
-  notes?: string
+interface ParticipantsTabProps {
+  eventId: string;
 }
 
-type ParticipantsTabProps = {
-  eventId: string
-}
-
-export function ParticipantsTab({ eventId }: ParticipantsTabProps) {
-  const { toast } = useToast()
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-
-  // Mock data - in a real app, this would be fetched from an API
-  const [participants, setParticipants] = useState<Participant[]>([
-    {
-      id: '1',
-      name: 'Marco Rossi',
-      email: 'marco.rossi@example.com',
-      phone: '+39 123 456 7890',
-      status: 'confirmed',
-      role: 'Delegato',
-      notes: 'Richiesto menu vegetariano',
-    },
-    {
-      id: '2',
-      name: 'Giulia Bianchi',
-      email: 'giulia.bianchi@example.com',
-      phone: '+39 234 567 8901',
-      status: 'pending',
-      role: 'Ospite',
-    },
-    {
-      id: '3',
-      name: 'Luca Verdi',
-      email: 'luca.verdi@example.com',
-      phone: '+39 345 678 9012',
-      status: 'cancelled',
-      role: 'Relatore',
-      notes: 'Ha cancellato per motivi di salute',
-    },
-  ])
-
-  // Filter participants based on search query and status filter
-  const filteredParticipants = participants.filter((participant) => {
-    const matchesSearch =
-      participant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      participant.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (participant.phone && participant.phone.includes(searchQuery))
-
-    const matchesStatus = statusFilter === 'all' || participant.status === statusFilter
-
-    return matchesSearch && matchesStatus
-  })
-
-  // Handle adding a new participant
-  const handleAddParticipant = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-
-    // In a real app, this would be a server action or API call
-    const newParticipant: Participant = {
-      id: `${participants.length + 1}`,
-      name: formData.get('name') as string,
-      email: formData.get('email') as string,
-      phone: formData.get('phone') as string,
-      status: 'pending',
-      role: formData.get('role') as string,
-      notes: formData.get('notes') as string,
-    }
-
-    setParticipants([...participants, newParticipant])
-    setIsAddDialogOpen(false)
-
-    toast({
-      title: 'Partecipante aggiunto',
-      description: `${newParticipant.name} è stato aggiunto all'evento.`,
-    })
-  }
-
-  // Status badge component
-  const StatusBadge = ({ status }: { status: Participant['status'] }) => {
-    const statusConfig = {
-      confirmed: { label: 'Confermato', variant: 'success' as const },
-      pending: { label: 'In attesa', variant: 'warning' as const },
-      cancelled: { label: 'Cancellato', variant: 'destructive' as const },
-    }
-
-    const config = statusConfig[status]
-
-    return <Badge variant={config.variant}>{config.label}</Badge>
-  }
+export async function ParticipantsTab({ eventId }: ParticipantsTabProps) {
+  // Fetch data in parallel
+  const [participants, stats] = await Promise.all([
+    getParticipantsByEvent(eventId),
+    getParticipantStats(eventId),
+  ]);
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row justify-between gap-4">
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Search className="h-4 w-4 text-gray-500" />
-          <Input
-            placeholder="Cerca partecipanti..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full sm:w-[250px]"
-          />
-        </div>
-
-        <div className="flex items-center gap-4">
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filtra per stato" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tutti gli stati</SelectItem>
-              <SelectItem value="confirmed">Confermati</SelectItem>
-              <SelectItem value="pending">In attesa</SelectItem>
-              <SelectItem value="cancelled">Cancellati</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Button onClick={() => setIsAddDialogOpen(true)}>
-            <UserPlus className="h-4 w-4 mr-2" />
-            Aggiungi
-          </Button>
-        </div>
-      </div>
-
-      <div className="border rounded-md">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nome</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Ruolo</TableHead>
-              <TableHead>Stato</TableHead>
-              <TableHead className="w-[80px]">Azioni</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredParticipants.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                  Nessun partecipante trovato
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredParticipants.map((participant) => (
-                <TableRow key={participant.id}>
-                  <TableCell>
-                    <div>
-                      <p className="font-medium">{participant.name}</p>
-                      {participant.phone && (
-                        <p className="text-sm text-gray-500">{participant.phone}</p>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>{participant.email}</TableCell>
-                  <TableCell>{participant.role || '-'}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={participant.status} />
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Azioni</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Modifica</DropdownMenuItem>
-                        <DropdownMenuItem>Cambia stato</DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">Rimuovi</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
-
-      {/* Add Participant Dialog */}
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Aggiungi Partecipante</DialogTitle>
-            <DialogDescription>
-              Inserisci i dettagli del nuovo partecipante per l'evento.
-            </DialogDescription>
-          </DialogHeader>
-
-          <form onSubmit={handleAddParticipant}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Nome
-                </Label>
-                <Input id="name" name="name" className="col-span-3" required />
-              </div>
-
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right">
-                  Email
-                </Label>
-                <Input id="email" name="email" type="email" className="col-span-3" required />
-              </div>
-
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="phone" className="text-right">
-                  Telefono
-                </Label>
-                <Input id="phone" name="phone" className="col-span-3" />
-              </div>
-
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="role" className="text-right">
-                  Ruolo
-                </Label>
-                <Input id="role" name="role" className="col-span-3" />
-              </div>
-
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="notes" className="text-right">
-                  Note
-                </Label>
-                <Textarea id="notes" name="notes" className="col-span-3" rows={3} />
-              </div>
+    <div className="space-y-6">
+      {/* Overview Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Total Participants */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="flex items-center space-x-3 mb-2">
+            <div className="p-2 bg-blue-50 rounded-lg">
+              <Users className="w-5 h-5 text-blue-600" />
             </div>
+            <div>
+              <div className="text-2xl font-bold text-gray-900">
+                {stats.total}
+              </div>
+              <div className="text-sm text-gray-600">Totale</div>
+            </div>
+          </div>
+        </div>
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Annulla
-              </Button>
-              <Button type="submit">Aggiungi</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+        {/* Confirmed */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="flex items-center space-x-3 mb-2">
+            <div className="p-2 bg-green-50 rounded-lg">
+              <UserCheck className="w-5 h-5 text-green-600" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-gray-900">
+                {stats.confirmed}
+              </div>
+              <div className="text-sm text-gray-600">Confermati</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Checked In */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="flex items-center space-x-3 mb-2">
+            <div className="p-2 bg-purple-50 rounded-lg">
+              <CheckCircle className="w-5 h-5 text-purple-600" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-gray-900">
+                {stats.checkedIn}
+              </div>
+              <div className="text-sm text-gray-600">Check-in</div>
+            </div>
+          </div>
+          {stats.confirmed > 0 && (
+            <div className="mt-2 text-xs text-gray-500">
+              {Math.round((stats.checkedIn / stats.confirmed) * 100)}% dei confermati
+            </div>
+          )}
+        </div>
+
+        {/* Revenue */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="flex items-center space-x-3 mb-2">
+            <div className="p-2 bg-yellow-50 rounded-lg">
+              <Euro className="w-5 h-5 text-yellow-600" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-gray-900">
+                {formatCurrency(stats.totalRevenue)}
+              </div>
+              <div className="text-sm text-gray-600">Incassato</div>
+            </div>
+          </div>
+          {stats.pendingRevenue > 0 && (
+            <div className="mt-2 text-xs text-gray-500">
+              {formatCurrency(stats.pendingRevenue)} in attesa
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Status Breakdown */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Registration Status */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Stato Iscrizioni
+          </h3>
+          <div className="space-y-3">
+            <StatusRow
+              icon={<UserCheck className="w-5 h-5 text-green-600" />}
+              label="Confermati"
+              count={stats.confirmed}
+              total={stats.total}
+              color="green"
+            />
+            <StatusRow
+              icon={<Hourglass className="w-5 h-5 text-yellow-600" />}
+              label="In attesa"
+              count={stats.pending}
+              total={stats.total}
+              color="yellow"
+            />
+            <StatusRow
+              icon={<UserPlus className="w-5 h-5 text-blue-600" />}
+              label="Lista d'attesa"
+              count={stats.waitlist}
+              total={stats.total}
+              color="blue"
+            />
+            <StatusRow
+              icon={<UserX className="w-5 h-5 text-red-600" />}
+              label="Annullati"
+              count={stats.cancelled}
+              total={stats.total}
+              color="red"
+            />
+          </div>
+        </div>
+
+        {/* Payment Status */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Stato Pagamenti
+          </h3>
+          <div className="space-y-3">
+            <StatusRow
+              icon={<CheckCircle className="w-5 h-5 text-green-600" />}
+              label="Pagati"
+              count={stats.paid}
+              total={stats.total}
+              color="green"
+              amount={stats.totalRevenue}
+            />
+            <StatusRow
+              icon={<Clock className="w-5 h-5 text-yellow-600" />}
+              label="In attesa"
+              count={stats.pendingPayment}
+              total={stats.total}
+              color="yellow"
+              amount={stats.pendingRevenue}
+            />
+            <StatusRow
+              icon={<UserCheck className="w-5 h-5 text-gray-600" />}
+              label="Gratuiti"
+              count={stats.free}
+              total={stats.total}
+              color="gray"
+            />
+            {stats.refunded > 0 && (
+              <StatusRow
+                icon={<UserX className="w-5 h-5 text-red-600" />}
+                label="Rimborsati"
+                count={stats.refunded}
+                total={stats.total}
+                color="red"
+              />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Participants Table */}
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Lista Partecipanti
+        </h3>
+        <ParticipantsTable participants={participants} />
+      </div>
     </div>
-  )
+  );
+}
+
+/**
+ * Status Row Component
+ * Displays a status metric with progress bar
+ */
+function StatusRow({
+  icon,
+  label,
+  count,
+  total,
+  color,
+  amount,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  count: number;
+  total: number;
+  color: 'green' | 'yellow' | 'blue' | 'red' | 'gray';
+  amount?: number;
+}) {
+  const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
+
+  const colorClasses = {
+    green: 'bg-green-500',
+    yellow: 'bg-yellow-500',
+    blue: 'bg-blue-500',
+    red: 'bg-red-500',
+    gray: 'bg-gray-500',
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center space-x-2">
+          {icon}
+          <span className="text-sm font-medium text-gray-700">{label}</span>
+        </div>
+        <div className="text-right">
+          <div className="text-sm font-semibold text-gray-900">
+            {count} <span className="text-gray-500 font-normal">({percentage}%)</span>
+          </div>
+          {amount !== undefined && amount > 0 && (
+            <div className="text-xs text-gray-500">
+              {formatCurrency(amount)}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2">
+        <div
+          className={`h-2 rounded-full transition-all ${colorClasses[color]}`}
+          style={{ width: `${percentage}%` }}
+        />
+      </div>
+    </div>
+  );
 }

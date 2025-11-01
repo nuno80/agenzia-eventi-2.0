@@ -1,33 +1,62 @@
-// ============================================================================
-// DASHBOARD LAYOUT
-// ============================================================================
-// FILE: src/app/(dashboard)/layout.tsx
-//
-// PURPOSE: Provides the layout wrapper for all dashboard pages
-// FEATURES:
-// - Sidebar navigation
-// - Header with user profile
-// - Consistent styling across dashboard
-// ============================================================================
+/**
+ * FILE: src/app/(dashboard)/layout.tsx
+ *
+ * COMPONENT: DashboardLayout
+ * TYPE: Client Component
+ *
+ * WHY CLIENT:
+ * - Manages mobile menu state (isMobileMenuOpen)
+ * - Passes callbacks to Sidebar and Header components
+ * - Needs useState for interactive UI state management
+ *
+ * STRUCTURE:
+ * - Sidebar: Fixed left on desktop, overlay on mobile
+ * - Header: Sticky top bar with search and user menu
+ * - Main: Content area with padding and gray background
+ *
+ * RESPONSIVE BEHAVIOR:
+ * - Desktop (lg+): Sidebar always visible, main content offset by 256px (w-64)
+ * - Mobile: Sidebar hidden by default, toggles via hamburger menu
+ *
+ * CHILDREN:
+ * - All pages under (dashboard) route group will render inside <main>
+ *
+ * USAGE:
+ * This layout wraps all dashboard pages automatically via Next.js App Router
+ */
 
-import type { ReactNode } from 'react'
-import { DashboardNav } from '@/components/dashboard/DashboardNav'
-import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
+'use client';
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+import { useState } from 'react';
+import { Sidebar } from '@/components/dashboard/layout/Sidebar';
+import { Header } from '@/components/dashboard/layout/Header';
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // State for mobile menu visibility
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar Navigation */}
-      <DashboardNav />
+    <div className="min-h-screen bg-gray-50">
+      {/* Sidebar - Fixed on desktop, overlay on mobile */}
+      <Sidebar
+        isMobileOpen={isMobileMenuOpen}
+        onMobileClose={() => setIsMobileMenuOpen(false)}
+      />
 
-      {/* Main Content */}
-      <div className="flex-1">
-        {/* Header */}
-        <DashboardHeader />
+      {/* Main content area - Offset by sidebar width on desktop */}
+      <div className="lg:pl-64">
+        {/* Sticky header */}
+        <Header onMobileMenuToggle={() => setIsMobileMenuOpen(true)} />
 
-        {/* Page Content */}
-        <main className="p-6">{children}</main>
+        {/* Page content */}
+        <main className="p-4 lg:p-6">
+          {children}
+        </main>
       </div>
     </div>
-  )
+  );
 }

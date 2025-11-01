@@ -1,685 +1,513 @@
-// ============================================================================
-// SERVER ACTIONS - EVENTS MUTATIONS
-// ============================================================================
-// FILE: src/app/actions/events.ts
-//
-// PURPOSE: Handle all event data mutations (create, update, delete)
-// BENEFITS:
-// - Type-safe mutations
-// - Input validation with Zod
-// - Automatic cache revalidation
-// - Error handling
-//
-// USAGE:
-// In Client Components:
-//   import { createEvent } from '@/app/actions/events';
-//   const result = await createEvent(formData);
-// ============================================================================
+/**
+ * FILE: src/app/actions/events.ts
+ *
+ * PURPOSE:
+ * - Server Actions for event mutations (create, update, delete)
+ * - All actions validate input with Zod schemas
+ * - Revalidate cache after mutations
+ * - Return consistent ActionResult type
+ *
+ * ACTIONS:
+ * - createEvent: Create new event
+ * - updateEvent: Update existing event
+ * - deleteEvent: Delete event
+ * - updateEventStatus: Quick status change
+ *
+ * USAGE:
+ * import { createEvent } from '@/app/actions/events';
+ * const result = await createEvent(formData);
+ */
 
 'use server'
 
-import { revalidatePath, revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { db } from '@/db'
-import { events } from '@/db/libsql-schemas/events'
-import {
-  createEventSchema,
-  updateEventSchema,
-  updateEventStatusSchema,
-  type CreateEventInput,
-  type UpdateEventInput,
-} from '@/db/libsql-schemas/events'
+import { db } from '@/lib/db'
+import { events } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
-
-// ============================================================================
-// TYPES
-// ============================================================================
+import { createEventSchema, updateEventSchema } from '@/lib/validations/events'
+import { z } from 'zod'
 
 /**
- * Standard action result type
- * Provides consistent response format
+ * Action Result Type
+ * Consistent return type for all actions
  */
-export type ActionResult<T = any> =
-  | { success: true; data: T; message?: string }
-  | { success: false; error: string; fieldErrors?: Record<string, string[]> }
-
-// ============================================================================
-// CREATE OPERATIONS
-// ============================================================================
+type ActionResult = {
+  success: boolean
+  message: string
+  data?: any
+  errors?: Record<string, string[]>
+}
 
 /**
- * Create a new event
+ * Create Event Action
  *
- * VALIDATION: Uses Zod schema for input validation
- * CACHE: Revalidates /eventi and dashboard paths
- *
- * @param formData - FormData or object with event data
- * @returns ActionResult with created event or error
- *
- * @example
- * // In a Client Component form:
- * async function handleSubmit(formData: FormData) {
- *   const result = await createEvent(formData);
- *   if (result.success) {
- *     router.push(`/eventi/${result.data.id}`);
- *   } else {
- *     setError(result.error);
- *   }
- * }
+ * @param formData - FormData or plain object with event data
+ * @returns ActionResult with new event ID or errors
  */
-export async function createEvent(
-  input: FormData | CreateEventInput
-): Promise<ActionResult<{ id: string; name: string }>> {
+export async function createEvent(formData: FormData | Record<string, any>): Promise<ActionResult> {
   try {
-    // 1. Extract data from FormData or use object directly
-    let data: any
+    // Convert FormData to object if needed
+    let data: Record<string, any>
 
-    if (input instanceof FormData) {
-      data = {
-        name: input.get('name') as string,
-        type: input.get('type') as string,
-        description: input.get('description') as string,
-        location: input.get('location') as string,
-        startDate: new Date(input.get('startDate') as string),
-        endDate: new Date(input.get('endDate') as string),
-        capacity: parseInt(input.get('capacity') as string),
-        budget: parseFloat(input.get('budget') as string),
-        status: (input.get('status') as string) || 'draft',
+    if (formData instanceof FormData) {
+      data = Object.fromEntries(formData)
+
+      // Handle checkboxes (FormData doesn't include unchecked boxes)
+      data.isPublic = formData.has('isPublic')
+      data.requiresApproval = formData.has('requiresApproval')
+
+      // Parse numbers
+      if (data.maxParticipants) {
+        data.maxParticipants = parseInt(data.maxParticipants as string)
+      }
+      if (data.totalBudget) {
+        data.totalBudget = parseFloat(data.totalBudget as string)
+      }
+
+      // Parse tags if present
+      if (data.tags && typeof data.tags === 'string') {
+        try {
+          data.tags = JSON.parse(data.tags)
+        } catch {
+          data.tags = data.tags.split(',').map((t: string) => t.trim())
+        }
       }
     } else {
-      data = input
+      data = formData
     }
 
-    // 2. Validate input with Zod
-    const validatedData = createEventSchema.parse(data)
+    // Validate with Zod
+    const validated = createEventSchema.parse(data)
 
-    // 3. Insert into database
+    // Insert into database
     const [newEvent] = await db
       .insert(events)
       .values({
-        ...validatedData,
-        registeredCount: 0,
-        spent: 0,
+        ...validated,
+        currentParticipants: 0,
+        currentSpent: 0,
       })
       .returning()
 
-    // 4. Revalidate cache
+    // Revalidate cache
     revalidatePath('/eventi')
     revalidatePath('/')
-    revalidateTag('events')
 
-    // 5. Return success response
     return {
       success: true,
-      data: {
-        id: newEvent.id,
-        name: newEvent.name,
-      },
       message: 'Evento creato con successo',
+      data: { id: newEvent.id },
     }
   } catch (error) {
-    console.error('Error creating event:', error)
+    console.error('Create event error:', error)
 
-    // Handle Zod validation errors
-    if (error instanceof Error && error.name === 'ZodError') {
-      const zodError = error as any
+    if (error instanceof z.ZodError) {
       return {
         success: false,
-        error: 'Errori di validazione',
-        fieldErrors: zodError.flatten().fieldErrors,
+        message: 'Errori di validazione',
+        errors: error.flatten().fieldErrors as Record<string, string[]>,
       }
     }
 
-    // Handle generic errors
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Errore durante la creazione dell'evento",
+      message: "Errore durante la creazione dell'evento",
     }
   }
 }
 
 /**
- * Duplicate an existing event
+ * Update Event Action
  *
- * @param eventId - ID of event to duplicate
- * @returns ActionResult with new event ID
- *
- * @example
- * const result = await duplicateEvent('evt_123');
- */
-export async function duplicateEvent(eventId: string): Promise<ActionResult<{ id: string }>> {
-  try {
-    // 1. Fetch original event
-    const originalEvent = await db.query.events.findFirst({
-      where: eq(events.id, eventId),
-    })
-
-    if (!originalEvent) {
-      return {
-        success: false,
-        error: 'Evento non trovato',
-      }
-    }
-
-    // 2. Create duplicate with modified name
-    const [duplicatedEvent] = await db
-      .insert(events)
-      .values({
-        name: `${originalEvent.name} (Copia)`,
-        type: originalEvent.type,
-        description: originalEvent.description,
-        location: originalEvent.location,
-        startDate: originalEvent.startDate,
-        endDate: originalEvent.endDate,
-        capacity: originalEvent.capacity,
-        budget: originalEvent.budget,
-        status: 'draft', // Always start as draft
-        registeredCount: 0,
-        spent: 0,
-      })
-      .returning()
-
-    // 3. Revalidate cache
-    revalidatePath('/eventi')
-    revalidateTag('events')
-
-    return {
-      success: true,
-      data: { id: duplicatedEvent.id },
-      message: 'Evento duplicato con successo',
-    }
-  } catch (error) {
-    console.error('Error duplicating event:', error)
-    return {
-      success: false,
-      error: "Errore durante la duplicazione dell'evento",
-    }
-  }
-}
-
-// ============================================================================
-// UPDATE OPERATIONS
-// ============================================================================
-
-/**
- * Update an existing event
- *
- * VALIDATION: Uses Zod schema
- * CACHE: Revalidates event detail page and lists
- *
- * @param input - FormData or object with event data (must include id)
- * @returns ActionResult with updated event
- *
- * @example
- * const result = await updateEvent({ id: 'evt_123', name: 'New Name' });
+ * @param eventId - Event ID to update
+ * @param formData - FormData or plain object with event data
+ * @returns ActionResult
  */
 export async function updateEvent(
-  input: FormData | UpdateEventInput
-): Promise<ActionResult<{ id: string }>> {
+  eventId: string,
+  formData: FormData | Record<string, any>
+): Promise<ActionResult> {
   try {
-    // 1. Extract data
-    let data: any
+    // Convert FormData to object if needed
+    let data: Record<string, any>
 
-    if (input instanceof FormData) {
-      data = {
-        id: input.get('id') as string,
-        name: (input.get('name') as string) || undefined,
-        type: (input.get('type') as string) || undefined,
-        description: (input.get('description') as string) || undefined,
-        location: (input.get('location') as string) || undefined,
-        startDate: input.get('startDate') ? new Date(input.get('startDate') as string) : undefined,
-        endDate: input.get('endDate') ? new Date(input.get('endDate') as string) : undefined,
-        capacity: input.get('capacity') ? parseInt(input.get('capacity') as string) : undefined,
-        budget: input.get('budget') ? parseFloat(input.get('budget') as string) : undefined,
-        status: (input.get('status') as string) || undefined,
+    if (formData instanceof FormData) {
+      data = Object.fromEntries(formData)
+
+      // Handle checkboxes
+      data.isPublic = formData.has('isPublic')
+      data.requiresApproval = formData.has('requiresApproval')
+
+      // Parse numbers
+      if (data.maxParticipants) {
+        data.maxParticipants = parseInt(data.maxParticipants as string)
+      }
+      if (data.totalBudget) {
+        data.totalBudget = parseFloat(data.totalBudget as string)
       }
 
-      // Remove undefined values
-      Object.keys(data).forEach((key) => data[key] === undefined && delete data[key])
+      // Parse tags if present
+      if (data.tags && typeof data.tags === 'string') {
+        try {
+          data.tags = JSON.parse(data.tags)
+        } catch {
+          data.tags = data.tags.split(',').map((t: string) => t.trim())
+        }
+      }
     } else {
-      data = input
+      data = formData
     }
 
-    // 2. Validate input
-    const validatedData = updateEventSchema.parse(data)
-    const { id, ...updateData } = validatedData
+    // Validate with Zod (partial schema)
+    const validated = updateEventSchema.parse(data)
 
-    // 3. Check if event exists
-    const existingEvent = await db.query.events.findFirst({
-      where: eq(events.id, id!),
-    })
-
-    if (!existingEvent) {
-      return {
-        success: false,
-        error: 'Evento non trovato',
-      }
-    }
-
-    // 4. Update database
+    // Update in database
     await db
       .update(events)
       .set({
-        ...updateData,
+        ...validated,
         updatedAt: new Date(),
       })
-      .where(eq(events.id, id!))
+      .where(eq(events.id, eventId))
 
-    // 5. Revalidate cache
-    revalidatePath(`/eventi/${id}`)
+    // Revalidate cache
     revalidatePath('/eventi')
+    revalidatePath(`/eventi/${eventId}`)
     revalidatePath('/')
-    revalidateTag('events')
 
     return {
       success: true,
-      data: { id: id! },
       message: 'Evento aggiornato con successo',
     }
   } catch (error) {
-    console.error('Error updating event:', error)
+    console.error('Update event error:', error)
 
-    if (error instanceof Error && error.name === 'ZodError') {
-      const zodError = error as any
+    if (error instanceof z.ZodError) {
       return {
         success: false,
-        error: 'Errori di validazione',
-        fieldErrors: zodError.flatten().fieldErrors,
+        message: 'Errori di validazione',
+        errors: error.flatten().fieldErrors as Record<string, string[]>,
       }
     }
 
     return {
       success: false,
-      error: "Errore durante l'aggiornamento dell'evento",
+      message: "Errore durante l'aggiornamento dell'evento",
     }
   }
 }
 
 /**
- * Update event status only
+ * Delete Event Action
  *
- * @param id - Event ID
- * @param status - New status
+ * @param eventId - Event ID to delete
  * @returns ActionResult
- *
- * @example
- * await updateEventStatus('evt_123', 'active');
  */
-export async function updateEventStatus(
-  id: string,
-  status: 'draft' | 'upcoming' | 'active' | 'completed' | 'cancelled'
-): Promise<ActionResult> {
+export async function deleteEvent(eventId: string): Promise<ActionResult> {
   try {
-    // 1. Validate input
-    const validatedData = updateEventStatusSchema.parse({ id, status })
+    // Delete from database (cascade will delete related records)
+    await db.delete(events).where(eq(events.id, eventId))
 
-    // 2. Update database
-    await db
-      .update(events)
-      .set({
-        status: validatedData.status,
-        updatedAt: new Date(),
-      })
-      .where(eq(events.id, validatedData.id))
-
-    // 3. Revalidate cache
-    revalidatePath(`/eventi/${id}`)
+    // Revalidate cache
     revalidatePath('/eventi')
     revalidatePath('/')
-    revalidateTag('events')
-
-    return {
-      success: true,
-      message: 'Stato evento aggiornato con successo',
-    }
-  } catch (error) {
-    console.error('Error updating event status:', error)
-    return {
-      success: false,
-      error: "Errore durante l'aggiornamento dello stato",
-    }
-  }
-}
-
-/**
- * Update event budget spent amount
- *
- * @param id - Event ID
- * @param spent - Amount spent
- * @returns ActionResult
- *
- * @example
- * await updateEventBudget('evt_123', 45000);
- */
-export async function updateEventBudget(id: string, spent: number): Promise<ActionResult> {
-  try {
-    // 1. Validate spent is non-negative
-    if (spent < 0) {
-      return {
-        success: false,
-        error: "L'importo speso non può essere negativo",
-      }
-    }
-
-    // 2. Update database
-    await db
-      .update(events)
-      .set({
-        spent,
-        updatedAt: new Date(),
-      })
-      .where(eq(events.id, id))
-
-    // 3. Revalidate cache
-    revalidatePath(`/eventi/${id}/budget`)
-    revalidatePath('/finance')
-    revalidateTag('events')
-
-    return {
-      success: true,
-      message: 'Budget aggiornato con successo',
-    }
-  } catch (error) {
-    console.error('Error updating event budget:', error)
-    return {
-      success: false,
-      error: "Errore durante l'aggiornamento del budget",
-    }
-  }
-}
-
-/**
- * Update registered participants count
- *
- * @param id - Event ID
- * @param count - New participant count
- * @returns ActionResult
- *
- * @example
- * await updateParticipantCount('evt_123', 125);
- */
-export async function updateParticipantCount(id: string, count: number): Promise<ActionResult> {
-  try {
-    // 1. Validate count is non-negative
-    if (count < 0) {
-      return {
-        success: false,
-        error: 'Il numero di partecipanti non può essere negativo',
-      }
-    }
-
-    // 2. Get event to check capacity
-    const event = await db.query.events.findFirst({
-      where: eq(events.id, id),
-    })
-
-    if (!event) {
-      return {
-        success: false,
-        error: 'Evento non trovato',
-      }
-    }
-
-    if (count > event.capacity) {
-      return {
-        success: false,
-        error: `Il numero di partecipanti non può superare la capacità (${event.capacity})`,
-      }
-    }
-
-    // 3. Update database
-    await db
-      .update(events)
-      .set({
-        registeredCount: count,
-        updatedAt: new Date(),
-      })
-      .where(eq(events.id, id))
-
-    // 4. Revalidate cache
-    revalidatePath(`/eventi/${id}`)
-    revalidatePath('/eventi')
-    revalidateTag('events')
-
-    return {
-      success: true,
-      message: 'Numero partecipanti aggiornato con successo',
-    }
-  } catch (error) {
-    console.error('Error updating participant count:', error)
-    return {
-      success: false,
-      error: "Errore durante l'aggiornamento del numero di partecipanti",
-    }
-  }
-}
-
-// ============================================================================
-// DELETE OPERATIONS
-// ============================================================================
-
-/**
- * Delete an event (soft delete)
- *
- * @param id - Event ID to delete
- * @returns ActionResult
- *
- * @example
- * const result = await deleteEvent('evt_123');
- * if (result.success) router.push('/eventi');
- */
-export async function deleteEvent(id: string): Promise<ActionResult> {
-  try {
-    // 1. Check if event exists
-    const event = await db.query.events.findFirst({
-      where: eq(events.id, id),
-    })
-
-    if (!event) {
-      return {
-        success: false,
-        error: 'Evento non trovato',
-      }
-    }
-
-    // 2. Soft delete (set deletedAt timestamp)
-    // If you want hard delete, use: await db.delete(events).where(eq(events.id, id));
-    await db
-      .update(events)
-      .set({
-        deletedAt: new Date(),
-        updatedAt: new Date(),
-      })
-      .where(eq(events.id, id))
-
-    // 3. Revalidate cache
-    revalidatePath('/eventi')
-    revalidatePath('/')
-    revalidateTag('events')
 
     return {
       success: true,
       message: 'Evento eliminato con successo',
     }
   } catch (error) {
-    console.error('Error deleting event:', error)
+    console.error('Delete event error:', error)
+
     return {
       success: false,
-      error: "Errore durante l'eliminazione dell'evento",
+      message: "Errore durante l'eliminazione dell'evento",
     }
   }
 }
 
 /**
- * Permanently delete an event (hard delete)
- * Use with caution - this cannot be undone!
+ * Update Event Status Action
+ * Quick action to change only the status
  *
- * @param id - Event ID to delete
+ * @param eventId - Event ID
+ * @param status - New status
  * @returns ActionResult
- *
- * @example
- * const result = await permanentlyDeleteEvent('evt_123');
  */
-export async function permanentlyDeleteEvent(id: string): Promise<ActionResult> {
+export async function updateEventStatus(
+  eventId: string,
+  status: 'draft' | 'planning' | 'open' | 'ongoing' | 'completed' | 'cancelled'
+): Promise<ActionResult> {
   try {
-    // 1. Check if event exists
-    const event = await db.query.events.findFirst({
-      where: eq(events.id, id),
-    })
-
-    if (!event) {
-      return {
-        success: false,
-        error: 'Evento non trovato',
-      }
-    }
-
-    // 2. Hard delete from database
-    await db.delete(events).where(eq(events.id, id))
-
-    // 3. Revalidate cache
-    revalidatePath('/eventi')
-    revalidatePath('/')
-    revalidateTag('events')
-
-    return {
-      success: true,
-      message: 'Evento eliminato permanentemente',
-    }
-  } catch (error) {
-    console.error('Error permanently deleting event:', error)
-    return {
-      success: false,
-      error: "Errore durante l'eliminazione permanente dell'evento",
-    }
-  }
-}
-
-/**
- * Restore a soft-deleted event
- *
- * @param id - Event ID to restore
- * @returns ActionResult
- *
- * @example
- * const result = await restoreEvent('evt_123');
- */
-export async function restoreEvent(id: string): Promise<ActionResult> {
-  try {
-    // 1. Update deletedAt to null
     await db
       .update(events)
       .set({
-        deletedAt: null,
+        status,
         updatedAt: new Date(),
       })
-      .where(eq(events.id, id))
+      .where(eq(events.id, eventId))
 
-    // 2. Revalidate cache
+    // Revalidate cache
     revalidatePath('/eventi')
+    revalidatePath(`/eventi/${eventId}`)
     revalidatePath('/')
-    revalidateTag('events')
 
     return {
       success: true,
-      message: 'Evento ripristinato con successo',
+      message: 'Status aggiornato con successo',
     }
   } catch (error) {
-    console.error('Error restoring event:', error)
+    console.error('Update status error:', error)
+
     return {
       success: false,
-      error: "Errore durante il ripristino dell'evento",
+      message: "Errore durante l'aggiornamento dello status",
     }
   }
 }
 
-// ============================================================================
-// BULK OPERATIONS
-// ============================================================================
-
 /**
- * Bulk update event status
+ * Duplicate Event Action
+ * Creates a complete copy of an existing event
+ * Includes: speakers, sponsors, budget categories/items, services, agenda
+ * Excludes: participants (they change every year)
  *
- * @param ids - Array of event IDs
- * @param status - New status
- * @returns ActionResult
- *
- * @example
- * await bulkUpdateEventStatus(['evt_123', 'evt_456'], 'completed');
+ * @param eventId - Event ID to duplicate
+ * @returns ActionResult with new event ID
  */
-export async function bulkUpdateEventStatus(
-  ids: string[],
-  status: 'draft' | 'upcoming' | 'active' | 'completed' | 'cancelled'
-): Promise<ActionResult> {
+export async function duplicateEvent(eventId: string): Promise<ActionResult> {
   try {
-    // 1. Validate status
-    updateEventStatusSchema.shape.status.parse(status)
+    // Get original event with all relations
+    const [originalEvent] = await db.select().from(events).where(eq(events.id, eventId))
 
-    // 2. Update all events
-    for (const id of ids) {
-      await db
-        .update(events)
-        .set({
+    if (!originalEvent) {
+      return {
+        success: false,
+        message: 'Evento non trovato',
+      }
+    }
+
+    // Import relations from schema
+    const { speakers, sponsors, budgetCategories, budgetItems, services, agenda, deadlines } =
+      await import('@/lib/db/schema')
+
+    // Create duplicate event
+    const { id, createdAt, updatedAt, currentParticipants, currentSpent, ...eventData } =
+      originalEvent
+
+    const [newEvent] = await db
+      .insert(events)
+      .values({
+        ...eventData,
+        title: `${eventData.title} (Copia)`,
+        status: 'draft',
+        currentParticipants: 0,
+        currentSpent: 0,
+        // Update dates to next year if in the past
+        startDate: new Date(
+          new Date(eventData.startDate).setFullYear(new Date(eventData.startDate).getFullYear() + 1)
+        ),
+        endDate: new Date(
+          new Date(eventData.endDate).setFullYear(new Date(eventData.endDate).getFullYear() + 1)
+        ),
+        registrationOpenDate: eventData.registrationOpenDate
+          ? new Date(
+              new Date(eventData.registrationOpenDate).setFullYear(
+                new Date(eventData.registrationOpenDate).getFullYear() + 1
+              )
+            )
+          : null,
+        registrationCloseDate: eventData.registrationCloseDate
+          ? new Date(
+              new Date(eventData.registrationCloseDate).setFullYear(
+                new Date(eventData.registrationCloseDate).getFullYear() + 1
+              )
+            )
+          : null,
+      })
+      .returning()
+
+    // Duplicate speakers
+    const originalSpeakers = await db.select().from(speakers).where(eq(speakers.eventId, eventId))
+
+    if (originalSpeakers.length > 0) {
+      const speakersToInsert = originalSpeakers.map(
+        ({ id, createdAt, updatedAt, eventId: _, ...speakerData }) => ({
+          ...speakerData,
+          eventId: newEvent.id,
+          confirmationStatus: 'invited' as const, // Reset to invited
+          presentationUploaded: false,
+          presentationUrl: null,
+        })
+      )
+      await db.insert(speakers).values(speakersToInsert)
+    }
+
+    // Duplicate sponsors
+    const originalSponsors = await db.select().from(sponsors).where(eq(sponsors.eventId, eventId))
+
+    if (originalSponsors.length > 0) {
+      const sponsorsToInsert = originalSponsors.map(
+        ({ id, createdAt, updatedAt, eventId: _, ...sponsorData }) => ({
+          ...sponsorData,
+          eventId: newEvent.id,
+          contractSigned: false, // Reset contract status
+          contractDate: null,
+          paymentStatus: 'pending' as const,
+          paymentDate: null,
+        })
+      )
+      await db.insert(sponsors).values(sponsorsToInsert)
+    }
+
+    // Duplicate budget categories and items
+    const originalCategories = await db
+      .select()
+      .from(budgetCategories)
+      .where(eq(budgetCategories.eventId, eventId))
+
+    for (const category of originalCategories) {
+      const {
+        id: oldCategoryId,
+        createdAt,
+        updatedAt,
+        eventId: _,
+        spentAmount,
+        ...categoryData
+      } = category
+
+      const [newCategory] = await db
+        .insert(budgetCategories)
+        .values({
+          ...categoryData,
+          eventId: newEvent.id,
+          spentAmount: 0, // Reset spent amount
+        })
+        .returning()
+
+      // Duplicate items for this category
+      const originalItems = await db
+        .select()
+        .from(budgetItems)
+        .where(eq(budgetItems.categoryId, oldCategoryId))
+
+      if (originalItems.length > 0) {
+        const itemsToInsert = originalItems.map(
+          ({
+            id,
+            createdAt,
+            updatedAt,
+            categoryId: _,
+            eventId: __,
+            actualCost,
+            status,
+            paymentDate,
+            invoiceNumber,
+            invoiceUrl,
+            ...itemData
+          }) => ({
+            ...itemData,
+            categoryId: newCategory.id,
+            eventId: newEvent.id,
+            actualCost: null,
+            status: 'planned' as const, // Reset to planned
+            paymentDate: null,
+            invoiceNumber: null,
+            invoiceUrl: null,
+          })
+        )
+        await db.insert(budgetItems).values(itemsToInsert)
+      }
+    }
+
+    // Duplicate services
+    const originalServices = await db.select().from(services).where(eq(services.eventId, eventId))
+
+    if (originalServices.length > 0) {
+      const servicesToInsert = originalServices.map(
+        ({
+          id,
+          createdAt,
+          updatedAt,
+          eventId: _,
+          contractStatus,
+          finalPrice,
+          deliveryDate,
+          paymentStatus,
+          ...serviceData
+        }) => ({
+          ...serviceData,
+          eventId: newEvent.id,
+          contractStatus: 'requested' as const, // Reset to requested
+          finalPrice: null,
+          deliveryDate: null,
+          paymentStatus: 'pending' as const,
+        })
+      )
+      await db.insert(services).values(servicesToInsert)
+    }
+
+    // Duplicate agenda (update dates to next year)
+    const originalAgenda = await db.select().from(agenda).where(eq(agenda.eventId, eventId))
+
+    if (originalAgenda.length > 0) {
+      const agendaToInsert = originalAgenda.map(
+        ({ id, createdAt, updatedAt, eventId: _, startTime, endTime, status, ...agendaData }) => ({
+          ...agendaData,
+          eventId: newEvent.id,
+          startTime: new Date(
+            new Date(startTime).setFullYear(new Date(startTime).getFullYear() + 1)
+          ),
+          endTime: new Date(new Date(endTime).setFullYear(new Date(endTime).getFullYear() + 1)),
+          status: 'scheduled' as const,
+        })
+      )
+      await db.insert(agenda).values(agendaToInsert)
+    }
+
+    // Duplicate deadlines (update dates to next year)
+    const originalDeadlines = await db
+      .select()
+      .from(deadlines)
+      .where(eq(deadlines.eventId, eventId))
+
+    if (originalDeadlines.length > 0) {
+      const deadlinesToInsert = originalDeadlines.map(
+        ({
+          id,
+          createdAt,
+          updatedAt,
+          eventId: _,
+          dueDate,
           status,
-          updatedAt: new Date(),
+          completedDate,
+          ...deadlineData
+        }) => ({
+          ...deadlineData,
+          eventId: newEvent.id,
+          dueDate: new Date(new Date(dueDate).setFullYear(new Date(dueDate).getFullYear() + 1)),
+          status: 'pending' as const,
+          completedDate: null,
         })
-        .where(eq(events.id, id))
+      )
+      await db.insert(deadlines).values(deadlinesToInsert)
     }
 
-    // 3. Revalidate cache
+    // Revalidate cache
     revalidatePath('/eventi')
-    revalidatePath('/')
-    revalidateTag('events')
 
     return {
       success: true,
-      message: `${ids.length} eventi aggiornati con successo`,
+      message: 'Evento duplicato con successo',
+      data: { id: newEvent.id },
     }
   } catch (error) {
-    console.error('Error bulk updating event status:', error)
+    console.error('Duplicate event error:', error)
+
     return {
       success: false,
-      error: "Errore durante l'aggiornamento degli eventi",
-    }
-  }
-}
-
-/**
- * Bulk delete events (soft delete)
- *
- * @param ids - Array of event IDs to delete
- * @returns ActionResult
- *
- * @example
- * await bulkDeleteEvents(['evt_123', 'evt_456']);
- */
-export async function bulkDeleteEvents(ids: string[]): Promise<ActionResult> {
-  try {
-    // 1. Soft delete all events
-    for (const id of ids) {
-      await db
-        .update(events)
-        .set({
-          deletedAt: new Date(),
-          updatedAt: new Date(),
-        })
-        .where(eq(events.id, id))
-    }
-
-    // 2. Revalidate cache
-    revalidatePath('/eventi')
-    revalidatePath('/')
-    revalidateTag('events')
-
-    return {
-      success: true,
-      message: `${ids.length} eventi eliminati con successo`,
-    }
-  } catch (error) {
-    console.error('Error bulk deleting events:', error)
-    return {
-      success: false,
-      error: "Errore durante l'eliminazione degli eventi",
+      message: "Errore durante la duplicazione dell'evento",
     }
   }
 }
