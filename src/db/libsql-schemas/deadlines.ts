@@ -7,8 +7,8 @@
 // USAGE: Import in Drizzle queries and migrations
 // ============================================================================
 
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 import { sql } from 'drizzle-orm'
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { nanoid } from 'nanoid'
 import { z } from 'zod'
 import { events } from './events'

@@ -3,6 +3,7 @@
 import React from 'react'
 import CaseStudiesSection from './landing/CaseStudiesSection'
 import ContactFormSection from './landing/ContactFormSection'
+import ContactUs1 from './landing/contact-us-1'
 import DifferentiatorsSection from './landing/DifferentiatorsSection'
 import FAQSection from './landing/FAQSection'
 import Footer from './landing/Footer'
@@ -12,7 +13,6 @@ import ProcessSection from './landing/ProcessSection'
 import ServicesSection from './landing/ServicesSection'
 import StatsSection from './landing/StatsSection'
 import WhatsAppButton from './landing/WhatsAppButton'
-import ContactUs1 from './landing/contact-us-1'
 
 const EventManagementLanding = () => {
   const handleContactClick = () => {

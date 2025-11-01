@@ -1,13 +1,13 @@
-import {
-  sqliteTable,
-  AnySQLiteColumn,
-  uniqueIndex,
-  integer,
-  text,
-  index,
-  real,
-} from 'drizzle-orm/sqlite-core'
 import { sql } from 'drizzle-orm'
+import {
+  AnySQLiteColumn,
+  index,
+  integer,
+  real,
+  sqliteTable,
+  text,
+  uniqueIndex,
+} from 'drizzle-orm/sqlite-core'
 
 export const users = sqliteTable(
   'users',

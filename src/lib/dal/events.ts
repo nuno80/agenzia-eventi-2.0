@@ -16,21 +16,21 @@
  * const event = await getEventById('event_123');
  */
 
+import { and, asc, count, desc, eq, gte, lte, sql } from 'drizzle-orm'
 import { cache } from 'react'
 import { db } from '@/lib/db'
 import {
-  events,
-  participants,
-  speakers,
-  sponsors,
-  deadlines,
+  agenda,
   budgetCategories,
   budgetItems,
-  agenda,
-  services,
   communications,
+  deadlines,
+  events,
+  participants,
+  services,
+  speakers,
+  sponsors,
 } from '@/lib/db/schema'
-import { eq, desc, asc, and, gte, lte, sql, count } from 'drizzle-orm'
 
 // ============================================================================
 // BASIC QUERIES

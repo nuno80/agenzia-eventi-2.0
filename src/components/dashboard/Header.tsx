@@ -25,38 +25,38 @@
  * <Header onMobileMenuToggle={() => setIsMobileMenuOpen(true)} />
  */
 
-'use client';
+'use client'
 
-import { Menu, Search, Bell, ChevronDown, LogOut, User, Settings } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
-import { cn } from '@/lib/utils';
+import { Bell, ChevronDown, LogOut, Menu, Search, Settings, User } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { cn } from '@/lib/utils'
 
 interface HeaderProps {
-  onMobileMenuToggle: () => void;
+  onMobileMenuToggle: () => void
 }
 
 export function Header({ onMobileMenuToggle }: HeaderProps) {
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
-  const notificationsRef = useRef<HTMLDivElement>(null);
-  const userMenuRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null)
+  const userMenuRef = useRef<HTMLDivElement>(null)
 
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
-        setShowNotifications(false);
+        setShowNotifications(false)
       }
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
-        setShowUserMenu(false);
+        setShowUserMenu(false)
       }
-    };
+    }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // Mock notifications (sostituire con dati reali)
   const notifications = [
@@ -81,9 +81,9 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
       time: '3 ore fa',
       unread: false,
     },
-  ];
+  ]
 
-  const unreadCount = notifications.filter(n => n.unread).length;
+  const unreadCount = notifications.filter((n) => n.unread).length
 
   return (
     <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
@@ -158,10 +158,10 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
                         <li key={notification.id}>
                           <button
                             className={cn(
-                              "w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors border-l-4",
+                              'w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors border-l-4',
                               notification.unread
-                                ? "border-blue-500 bg-blue-50/50"
-                                : "border-transparent"
+                                ? 'border-blue-500 bg-blue-50/50'
+                                : 'border-transparent'
                             )}
                           >
                             <div className="flex items-start space-x-3">
@@ -172,9 +172,7 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
                                 <p className="text-sm text-gray-600 mt-0.5">
                                   {notification.message}
                                 </p>
-                                <p className="text-xs text-gray-400 mt-1">
-                                  {notification.time}
-                                </p>
+                                <p className="text-xs text-gray-400 mt-1">{notification.time}</p>
                               </div>
                             </div>
                           </button>
@@ -259,5 +257,5 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
         </div>
       </div>
     </header>
-  );
+  )
 }

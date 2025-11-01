@@ -22,37 +22,37 @@
  * />
  */
 
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard,
-  Calendar,
-  Users,
-  Mic,
   Building2,
-  UsersRound,
-  Euro,
-  Settings,
-  X,
+  Calendar,
   ChevronDown,
-  FileText
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useState } from 'react';
+  Euro,
+  FileText,
+  LayoutDashboard,
+  Mic,
+  Settings,
+  Users,
+  UsersRound,
+  X,
+} from 'lucide-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
 
 interface SidebarProps {
-  isMobileOpen: boolean;
-  onMobileClose: () => void;
+  isMobileOpen: boolean
+  onMobileClose: () => void
 }
 
 interface NavItem {
-  label: string;
-  href: string;
-  icon: React.ElementType;
-  badge?: string;
-  children?: NavItem[];
+  label: string
+  href: string
+  icon: React.ElementType
+  badge?: string
+  children?: NavItem[]
 }
 
 const navigation: NavItem[] = [
@@ -108,28 +108,26 @@ const navigation: NavItem[] = [
     href: '/impostazioni',
     icon: Settings,
   },
-];
+]
 
 export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
-  const pathname = usePathname();
-  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const pathname = usePathname()
+  const [expandedItems, setExpandedItems] = useState<string[]>([])
 
   const toggleExpanded = (label: string) => {
-    setExpandedItems(prev =>
-      prev.includes(label)
-        ? prev.filter(item => item !== label)
-        : [...prev, label]
-    );
-  };
+    setExpandedItems((prev) =>
+      prev.includes(label) ? prev.filter((item) => item !== label) : [...prev, label]
+    )
+  }
 
   const isActive = (href: string) => {
     if (href === '/') {
-      return pathname === '/';
+      return pathname === '/'
     }
-    return pathname.startsWith(href);
-  };
+    return pathname.startsWith(href)
+  }
 
-  const isExpanded = (label: string) => expandedItems.includes(label);
+  const isExpanded = (label: string) => expandedItems.includes(label)
 
   return (
     <>
@@ -146,11 +144,11 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
       <aside
         className={cn(
           // Base styles
-          "fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-gray-200",
-          "flex flex-col transition-transform duration-300 ease-in-out",
+          'fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-gray-200',
+          'flex flex-col transition-transform duration-300 ease-in-out',
           // Mobile: slide in/out
-          "lg:translate-x-0",
-          isMobileOpen ? "translate-x-0" : "-translate-x-full"
+          'lg:translate-x-0',
+          isMobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Header */}
@@ -159,9 +157,7 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <Calendar className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">
-              EventHub
-            </span>
+            <span className="text-xl font-bold text-gray-900">EventHub</span>
           </Link>
 
           {/* Mobile close button */}
@@ -178,10 +174,10 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
         <nav className="flex-1 px-4 py-6 overflow-y-auto">
           <ul className="space-y-1">
             {navigation.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.href);
-              const expanded = isExpanded(item.label);
-              const hasChildren = item.children && item.children.length > 0;
+              const Icon = item.icon
+              const active = isActive(item.href)
+              const expanded = isExpanded(item.label)
+              const hasChildren = item.children && item.children.length > 0
 
               return (
                 <li key={item.href}>
@@ -191,10 +187,8 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
                       <button
                         onClick={() => toggleExpanded(item.label)}
                         className={cn(
-                          "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                          active
-                            ? "bg-blue-50 text-blue-700"
-                            : "text-gray-700 hover:bg-gray-100"
+                          'w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                          active ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
                         )}
                       >
                         <div className="flex items-center space-x-3">
@@ -203,8 +197,8 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
                         </div>
                         <ChevronDown
                           className={cn(
-                            "w-4 h-4 transition-transform",
-                            expanded && "transform rotate-180"
+                            'w-4 h-4 transition-transform',
+                            expanded && 'transform rotate-180'
                           )}
                         />
                       </button>
@@ -213,8 +207,8 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
                       {expanded && (
                         <ul className="mt-1 ml-6 space-y-1">
                           {item.children?.map((child) => {
-                            const ChildIcon = child.icon;
-                            const childActive = isActive(child.href);
+                            const ChildIcon = child.icon
+                            const childActive = isActive(child.href)
 
                             return (
                               <li key={child.href}>
@@ -222,10 +216,10 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
                                   href={child.href}
                                   onClick={onMobileClose}
                                   className={cn(
-                                    "flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                                    'flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                                     childActive
-                                      ? "bg-blue-50 text-blue-700"
-                                      : "text-gray-600 hover:bg-gray-100"
+                                      ? 'bg-blue-50 text-blue-700'
+                                      : 'text-gray-600 hover:bg-gray-100'
                                   )}
                                 >
                                   <ChildIcon className="w-4 h-4 flex-shrink-0" />
@@ -237,7 +231,7 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
                                   )}
                                 </Link>
                               </li>
-                            );
+                            )
                           })}
                         </ul>
                       )}
@@ -248,10 +242,8 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
                       href={item.href}
                       onClick={onMobileClose}
                       className={cn(
-                        "flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                        active
-                          ? "bg-blue-50 text-blue-700"
-                          : "text-gray-700 hover:bg-gray-100"
+                        'flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                        active ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
                       )}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
@@ -264,7 +256,7 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
                     </Link>
                   )}
                 </li>
-              );
+              )
             })}
           </ul>
         </nav>
@@ -276,16 +268,12 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
               <span className="text-sm font-medium text-gray-600">A</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">
-                Admin User
-              </p>
-              <p className="text-xs text-gray-500 truncate">
-                admin@eventhub.com
-              </p>
+              <p className="text-sm font-medium text-gray-900 truncate">Admin User</p>
+              <p className="text-xs text-gray-500 truncate">admin@eventhub.com</p>
             </div>
           </div>
         </div>
       </aside>
     </>
-  );
+  )
 }

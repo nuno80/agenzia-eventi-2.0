@@ -23,21 +23,21 @@
  */
 
 import {
-  Users,
   CheckCircle,
   Clock,
   Euro,
+  Hourglass,
   UserCheck,
-  UserX,
   UserPlus,
-  Hourglass
-} from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
-import { getParticipantsByEvent, getParticipantStats } from '@/lib/dal/participants';
-import { ParticipantsTable } from '@/components/dashboard/events/ParticipantsTable';
+  Users,
+  UserX,
+} from 'lucide-react'
+import { ParticipantsTable } from '@/components/dashboard/events/ParticipantsTable'
+import { getParticipantStats, getParticipantsByEvent } from '@/lib/dal/participants'
+import { formatCurrency } from '@/lib/utils'
 
 interface ParticipantsTabProps {
-  eventId: string;
+  eventId: string
 }
 
 export async function ParticipantsTab({ eventId }: ParticipantsTabProps) {
@@ -45,7 +45,7 @@ export async function ParticipantsTab({ eventId }: ParticipantsTabProps) {
   const [participants, stats] = await Promise.all([
     getParticipantsByEvent(eventId),
     getParticipantStats(eventId),
-  ]);
+  ])
 
   return (
     <div className="space-y-6">
@@ -58,9 +58,7 @@ export async function ParticipantsTab({ eventId }: ParticipantsTabProps) {
               <Users className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
-                {stats.total}
-              </div>
+              <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
               <div className="text-sm text-gray-600">Totale</div>
             </div>
           </div>
@@ -73,9 +71,7 @@ export async function ParticipantsTab({ eventId }: ParticipantsTabProps) {
               <UserCheck className="w-5 h-5 text-green-600" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
-                {stats.confirmed}
-              </div>
+              <div className="text-2xl font-bold text-gray-900">{stats.confirmed}</div>
               <div className="text-sm text-gray-600">Confermati</div>
             </div>
           </div>
@@ -88,9 +84,7 @@ export async function ParticipantsTab({ eventId }: ParticipantsTabProps) {
               <CheckCircle className="w-5 h-5 text-purple-600" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
-                {stats.checkedIn}
-              </div>
+              <div className="text-2xl font-bold text-gray-900">{stats.checkedIn}</div>
               <div className="text-sm text-gray-600">Check-in</div>
             </div>
           </div>
@@ -126,9 +120,7 @@ export async function ParticipantsTab({ eventId }: ParticipantsTabProps) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Registration Status */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Stato Iscrizioni
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Stato Iscrizioni</h3>
           <div className="space-y-3">
             <StatusRow
               icon={<UserCheck className="w-5 h-5 text-green-600" />}
@@ -163,9 +155,7 @@ export async function ParticipantsTab({ eventId }: ParticipantsTabProps) {
 
         {/* Payment Status */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Stato Pagamenti
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Stato Pagamenti</h3>
           <div className="space-y-3">
             <StatusRow
               icon={<CheckCircle className="w-5 h-5 text-green-600" />}
@@ -205,13 +195,11 @@ export async function ParticipantsTab({ eventId }: ParticipantsTabProps) {
 
       {/* Participants Table */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Lista Partecipanti
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Lista Partecipanti</h3>
         <ParticipantsTable participants={participants} />
       </div>
     </div>
-  );
+  )
 }
 
 /**
@@ -226,14 +214,14 @@ function StatusRow({
   color,
   amount,
 }: {
-  icon: React.ReactNode;
-  label: string;
-  count: number;
-  total: number;
-  color: 'green' | 'yellow' | 'blue' | 'red' | 'gray';
-  amount?: number;
+  icon: React.ReactNode
+  label: string
+  count: number
+  total: number
+  color: 'green' | 'yellow' | 'blue' | 'red' | 'gray'
+  amount?: number
 }) {
-  const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
+  const percentage = total > 0 ? Math.round((count / total) * 100) : 0
 
   const colorClasses = {
     green: 'bg-green-500',
@@ -241,7 +229,7 @@ function StatusRow({
     blue: 'bg-blue-500',
     red: 'bg-red-500',
     gray: 'bg-gray-500',
-  };
+  }
 
   return (
     <div>
@@ -255,9 +243,7 @@ function StatusRow({
             {count} <span className="text-gray-500 font-normal">({percentage}%)</span>
           </div>
           {amount !== undefined && amount > 0 && (
-            <div className="text-xs text-gray-500">
-              {formatCurrency(amount)}
-            </div>
+            <div className="text-xs text-gray-500">{formatCurrency(amount)}</div>
           )}
         </div>
       </div>
@@ -268,5 +254,5 @@ function StatusRow({
         />
       </div>
     </div>
-  );
+  )
 }

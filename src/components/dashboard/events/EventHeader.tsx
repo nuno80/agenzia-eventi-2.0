@@ -25,44 +25,44 @@
  * <EventHeader event={event} />
  */
 
-import Link from 'next/link';
 import {
   ArrowLeft,
   Calendar,
-  MapPin,
-  Users,
-  Euro,
-  Edit,
-  Share2,
+  Copy,
   Download,
+  Edit,
+  Euro,
   ExternalLink,
-  Copy
-} from 'lucide-react';
+  MapPin,
+  Share2,
+  Users,
+} from 'lucide-react'
+import Link from 'next/link'
+import { DuplicateEventButton } from '@/components/dashboard/events/DuplicateEventButton'
+import type { Event } from '@/lib/db/schema'
 import {
-  formatDate,
   formatCurrency,
+  formatDate,
   formatDaysUntil,
+  getPriorityColor,
   getStatusColor,
-  getPriorityColor
-} from '@/lib/utils';
-import { DuplicateEventButton } from '@/components/dashboard/events/DuplicateEventButton';
-import type { Event } from '@/lib/db/schema';
+} from '@/lib/utils'
 
 interface EventHeaderProps {
-  event: Event;
+  event: Event
 }
 
 export function EventHeader({ event }: EventHeaderProps) {
-  const statusColors = getStatusColor(event.status);
-  const priorityColors = getPriorityColor(event.priority);
+  const statusColors = getStatusColor(event.status)
+  const priorityColors = getPriorityColor(event.priority)
 
   const occupancyPercentage = event.maxParticipants
     ? Math.round(((event.currentParticipants || 0) / event.maxParticipants) * 100)
-    : 0;
+    : 0
 
   const budgetPercentage = event.totalBudget
     ? Math.round(((event.currentSpent || 0) / event.totalBudget) * 100)
-    : 0;
+    : 0
 
   return (
     <div className="bg-white rounded-lg border border-gray-200">
@@ -81,23 +81,21 @@ export function EventHeader({ event }: EventHeaderProps) {
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
             {/* Title */}
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-              {event.title}
-            </h1>
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">{event.title}</h1>
 
             {/* Tagline */}
-            {event.tagline && (
-              <p className="text-base text-gray-600 mb-3">
-                {event.tagline}
-              </p>
-            )}
+            {event.tagline && <p className="text-base text-gray-600 mb-3">{event.tagline}</p>}
 
             {/* Badges */}
             <div className="flex flex-wrap items-center gap-2 mb-4">
-              <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${statusColors.badge}`}>
+              <span
+                className={`text-xs font-semibold px-3 py-1.5 rounded-full ${statusColors.badge}`}
+              >
                 {event.status}
               </span>
-              <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${priorityColors.badge}`}>
+              <span
+                className={`text-xs font-semibold px-3 py-1.5 rounded-full ${priorityColors.badge}`}
+              >
                 {event.priority}
               </span>
               {event.category && (
@@ -137,13 +135,9 @@ export function EventHeader({ event }: EventHeaderProps) {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-xs text-gray-500">Luogo</div>
-                  <div className="text-sm font-medium text-gray-900 truncate">
-                    {event.location}
-                  </div>
+                  <div className="text-sm font-medium text-gray-900 truncate">{event.location}</div>
                   {event.venue && (
-                    <div className="text-xs text-gray-500 truncate">
-                      {event.venue}
-                    </div>
+                    <div className="text-xs text-gray-500 truncate">{event.venue}</div>
                   )}
                 </div>
               </div>
@@ -160,9 +154,7 @@ export function EventHeader({ event }: EventHeaderProps) {
                     {event.maxParticipants && ` / ${event.maxParticipants}`}
                   </div>
                   {event.maxParticipants && (
-                    <div className="text-xs text-gray-500">
-                      {occupancyPercentage}% riempito
-                    </div>
+                    <div className="text-xs text-gray-500">{occupancyPercentage}% riempito</div>
                   )}
                 </div>
               </div>
@@ -197,11 +189,7 @@ export function EventHeader({ event }: EventHeaderProps) {
               <span>Modifica</span>
             </Link>
 
-            <DuplicateEventButton
-              eventId={event.id}
-              eventTitle={event.title}
-              variant="icon"
-            />
+            <DuplicateEventButton eventId={event.id} eventTitle={event.title} variant="icon" />
 
             <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700">
               <Share2 className="w-5 h-5" />
@@ -235,11 +223,7 @@ export function EventHeader({ event }: EventHeaderProps) {
           <span>Modifica</span>
         </Link>
 
-        <DuplicateEventButton
-          eventId={event.id}
-          eventTitle={event.title}
-          variant="icon"
-        />
+        <DuplicateEventButton eventId={event.id} eventTitle={event.title} variant="icon" />
 
         <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700">
           <Share2 className="w-5 h-5" />
@@ -259,7 +243,8 @@ export function EventHeader({ event }: EventHeaderProps) {
               <div className="flex items-center justify-between text-sm mb-2">
                 <span className="text-gray-700 font-medium">Iscrizioni</span>
                 <span className="text-gray-900 font-semibold">
-                  {event.currentParticipants || 0} / {event.maxParticipants} ({occupancyPercentage}%)
+                  {event.currentParticipants || 0} / {event.maxParticipants} ({occupancyPercentage}
+                  %)
                 </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-3">
@@ -268,8 +253,8 @@ export function EventHeader({ event }: EventHeaderProps) {
                     occupancyPercentage >= 90
                       ? 'bg-red-500'
                       : occupancyPercentage >= 70
-                      ? 'bg-yellow-500'
-                      : 'bg-green-500'
+                        ? 'bg-yellow-500'
+                        : 'bg-green-500'
                   }`}
                   style={{ width: `${Math.min(occupancyPercentage, 100)}%` }}
                 />
@@ -283,7 +268,8 @@ export function EventHeader({ event }: EventHeaderProps) {
               <div className="flex items-center justify-between text-sm mb-2">
                 <span className="text-gray-700 font-medium">Budget utilizzato</span>
                 <span className="text-gray-900 font-semibold">
-                  {formatCurrency(event.currentSpent || 0)} / {formatCurrency(event.totalBudget)} ({budgetPercentage}%)
+                  {formatCurrency(event.currentSpent || 0)} / {formatCurrency(event.totalBudget)} (
+                  {budgetPercentage}%)
                 </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-3">
@@ -292,8 +278,8 @@ export function EventHeader({ event }: EventHeaderProps) {
                     budgetPercentage >= 90
                       ? 'bg-red-500'
                       : budgetPercentage >= 70
-                      ? 'bg-yellow-500'
-                      : 'bg-blue-500'
+                        ? 'bg-yellow-500'
+                        : 'bg-blue-500'
                   }`}
                   style={{ width: `${Math.min(budgetPercentage, 100)}%` }}
                 />
@@ -303,5 +289,5 @@ export function EventHeader({ event }: EventHeaderProps) {
         </div>
       )}
     </div>
-  );
+  )
 }

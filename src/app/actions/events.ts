@@ -20,13 +20,13 @@
 
 'use server'
 
+import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { z } from 'zod'
 import { db } from '@/lib/db'
 import { events } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
 import { createEventSchema, updateEventSchema } from '@/lib/validations/events'
-import { z } from 'zod'
 
 /**
  * Action Result Type

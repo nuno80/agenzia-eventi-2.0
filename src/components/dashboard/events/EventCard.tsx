@@ -23,42 +23,33 @@
  * <EventCard event={event} />
  */
 
-import Link from 'next/link';
+import { ArrowRight, Calendar, Copy, Edit, Euro, MapPin, TrendingUp, Users } from 'lucide-react'
+import Link from 'next/link'
+import { DuplicateEventButton } from '@/components/dashboard/events/DuplicateEventButton'
+import type { Event } from '@/lib/db/schema'
 import {
-  Calendar,
-  MapPin,
-  Users,
-  Euro,
-  ArrowRight,
-  Edit,
-  TrendingUp,
-  Copy
-} from 'lucide-react';
-import {
-  formatDate,
   formatCurrency,
+  formatDate,
   formatDaysUntil,
+  getPriorityColor,
   getStatusColor,
-  getPriorityColor
-} from '@/lib/utils';
-import { DuplicateEventButton } from '@/components/dashboard/events/DuplicateEventButton';
-import type { Event } from '@/lib/db/schema';
+} from '@/lib/utils'
 
 interface EventCardProps {
-  event: Event;
+  event: Event
 }
 
 export function EventCard({ event }: EventCardProps) {
-  const statusColors = getStatusColor(event.status);
-  const priorityColors = getPriorityColor(event.priority);
+  const statusColors = getStatusColor(event.status)
+  const priorityColors = getPriorityColor(event.priority)
 
   const occupancyPercentage = event.maxParticipants
     ? Math.round(((event.currentParticipants || 0) / event.maxParticipants) * 100)
-    : 0;
+    : 0
 
   const budgetPercentage = event.totalBudget
     ? Math.round(((event.currentSpent || 0) / event.totalBudget) * 100)
-    : 0;
+    : 0
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
@@ -74,11 +65,7 @@ export function EventCard({ event }: EventCardProps) {
             </Link>
           </div>
 
-          {event.tagline && (
-            <p className="text-sm text-gray-600 mb-2">
-              {event.tagline}
-            </p>
-          )}
+          {event.tagline && <p className="text-sm text-gray-600 mb-2">{event.tagline}</p>}
 
           <div className="flex items-center space-x-2">
             <span className={`text-xs font-semibold px-2.5 py-1 rounded ${statusColors.badge}`}>
@@ -100,11 +87,7 @@ export function EventCard({ event }: EventCardProps) {
             {formatDaysUntil(event.startDate)}
           </div>
           <div className="flex items-center space-x-1">
-            <DuplicateEventButton
-              eventId={event.id}
-              eventTitle={event.title}
-              variant="icon"
-            />
+            <DuplicateEventButton eventId={event.id} eventTitle={event.title} variant="icon" />
             <Link
               href={`/eventi/${event.id}/edit`}
               className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
@@ -150,14 +133,8 @@ export function EventCard({ event }: EventCardProps) {
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-xs text-gray-500 mb-0.5">Luogo</div>
-            <div className="text-sm font-medium text-gray-900 truncate">
-              {event.location}
-            </div>
-            {event.venue && (
-              <div className="text-xs text-gray-500 truncate">
-                {event.venue}
-              </div>
-            )}
+            <div className="text-sm font-medium text-gray-900 truncate">{event.location}</div>
+            {event.venue && <div className="text-xs text-gray-500 truncate">{event.venue}</div>}
           </div>
         </div>
 
@@ -173,9 +150,7 @@ export function EventCard({ event }: EventCardProps) {
               {event.maxParticipants && ` / ${event.maxParticipants}`}
             </div>
             {event.maxParticipants && (
-              <div className="text-xs text-gray-500">
-                {occupancyPercentage}% riempito
-              </div>
+              <div className="text-xs text-gray-500">{occupancyPercentage}% riempito</div>
             )}
           </div>
         </div>
@@ -214,8 +189,8 @@ export function EventCard({ event }: EventCardProps) {
                   occupancyPercentage >= 90
                     ? 'bg-red-500'
                     : occupancyPercentage >= 70
-                    ? 'bg-yellow-500'
-                    : 'bg-green-500'
+                      ? 'bg-yellow-500'
+                      : 'bg-green-500'
                 }`}
                 style={{ width: `${Math.min(occupancyPercentage, 100)}%` }}
               />
@@ -236,8 +211,8 @@ export function EventCard({ event }: EventCardProps) {
                   budgetPercentage >= 90
                     ? 'bg-red-500'
                     : budgetPercentage >= 70
-                    ? 'bg-yellow-500'
-                    : 'bg-blue-500'
+                      ? 'bg-yellow-500'
+                      : 'bg-blue-500'
                 }`}
                 style={{ width: `${Math.min(budgetPercentage, 100)}%` }}
               />
@@ -246,5 +221,5 @@ export function EventCard({ event }: EventCardProps) {
         )}
       </div>
     </div>
-  );
+  )
 }

@@ -19,14 +19,14 @@
  * Accessible at /eventi/nuovo route
  */
 
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
-import { EventForm } from '@/components/dashboard/events/EventForm';
+import { ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
+import { EventForm } from '@/components/dashboard/events/EventForm'
 
 export const metadata = {
   title: 'Nuovo Evento | EventHub Dashboard',
   description: 'Crea un nuovo evento',
-};
+}
 
 export default function CreateEventPage() {
   return (
@@ -54,5 +54,5 @@ export default function CreateEventPage() {
       {/* Event Form */}
       <EventForm mode="create" />
     </div>
-  );
+  )
 }

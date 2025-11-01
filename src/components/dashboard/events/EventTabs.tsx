@@ -35,28 +35,28 @@
  * <EventTabs eventId={event.id} currentTab={tab} />
  */
 
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard,
-  Users,
-  Mic,
   Building2,
   CalendarDays,
-  Wrench,
   Euro,
-  Mail,
   FileText,
-  QrCode
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+  LayoutDashboard,
+  Mail,
+  Mic,
+  QrCode,
+  Users,
+  Wrench,
+} from 'lucide-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { cn } from '@/lib/utils'
 
 interface Tab {
-  slug: string;
-  label: string;
-  icon: React.ElementType;
+  slug: string
+  label: string
+  icon: React.ElementType
 }
 
 const tabs: Tab[] = [
@@ -110,15 +110,15 @@ const tabs: Tab[] = [
     label: 'Check-in',
     icon: QrCode,
   },
-];
+]
 
 interface EventTabsProps {
-  eventId: string;
-  currentTab: string;
+  eventId: string
+  currentTab: string
 }
 
 export function EventTabs({ eventId, currentTab }: EventTabsProps) {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   return (
     <div className="bg-white border-b border-gray-200 sticky top-16 z-20">
@@ -126,8 +126,8 @@ export function EventTabs({ eventId, currentTab }: EventTabsProps) {
       <div className="overflow-x-auto scrollbar-hide">
         <nav className="flex space-x-1 px-4 lg:px-6 min-w-max">
           {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = currentTab === tab.slug;
+            const Icon = tab.icon
+            const isActive = currentTab === tab.slug
 
             return (
               <Link
@@ -143,7 +143,7 @@ export function EventTabs({ eventId, currentTab }: EventTabsProps) {
                 <Icon className="w-4 h-4" />
                 <span>{tab.label}</span>
               </Link>
-            );
+            )
           })}
         </nav>
       </div>
@@ -151,5 +151,5 @@ export function EventTabs({ eventId, currentTab }: EventTabsProps) {
       {/* Mobile: Scroll indicator hint */}
       <div className="lg:hidden absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none" />
     </div>
-  );
+  )
 }

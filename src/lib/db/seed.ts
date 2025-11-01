@@ -22,15 +22,15 @@
 
 import { db } from './index'
 import {
-  events,
-  participants,
-  speakers,
-  sponsors,
-  deadlines,
+  agenda,
   budgetCategories,
   budgetItems,
-  agenda,
+  deadlines,
+  events,
+  participants,
   services,
+  speakers,
+  sponsors,
 } from './schema'
 
 async function seed() {

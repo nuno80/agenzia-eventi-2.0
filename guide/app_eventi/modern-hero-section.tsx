@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react'
 import {
+  ArrowRight,
+  Award,
   Calendar,
+  ChevronDown,
+  GraduationCap,
+  MapPin,
+  Sparkles,
+  Target,
   Users,
   Video,
-  GraduationCap,
-  ArrowRight,
-  Sparkles,
-  Award,
-  MapPin,
-  Target,
-  ChevronDown,
 } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
 
 const ModernHeroSection = () => {
   const [isVisible, setIsVisible] = useState(false)

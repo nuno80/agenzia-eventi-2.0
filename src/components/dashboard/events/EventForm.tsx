@@ -28,100 +28,101 @@
  * <EventForm mode="create" onSuccess={(id) => router.push(`/eventi/${id}/overview`)} />
  */
 
-'use client';
+'use client'
 
-import { useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import { createEvent, updateEvent } from '@/app/actions/events';
-import { Loader2, X, Plus, AlertCircle } from 'lucide-react';
-import type { Event } from '@/lib/db/schema';
+import { AlertCircle, Loader2, Plus, X } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
+import { createEvent, updateEvent } from '@/app/actions/events'
+import type { Event } from '@/lib/db/schema'
 
 interface EventFormProps {
-  mode: 'create' | 'edit';
-  initialData?: Event;
-  onSuccess?: (eventId: string) => void;
+  mode: 'create' | 'edit'
+  initialData?: Event
+  onSuccess?: (eventId: string) => void
 }
 
 export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [errors, setErrors] = useState<Record<string, string[]>>({});
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+  const [errors, setErrors] = useState<Record<string, string[]>>({})
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   // Tags state
-  const [tags, setTags] = useState<string[]>(
-    initialData?.tags ? JSON.parse(initialData.tags) : []
-  );
-  const [tagInput, setTagInput] = useState('');
+  const [tags, setTags] = useState<string[]>(initialData?.tags ? JSON.parse(initialData.tags) : [])
+  const [tagInput, setTagInput] = useState('')
 
   const handleAddTag = () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {
-      setTags([...tags, tagInput.trim()]);
-      setTagInput('');
+      setTags([...tags, tagInput.trim()])
+      setTagInput('')
     }
-  };
+  }
 
   const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
-  };
+    setTags(tags.filter((tag) => tag !== tagToRemove))
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setErrors({});
-    setMessage(null);
+    e.preventDefault()
+    setErrors({})
+    setMessage(null)
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(e.currentTarget)
 
     // Add tags to formData
-    formData.set('tags', JSON.stringify(tags));
+    formData.set('tags', JSON.stringify(tags))
 
     startTransition(async () => {
-      const result = mode === 'create'
-        ? await createEvent(formData)
-        : await updateEvent(initialData!.id, formData);
+      const result =
+        mode === 'create'
+          ? await createEvent(formData)
+          : await updateEvent(initialData!.id, formData)
 
       if (result.success) {
-        setMessage({ type: 'success', text: result.message });
+        setMessage({ type: 'success', text: result.message })
 
         if (onSuccess) {
           // Use custom callback if provided
           if (mode === 'create' && result.data?.id) {
-            onSuccess(result.data.id);
+            onSuccess(result.data.id)
           } else if (mode === 'edit' && initialData?.id) {
-            onSuccess(initialData.id);
+            onSuccess(initialData.id)
           }
         } else if (mode === 'create' && result.data?.id) {
           // Default: redirect to new event
-          router.push(`/eventi/${result.data.id}/overview`);
+          router.push(`/eventi/${result.data.id}/overview`)
         } else if (mode === 'edit' && initialData?.id) {
           // Default: redirect back to event detail
-          router.push(`/eventi/${initialData.id}/overview`);
+          router.push(`/eventi/${initialData.id}/overview`)
         } else {
           // Fallback: refresh page
-          router.refresh();
+          router.refresh()
         }
       } else {
-        setMessage({ type: 'error', text: result.message });
+        setMessage({ type: 'error', text: result.message })
         if (result.errors) {
-          setErrors(result.errors);
+          setErrors(result.errors)
         }
       }
-    });
-  };
+    })
+  }
 
   const getErrorMessage = (field: string) => {
-    return errors[field]?.[0];
-  };
+    return errors[field]?.[0]
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Message Alert */}
       {message && (
-        <div className={`p-4 rounded-lg flex items-start space-x-3 ${
-          message.type === 'success'
-            ? 'bg-green-50 text-green-800 border border-green-200'
-            : 'bg-red-50 text-red-800 border border-red-200'
-        }`}>
+        <div
+          className={`p-4 rounded-lg flex items-start space-x-3 ${
+            message.type === 'success'
+              ? 'bg-green-50 text-green-800 border border-green-200'
+              : 'bg-red-50 text-red-800 border border-red-200'
+          }`}
+        >
           <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
           <p className="text-sm font-medium">{message.text}</p>
         </div>
@@ -129,9 +130,7 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
       {/* Basic Info Section */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Informazioni Base
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Informazioni Base</h3>
 
         <div className="space-y-4">
           {/* Title */}
@@ -194,9 +193,7 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
       {/* Dates Section */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Date
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Date</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Start Date */}
@@ -209,7 +206,11 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
               id="startDate"
               name="startDate"
               required
-              defaultValue={initialData?.startDate ? new Date(initialData.startDate).toISOString().slice(0, 16) : ''}
+              defaultValue={
+                initialData?.startDate
+                  ? new Date(initialData.startDate).toISOString().slice(0, 16)
+                  : ''
+              }
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 getErrorMessage('startDate') ? 'border-red-300' : 'border-gray-300'
               }`}
@@ -229,7 +230,9 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
               id="endDate"
               name="endDate"
               required
-              defaultValue={initialData?.endDate ? new Date(initialData.endDate).toISOString().slice(0, 16) : ''}
+              defaultValue={
+                initialData?.endDate ? new Date(initialData.endDate).toISOString().slice(0, 16) : ''
+              }
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 getErrorMessage('endDate') ? 'border-red-300' : 'border-gray-300'
               }`}
@@ -241,28 +244,42 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
           {/* Registration Open */}
           <div>
-            <label htmlFor="registrationOpenDate" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="registrationOpenDate"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Apertura Iscrizioni
             </label>
             <input
               type="datetime-local"
               id="registrationOpenDate"
               name="registrationOpenDate"
-              defaultValue={initialData?.registrationOpenDate ? new Date(initialData.registrationOpenDate).toISOString().slice(0, 16) : ''}
+              defaultValue={
+                initialData?.registrationOpenDate
+                  ? new Date(initialData.registrationOpenDate).toISOString().slice(0, 16)
+                  : ''
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {/* Registration Close */}
           <div>
-            <label htmlFor="registrationCloseDate" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="registrationCloseDate"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Chiusura Iscrizioni
             </label>
             <input
               type="datetime-local"
               id="registrationCloseDate"
               name="registrationCloseDate"
-              defaultValue={initialData?.registrationCloseDate ? new Date(initialData.registrationCloseDate).toISOString().slice(0, 16) : ''}
+              defaultValue={
+                initialData?.registrationCloseDate
+                  ? new Date(initialData.registrationCloseDate).toISOString().slice(0, 16)
+                  : ''
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -271,9 +288,7 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
       {/* Location Section */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Luogo
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Luogo</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Location */}
@@ -375,9 +390,7 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
       {/* Settings Section */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Impostazioni
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Impostazioni</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Status */}
@@ -435,7 +448,10 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
           {/* Max Participants */}
           <div>
-            <label htmlFor="maxParticipants" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="maxParticipants"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Capacità Massima
             </label>
             <input
@@ -508,9 +524,7 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
       {/* Tags Section */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Tags
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Tags</h3>
 
         <div className="space-y-3">
           <div className="flex items-center space-x-2">
@@ -520,8 +534,8 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
               onChange={(e) => setTagInput(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleAddTag();
+                  e.preventDefault()
+                  handleAddTag()
                 }
               }}
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -561,9 +575,7 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
       {/* Notes Section */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Note
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Note</h3>
 
         <textarea
           id="notes"
@@ -602,5 +614,5 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
         </button>
       </div>
     </form>
-  );
+  )
 }

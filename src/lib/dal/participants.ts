@@ -18,10 +18,10 @@
  * const participants = await getParticipantsByEvent('event_123');
  */
 
+import { and, asc, desc, eq, sql } from 'drizzle-orm'
 import { cache } from 'react'
 import { db } from '@/lib/db'
-import { participants, events } from '@/lib/db/schema'
-import { eq, desc, asc, and, sql } from 'drizzle-orm'
+import { events, participants } from '@/lib/db/schema'
 
 // ============================================================================
 // BASIC QUERIES

@@ -25,27 +25,20 @@
  * This layout wraps all dashboard pages automatically via Next.js App Router
  */
 
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Sidebar } from '@/components/dashboard/layout/Sidebar';
-import { Header } from '@/components/dashboard/layout/Header';
+import { useState } from 'react'
+import { Header } from '@/components/dashboard/layout/Header'
+import { Sidebar } from '@/components/dashboard/layout/Sidebar'
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   // State for mobile menu visibility
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Sidebar - Fixed on desktop, overlay on mobile */}
-      <Sidebar
-        isMobileOpen={isMobileMenuOpen}
-        onMobileClose={() => setIsMobileMenuOpen(false)}
-      />
+      <Sidebar isMobileOpen={isMobileMenuOpen} onMobileClose={() => setIsMobileMenuOpen(false)} />
 
       {/* Main content area - Offset by sidebar width on desktop */}
       <div className="lg:pl-64">
@@ -53,10 +46,8 @@ export default function DashboardLayout({
         <Header onMobileMenuToggle={() => setIsMobileMenuOpen(true)} />
 
         {/* Page content */}
-        <main className="p-4 lg:p-6">
-          {children}
-        </main>
+        <main className="p-4 lg:p-6">{children}</main>
       </div>
     </div>
-  );
+  )
 }

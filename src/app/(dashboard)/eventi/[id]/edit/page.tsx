@@ -25,25 +25,24 @@
  * Accessible at /eventi/[id]/edit route
  */
 
-import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
-import { getEventById } from '@/lib/dal/events';
-import { EventForm } from '@/components/dashboard/events/EventForm';
-import { Suspense } from 'react';
-import { Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
+import { EventForm } from '@/components/dashboard/events/EventForm'
+import { getEventById } from '@/lib/dal/events'
 
 interface EditEventPageProps {
   params: Promise<{
-    id: string;
-  }>;
+    id: string
+  }>
 }
 
 /**
  * Main Edit Event Page
  */
 export default async function EditEventPage({ params }: EditEventPageProps) {
-  const { id } = await params;
+  const { id } = await params
 
   return (
     <div className="space-y-6">
@@ -61,9 +60,7 @@ export default async function EditEventPage({ params }: EditEventPageProps) {
         {/* Title */}
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Modifica Evento</h1>
-          <p className="text-sm text-gray-600 mt-1">
-            Aggiorna i dettagli dell'evento
-          </p>
+          <p className="text-sm text-gray-600 mt-1">Aggiorna i dettagli dell'evento</p>
         </div>
       </div>
 
@@ -72,7 +69,7 @@ export default async function EditEventPage({ params }: EditEventPageProps) {
         <EditEventContent eventId={id} />
       </Suspense>
     </div>
-  );
+  )
 }
 
 /**
@@ -81,11 +78,11 @@ export default async function EditEventPage({ params }: EditEventPageProps) {
  */
 async function EditEventContent({ eventId }: { eventId: string }) {
   // Fetch event data
-  const event = await getEventById(eventId);
+  const event = await getEventById(eventId)
 
   // 404 if event not found
   if (!event) {
-    notFound();
+    notFound()
   }
 
   return (
@@ -97,7 +94,7 @@ async function EditEventContent({ eventId }: { eventId: string }) {
         // This is handled in the EventForm component
       }}
     />
-  );
+  )
 }
 
 /**
@@ -118,10 +115,7 @@ function EditEventSkeleton() {
       {/* Skeleton form sections */}
       <div className="space-y-6">
         {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse"
-          >
+          <div key={i} className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse">
             <div className="h-6 bg-gray-200 rounded w-48 mb-4" />
             <div className="space-y-4">
               <div className="h-10 bg-gray-200 rounded" />
@@ -135,24 +129,24 @@ function EditEventSkeleton() {
         ))}
       </div>
     </div>
-  );
+  )
 }
 
 /**
  * Generate metadata for SEO
  */
 export async function generateMetadata({ params }: EditEventPageProps) {
-  const { id } = await params;
-  const event = await getEventById(id);
+  const { id } = await params
+  const event = await getEventById(id)
 
   if (!event) {
     return {
       title: 'Evento non trovato',
-    };
+    }
   }
 
   return {
     title: `Modifica ${event.title} | EventHub Dashboard`,
     description: `Modifica i dettagli di ${event.title}`,
-  };
+  }
 }

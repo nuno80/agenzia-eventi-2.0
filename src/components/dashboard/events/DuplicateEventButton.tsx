@@ -26,49 +26,49 @@
  * <DuplicateEventButton eventId={event.id} eventTitle={event.title} />
  */
 
-'use client';
+'use client'
 
-import { useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import { duplicateEvent } from '@/app/actions/events';
-import { Copy, Loader2, CheckCircle, X } from 'lucide-react';
+import { CheckCircle, Copy, Loader2, X } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
+import { duplicateEvent } from '@/app/actions/events'
 
 interface DuplicateEventButtonProps {
-  eventId: string;
-  eventTitle: string;
-  variant?: 'icon' | 'button';
-  onSuccess?: (newEventId: string) => void;
+  eventId: string
+  eventTitle: string
+  variant?: 'icon' | 'button'
+  onSuccess?: (newEventId: string) => void
 }
 
 export function DuplicateEventButton({
   eventId,
   eventTitle,
   variant = 'button',
-  onSuccess
+  onSuccess,
 }: DuplicateEventButtonProps) {
-  const router = useRouter();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const router = useRouter()
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   const handleDuplicate = () => {
     startTransition(async () => {
-      const result = await duplicateEvent(eventId);
+      const result = await duplicateEvent(eventId)
 
       if (result.success && result.data?.id) {
-        setIsDialogOpen(false);
+        setIsDialogOpen(false)
 
         if (onSuccess) {
-          onSuccess(result.data.id);
+          onSuccess(result.data.id)
         } else {
           // Redirect to new event
-          router.push(`/eventi/${result.data.id}/overview`);
+          router.push(`/eventi/${result.data.id}/overview`)
         }
       } else {
         // Show error (in production, use a toast library)
-        alert(result.message);
+        alert(result.message)
       }
-    });
-  };
+    })
+  }
 
   return (
     <>
@@ -97,9 +97,7 @@ export function DuplicateEventButton({
           <div className="bg-white rounded-lg shadow-xl max-w-lg w-full">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Duplica Evento
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900">Duplica Evento</h3>
               <button
                 onClick={() => setIsDialogOpen(false)}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -111,18 +109,14 @@ export function DuplicateEventButton({
 
             {/* Content */}
             <div className="p-6 space-y-4">
-              <p className="text-sm text-gray-600">
-                Stai per duplicare l'evento:
-              </p>
+              <p className="text-sm text-gray-600">Stai per duplicare l'evento:</p>
 
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="font-semibold text-blue-900">{eventTitle}</p>
               </div>
 
               <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-900">
-                  Cosa verrà duplicato:
-                </p>
+                <p className="text-sm font-medium text-gray-900">Cosa verrà duplicato:</p>
                 <ul className="text-sm text-gray-600 space-y-1">
                   <li className="flex items-center space-x-2">
                     <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0" />
@@ -157,7 +151,8 @@ export function DuplicateEventButton({
 
               <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-sm text-yellow-800">
-                  <strong>Nota:</strong> I partecipanti NON verranno duplicati. Le date verranno aggiornate all'anno successivo. Lo status sarà "Bozza".
+                  <strong>Nota:</strong> I partecipanti NON verranno duplicati. Le date verranno
+                  aggiornate all'anno successivo. Lo status sarà "Bozza".
                 </p>
               </div>
             </div>
@@ -193,5 +188,5 @@ export function DuplicateEventButton({
         </div>
       )}
     </>
-  );
+  )
 }

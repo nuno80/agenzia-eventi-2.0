@@ -12,16 +12,16 @@
 
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Card } from '@/components/ui/card'
-import { getEventById } from '@/lib/dal/events'
 import { EventHeader } from '@/components/dashboard/events/EventHeader'
+import { BudgetTab } from '@/components/dashboard/events/tabs/BudgetTab'
+import { DeadlinesTab } from '@/components/dashboard/events/tabs/DeadlinesTab'
 import { EventDetailsTab } from '@/components/dashboard/events/tabs/EventDetailsTab'
 import { ParticipantsTab } from '@/components/dashboard/events/tabs/ParticipantsTab'
 import { SpeakersTab } from '@/components/dashboard/events/tabs/SpeakersTab'
 import { SponsorsTab } from '@/components/dashboard/events/tabs/SponsorsTab'
-import { BudgetTab } from '@/components/dashboard/events/tabs/BudgetTab'
-import { DeadlinesTab } from '@/components/dashboard/events/tabs/DeadlinesTab'
+import { Card } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { getEventById } from '@/lib/dal/events'
 
 export default async function EventDetailPage({ params }: { params: { id: string } }) {
   const event = await getEventById(params.id)

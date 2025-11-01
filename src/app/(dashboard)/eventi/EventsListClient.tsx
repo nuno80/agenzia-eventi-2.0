@@ -28,17 +28,16 @@
  * <EventsListClient events={eventsFromDB} />
  */
 
-'use client';
-
-import { useState, useMemo } from 'react';
-import Link from 'next/link';
-import { Plus, CalendarDays } from 'lucide-react';
-import { EventsFilters, type FilterState } from '@/components/dashboard/events/EventsFilters';
-import { EventCard } from '@/components/dashboard/events/EventCard';
-import type { Event } from '@/lib/db/schema';
+'use client'
+import { useMemo, useState } from 'react'
+import Link from 'next/link'
+import { Plus, CalendarDays } from 'lucide-react'
+import { EventsFilters, type FilterState } from '@/components/dashboard/events/EventsFilters'
+import { EventCard } from '@/components/dashboard/events/EventCard'
+import type { Event } from '../../../db/libsql-schemas'
 
 interface EventsListClientProps {
-  events: Event[];
+  events: Event[]
 }
 
 export function EventsListClient({ events }: EventsListClientProps) {
@@ -47,64 +46,63 @@ export function EventsListClient({ events }: EventsListClientProps) {
     status: 'all',
     priority: 'all',
     sortBy: 'date-desc',
-  });
+  })
 
   // Filter and sort events in memory
   const filteredAndSortedEvents = useMemo(() => {
-    let filtered = [...events];
+    let filtered = [...events]
 
     // Search filter
     if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
-      filtered = filtered.filter(event =>
-        event.title.toLowerCase().includes(searchLower) ||
-        event.description?.toLowerCase().includes(searchLower) ||
-        event.location.toLowerCase().includes(searchLower) ||
-        event.venue?.toLowerCase().includes(searchLower)
-      );
+      const searchLower = filters.search.toLowerCase()
+      filtered = filtered.filter(
+        (event) =>
+          event.title.toLowerCase().includes(searchLower) ||
+          event.description?.toLowerCase().includes(searchLower) ||
+          event.location.toLowerCase().includes(searchLower) ||
+          event.venue?.toLowerCase().includes(searchLower)
+      )
     }
 
     // Status filter
     if (filters.status !== 'all') {
-      filtered = filtered.filter(event => event.status === filters.status);
+      filtered = filtered.filter((event) => event.status === filters.status)
     }
 
     // Priority filter
     if (filters.priority !== 'all') {
-      filtered = filtered.filter(event => event.priority === filters.priority);
+      filtered = filtered.filter((event) => event.priority === filters.priority)
     }
 
     // Sorting
     filtered.sort((a, b) => {
       switch (filters.sortBy) {
         case 'date-desc':
-          return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+          return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
         case 'date-asc':
-          return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+          return new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
         case 'title-asc':
-          return a.title.localeCompare(b.title);
+          return a.title.localeCompare(b.title)
         case 'title-desc':
-          return b.title.localeCompare(a.title);
+          return b.title.localeCompare(a.title)
         case 'participants-desc':
-          return (b.currentParticipants || 0) - (a.currentParticipants || 0);
+          return (b.currentParticipants || 0) - (a.currentParticipants || 0)
         case 'participants-asc':
-          return (a.currentParticipants || 0) - (b.currentParticipants || 0);
+          return (a.currentParticipants || 0) - (b.currentParticipants || 0)
         default:
-          return 0;
+          return 0
       }
-    });
+    })
 
-    return filtered;
-  }, [events, filters]);
+    return filtered
+  }, [events, filters])
 
   // Empty state: no events at all
   if (events.length === 0) {
     return (
       <div className="text-center py-12">
         <CalendarDays className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          Nessun evento ancora
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Nessun evento ancora</h3>
         <p className="text-sm text-gray-600 mb-6">
           Crea il tuo primo evento per iniziare a gestire partecipanti, speaker e sponsor.
         </p>
@@ -116,7 +114,7 @@ export function EventsListClient({ events }: EventsListClientProps) {
           <span>Crea Evento</span>
         </Link>
       </div>
-    );
+    )
   }
 
   return (
@@ -133,8 +131,9 @@ export function EventsListClient({ events }: EventsListClientProps) {
             </span>
           ) : (
             <span>
-              Mostrando <span className="font-semibold text-gray-900">{filteredAndSortedEvents.length}</span> di{' '}
-              <span className="font-semibold text-gray-900">{events.length}</span> eventi
+              Mostrando{' '}
+              <span className="font-semibold text-gray-900">{filteredAndSortedEvents.length}</span>{' '}
+              di <span className="font-semibold text-gray-900">{events.length}</span> eventi
             </span>
           )}
         </div>
@@ -153,9 +152,7 @@ export function EventsListClient({ events }: EventsListClientProps) {
       {filteredAndSortedEvents.length === 0 ? (
         <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
           <CalendarDays className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Nessun risultato
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Nessun risultato</h3>
           <p className="text-sm text-gray-600 mb-4">
             Nessun evento corrisponde ai filtri selezionati.
           </p>
@@ -181,5 +178,5 @@ export function EventsListClient({ events }: EventsListClientProps) {
         </div>
       )}
     </div>
-  );
+  )
 }

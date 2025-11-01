@@ -30,48 +30,44 @@
  */
 
 import {
-  Calendar,
-  MapPin,
-  Users,
-  Mic,
   Building2,
-  Globe,
-  Tag,
-  FileText,
+  Calendar,
   Clock,
+  DoorClosed,
   DoorOpen,
-  DoorClosed
-} from 'lucide-react';
-import { formatDate, formatDateTime } from '@/lib/utils';
-import type { Event } from '@/lib/db/schema';
+  FileText,
+  Globe,
+  MapPin,
+  Mic,
+  Tag,
+  Users,
+} from 'lucide-react'
+import type { Event } from '@/lib/db/schema'
+import { formatDate, formatDateTime } from '@/lib/utils'
 
 interface OverviewTabProps {
-  event: Event;
-  participantsCount?: number;
-  speakersCount?: number;
-  sponsorsCount?: number;
+  event: Event
+  participantsCount?: number
+  speakersCount?: number
+  sponsorsCount?: number
 }
 
 export function OverviewTab({
   event,
   participantsCount = 0,
   speakersCount = 0,
-  sponsorsCount = 0
+  sponsorsCount = 0,
 }: OverviewTabProps) {
   // Parse tags if they exist
-  const tags = event.tags ? JSON.parse(event.tags) : [];
+  const tags = event.tags ? JSON.parse(event.tags) : []
 
   return (
     <div className="space-y-6">
       {/* Description */}
       {event.description && (
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">
-            Descrizione
-          </h3>
-          <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
-            {event.description}
-          </p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">Descrizione</h3>
+          <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{event.description}</p>
         </div>
       )}
 
@@ -84,9 +80,7 @@ export function OverviewTab({
               <Users className="w-5 h-5 text-purple-600" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
-                {participantsCount}
-              </div>
+              <div className="text-2xl font-bold text-gray-900">{participantsCount}</div>
               <div className="text-sm text-gray-600">Partecipanti</div>
             </div>
           </div>
@@ -99,9 +93,7 @@ export function OverviewTab({
               <Mic className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
-                {speakersCount}
-              </div>
+              <div className="text-2xl font-bold text-gray-900">{speakersCount}</div>
               <div className="text-sm text-gray-600">Relatori</div>
             </div>
           </div>
@@ -114,9 +106,7 @@ export function OverviewTab({
               <Building2 className="w-5 h-5 text-yellow-600" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">
-                {sponsorsCount}
-              </div>
+              <div className="text-2xl font-bold text-gray-900">{sponsorsCount}</div>
               <div className="text-sm text-gray-600">Sponsor</div>
             </div>
           </div>
@@ -138,9 +128,7 @@ export function OverviewTab({
               <Clock className="w-5 h-5 text-gray-400 mt-0.5" />
               <div>
                 <div className="text-sm font-medium text-gray-900">Inizio</div>
-                <div className="text-sm text-gray-600">
-                  {formatDateTime(event.startDate)}
-                </div>
+                <div className="text-sm text-gray-600">{formatDateTime(event.startDate)}</div>
               </div>
             </div>
 
@@ -149,9 +137,7 @@ export function OverviewTab({
               <Clock className="w-5 h-5 text-gray-400 mt-0.5" />
               <div>
                 <div className="text-sm font-medium text-gray-900">Fine</div>
-                <div className="text-sm text-gray-600">
-                  {formatDateTime(event.endDate)}
-                </div>
+                <div className="text-sm text-gray-600">{formatDateTime(event.endDate)}</div>
               </div>
             </div>
 
@@ -160,9 +146,7 @@ export function OverviewTab({
               <div className="flex items-start space-x-3 pt-4 border-t border-gray-200">
                 <DoorOpen className="w-5 h-5 text-gray-400 mt-0.5" />
                 <div>
-                  <div className="text-sm font-medium text-gray-900">
-                    Apertura Iscrizioni
-                  </div>
+                  <div className="text-sm font-medium text-gray-900">Apertura Iscrizioni</div>
                   <div className="text-sm text-gray-600">
                     {formatDateTime(event.registrationOpenDate)}
                   </div>
@@ -175,9 +159,7 @@ export function OverviewTab({
               <div className="flex items-start space-x-3">
                 <DoorClosed className="w-5 h-5 text-gray-400 mt-0.5" />
                 <div>
-                  <div className="text-sm font-medium text-gray-900">
-                    Chiusura Iscrizioni
-                  </div>
+                  <div className="text-sm font-medium text-gray-900">Chiusura Iscrizioni</div>
                   <div className="text-sm text-gray-600">
                     {formatDateTime(event.registrationCloseDate)}
                   </div>
@@ -198,31 +180,21 @@ export function OverviewTab({
             {/* Venue */}
             {event.venue && (
               <div>
-                <div className="text-sm font-medium text-gray-900 mb-1">
-                  Sede
-                </div>
-                <div className="text-sm text-gray-600">
-                  {event.venue}
-                </div>
+                <div className="text-sm font-medium text-gray-900 mb-1">Sede</div>
+                <div className="text-sm text-gray-600">{event.venue}</div>
               </div>
             )}
 
             {/* Location */}
             <div>
-              <div className="text-sm font-medium text-gray-900 mb-1">
-                Località
-              </div>
-              <div className="text-sm text-gray-600">
-                {event.location}
-              </div>
+              <div className="text-sm font-medium text-gray-900 mb-1">Località</div>
+              <div className="text-sm text-gray-600">{event.location}</div>
             </div>
 
             {/* Address */}
             {event.address && (
               <div>
-                <div className="text-sm font-medium text-gray-900 mb-1">
-                  Indirizzo
-                </div>
+                <div className="text-sm font-medium text-gray-900 mb-1">Indirizzo</div>
                 <div className="text-sm text-gray-600">
                   {event.address}
                   {event.city && `, ${event.city}`}
@@ -294,43 +266,37 @@ export function OverviewTab({
             <FileText className="w-5 h-5" />
             <span>Note</span>
           </h3>
-          <p className="text-sm text-gray-700 whitespace-pre-wrap">
-            {event.notes}
-          </p>
+          <p className="text-sm text-gray-700 whitespace-pre-wrap">{event.notes}</p>
         </div>
       )}
 
       {/* Event Settings */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Impostazioni
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Impostazioni</h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Public/Private */}
           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-            <span className="text-sm font-medium text-gray-700">
-              Visibilità
-            </span>
-            <span className={`text-sm font-semibold px-2.5 py-1 rounded ${
-              event.isPublic
-                ? 'bg-green-100 text-green-700'
-                : 'bg-gray-200 text-gray-700'
-            }`}>
+            <span className="text-sm font-medium text-gray-700">Visibilità</span>
+            <span
+              className={`text-sm font-semibold px-2.5 py-1 rounded ${
+                event.isPublic ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-700'
+              }`}
+            >
               {event.isPublic ? 'Pubblico' : 'Privato'}
             </span>
           </div>
 
           {/* Requires Approval */}
           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-            <span className="text-sm font-medium text-gray-700">
-              Approvazione richiesta
-            </span>
-            <span className={`text-sm font-semibold px-2.5 py-1 rounded ${
-              event.requiresApproval
-                ? 'bg-yellow-100 text-yellow-700'
-                : 'bg-gray-200 text-gray-700'
-            }`}>
+            <span className="text-sm font-medium text-gray-700">Approvazione richiesta</span>
+            <span
+              className={`text-sm font-semibold px-2.5 py-1 rounded ${
+                event.requiresApproval
+                  ? 'bg-yellow-100 text-yellow-700'
+                  : 'bg-gray-200 text-gray-700'
+              }`}
+            >
               {event.requiresApproval ? 'Sì' : 'No'}
             </span>
           </div>
@@ -338,9 +304,7 @@ export function OverviewTab({
           {/* Max Participants */}
           {event.maxParticipants && (
             <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <span className="text-sm font-medium text-gray-700">
-                Capacità massima
-              </span>
+              <span className="text-sm font-medium text-gray-700">Capacità massima</span>
               <span className="text-sm font-semibold text-gray-900">
                 {event.maxParticipants} persone
               </span>
@@ -350,12 +314,8 @@ export function OverviewTab({
           {/* Category */}
           {event.category && (
             <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <span className="text-sm font-medium text-gray-700">
-                Categoria
-              </span>
-              <span className="text-sm font-semibold text-gray-900">
-                {event.category}
-              </span>
+              <span className="text-sm font-medium text-gray-700">Categoria</span>
+              <span className="text-sm font-semibold text-gray-900">{event.category}</span>
             </div>
           )}
         </div>
@@ -365,15 +325,13 @@ export function OverviewTab({
       <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-gray-600">
           <div>
-            <span className="font-medium">Creato il:</span>{' '}
-            {formatDateTime(event.createdAt)}
+            <span className="font-medium">Creato il:</span> {formatDateTime(event.createdAt)}
           </div>
           <div>
-            <span className="font-medium">Ultima modifica:</span>{' '}
-            {formatDateTime(event.updatedAt)}
+            <span className="font-medium">Ultima modifica:</span> {formatDateTime(event.updatedAt)}
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

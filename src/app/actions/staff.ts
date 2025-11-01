@@ -20,12 +20,12 @@
 
 'use server'
 
+import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
+import { z } from 'zod'
 import { db } from '@/lib/db'
 import { staff } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
 import { createStaffSchema, updateStaffSchema } from '@/lib/validations/staff'
-import { z } from 'zod'
 
 /**
  * Action Result Type

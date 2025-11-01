@@ -23,20 +23,20 @@
  * <EventsFilters onFilterChange={(filters) => setFilters(filters)} />
  */
 
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Search, Filter, X, SlidersHorizontal } from 'lucide-react';
+import { Filter, Search, SlidersHorizontal, X } from 'lucide-react'
+import { useState } from 'react'
 
 export interface FilterState {
-  search: string;
-  status: string;
-  priority: string;
-  sortBy: string;
+  search: string
+  status: string
+  priority: string
+  sortBy: string
 }
 
 interface EventsFiltersProps {
-  onFilterChange: (filters: FilterState) => void;
+  onFilterChange: (filters: FilterState) => void
 }
 
 export function EventsFilters({ onFilterChange }: EventsFiltersProps) {
@@ -45,15 +45,15 @@ export function EventsFilters({ onFilterChange }: EventsFiltersProps) {
     status: 'all',
     priority: 'all',
     sortBy: 'date-desc',
-  });
+  })
 
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(false)
 
   const updateFilter = (key: keyof FilterState, value: string) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    onFilterChange(newFilters);
-  };
+    const newFilters = { ...filters, [key]: value }
+    setFilters(newFilters)
+    onFilterChange(newFilters)
+  }
 
   const clearFilters = () => {
     const defaultFilters: FilterState = {
@@ -61,15 +61,13 @@ export function EventsFilters({ onFilterChange }: EventsFiltersProps) {
       status: 'all',
       priority: 'all',
       sortBy: 'date-desc',
-    };
-    setFilters(defaultFilters);
-    onFilterChange(defaultFilters);
-  };
+    }
+    setFilters(defaultFilters)
+    onFilterChange(defaultFilters)
+  }
 
   const hasActiveFilters =
-    filters.search !== '' ||
-    filters.status !== 'all' ||
-    filters.priority !== 'all';
+    filters.search !== '' || filters.status !== 'all' || filters.priority !== 'all'
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4">
@@ -93,22 +91,20 @@ export function EventsFilters({ onFilterChange }: EventsFiltersProps) {
           className="lg:hidden flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
         >
           <SlidersHorizontal className="w-5 h-5" />
-          {hasActiveFilters && (
-            <span className="w-2 h-2 bg-blue-600 rounded-full" />
-          )}
+          {hasActiveFilters && <span className="w-2 h-2 bg-blue-600 rounded-full" />}
         </button>
       </div>
 
       {/* Filters Row (Desktop: always visible, Mobile: toggleable) */}
-      <div className={`
+      <div
+        className={`
         mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3
         ${showFilters ? 'block' : 'hidden lg:grid'}
-      `}>
+      `}
+      >
         {/* Status Filter */}
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            Status
-          </label>
+          <label className="block text-xs font-medium text-gray-700 mb-1">Status</label>
           <select
             value={filters.status}
             onChange={(e) => updateFilter('status', e.target.value)}
@@ -126,9 +122,7 @@ export function EventsFilters({ onFilterChange }: EventsFiltersProps) {
 
         {/* Priority Filter */}
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            Priorità
-          </label>
+          <label className="block text-xs font-medium text-gray-700 mb-1">Priorità</label>
           <select
             value={filters.priority}
             onChange={(e) => updateFilter('priority', e.target.value)}
@@ -144,9 +138,7 @@ export function EventsFilters({ onFilterChange }: EventsFiltersProps) {
 
         {/* Sort By */}
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            Ordina per
-          </label>
+          <label className="block text-xs font-medium text-gray-700 mb-1">Ordina per</label>
           <select
             value={filters.sortBy}
             onChange={(e) => updateFilter('sortBy', e.target.value)}
@@ -220,5 +212,5 @@ export function EventsFilters({ onFilterChange }: EventsFiltersProps) {
         </div>
       )}
     </div>
-  );
+  )
 }

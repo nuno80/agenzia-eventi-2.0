@@ -26,81 +26,82 @@
  * <ParticipantsTable participants={participants} />
  */
 
-'use client';
+'use client'
 
-import { useState, useMemo } from 'react';
 import {
-  Search,
-  Download,
-  Mail,
-  Phone,
   Building2,
   CheckCircle,
   Clock,
-  XCircle,
+  Download,
+  Filter,
+  Mail,
+  Phone,
+  Search,
   Users as UsersIcon,
-  Filter
-} from 'lucide-react';
-import { formatDate, getRegistrationStatusLabel, getPaymentStatusLabel } from '@/lib/utils';
-import type { Participant } from '@/lib/db/schema';
+  XCircle,
+} from 'lucide-react'
+import { useMemo, useState } from 'react'
+import type { Participant } from '@/lib/db/schema'
+import { formatDate, getPaymentStatusLabel, getRegistrationStatusLabel } from '@/lib/utils'
 
 interface ParticipantsTableProps {
-  participants: Participant[];
+  participants: Participant[]
 }
 
 export function ParticipantsTable({ participants }: ParticipantsTableProps) {
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [paymentFilter, setPaymentFilter] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<string>('name-asc');
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [paymentFilter, setPaymentFilter] = useState<string>('all')
+  const [sortBy, setSortBy] = useState<string>('name-asc')
 
   // Filter and sort participants
   const filteredParticipants = useMemo(() => {
-    let filtered = [...participants];
+    let filtered = [...participants]
 
     // Search filter
     if (search) {
-      const searchLower = search.toLowerCase();
-      filtered = filtered.filter(p =>
-        p.firstName.toLowerCase().includes(searchLower) ||
-        p.lastName.toLowerCase().includes(searchLower) ||
-        p.email.toLowerCase().includes(searchLower) ||
-        p.company?.toLowerCase().includes(searchLower)
-      );
+      const searchLower = search.toLowerCase()
+      filtered = filtered.filter(
+        (p) =>
+          p.firstName.toLowerCase().includes(searchLower) ||
+          p.lastName.toLowerCase().includes(searchLower) ||
+          p.email.toLowerCase().includes(searchLower) ||
+          p.company?.toLowerCase().includes(searchLower)
+      )
     }
 
     // Status filter
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(p => p.registrationStatus === statusFilter);
+      filtered = filtered.filter((p) => p.registrationStatus === statusFilter)
     }
 
     // Payment filter
     if (paymentFilter !== 'all') {
-      filtered = filtered.filter(p => p.paymentStatus === paymentFilter);
+      filtered = filtered.filter((p) => p.paymentStatus === paymentFilter)
     }
 
     // Sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'name-asc':
-          return `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`);
+          return `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`)
         case 'name-desc':
-          return `${b.lastName} ${b.firstName}`.localeCompare(`${a.lastName} ${a.firstName}`);
+          return `${b.lastName} ${b.firstName}`.localeCompare(`${a.lastName} ${a.firstName}`)
         case 'date-desc':
-          return new Date(b.registrationDate).getTime() - new Date(a.registrationDate).getTime();
+          return new Date(b.registrationDate).getTime() - new Date(a.registrationDate).getTime()
         case 'date-asc':
-          return new Date(a.registrationDate).getTime() - new Date(b.registrationDate).getTime();
+          return new Date(a.registrationDate).getTime() - new Date(b.registrationDate).getTime()
         case 'company-asc':
-          return (a.company || '').localeCompare(b.company || '');
+          return (a.company || '').localeCompare(b.company || '')
         case 'company-desc':
-          return (b.company || '').localeCompare(a.company || '');
+          return (b.company || '').localeCompare(a.company || '')
         default:
-          return 0;
+          return 0
       }
-    });
+    })
 
-    return filtered;
-  }, [participants, search, statusFilter, paymentFilter, sortBy]);
+    return filtered
+  }, [participants, search, statusFilter, paymentFilter, sortBy])
 
   const getStatusBadge = (status: string) => {
     const colors = {
@@ -108,9 +109,9 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
       pending: 'bg-yellow-100 text-yellow-700',
       cancelled: 'bg-red-100 text-red-700',
       waitlist: 'bg-blue-100 text-blue-700',
-    };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-700';
-  };
+    }
+    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-700'
+  }
 
   const getPaymentBadge = (status: string) => {
     const colors = {
@@ -118,9 +119,9 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
       pending: 'bg-yellow-100 text-yellow-700',
       refunded: 'bg-red-100 text-red-700',
       free: 'bg-gray-100 text-gray-700',
-    };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-700';
-  };
+    }
+    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-700'
+  }
 
   return (
     <div className="space-y-4">
@@ -201,9 +202,14 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
       <div className="flex items-center justify-between text-sm text-gray-600">
         <span>
           {filteredParticipants.length === participants.length ? (
-            <>Mostrando <strong>{participants.length}</strong> partecipanti</>
+            <>
+              Mostrando <strong>{participants.length}</strong> partecipanti
+            </>
           ) : (
-            <>Mostrando <strong>{filteredParticipants.length}</strong> di <strong>{participants.length}</strong> partecipanti</>
+            <>
+              Mostrando <strong>{filteredParticipants.length}</strong> di{' '}
+              <strong>{participants.length}</strong> partecipanti
+            </>
           )}
         </span>
       </div>
@@ -280,13 +286,17 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getStatusBadge(participant.registrationStatus)}`}>
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getStatusBadge(participant.registrationStatus)}`}
+                      >
                         {getRegistrationStatusLabel(participant.registrationStatus)}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getPaymentBadge(participant.paymentStatus)}`}>
+                        <span
+                          className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getPaymentBadge(participant.paymentStatus)}`}
+                        >
                           {getPaymentStatusLabel(participant.paymentStatus)}
                         </span>
                         {participant.ticketPrice && participant.ticketPrice > 0 && (
@@ -336,9 +346,7 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
                     <div className="text-xs text-gray-500 mt-0.5">{participant.jobTitle}</div>
                   )}
                 </div>
-                {participant.checkedIn && (
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                )}
+                {participant.checkedIn && <CheckCircle className="w-5 h-5 text-green-600" />}
               </div>
 
               <div className="space-y-2 text-sm">
@@ -361,10 +369,14 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
               </div>
 
               <div className="flex items-center space-x-2 mt-3 pt-3 border-t border-gray-200">
-                <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getStatusBadge(participant.registrationStatus)}`}>
+                <span
+                  className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getStatusBadge(participant.registrationStatus)}`}
+                >
                   {getRegistrationStatusLabel(participant.registrationStatus)}
                 </span>
-                <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getPaymentBadge(participant.paymentStatus)}`}>
+                <span
+                  className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getPaymentBadge(participant.paymentStatus)}`}
+                >
                   {getPaymentStatusLabel(participant.paymentStatus)}
                 </span>
               </div>
@@ -373,5 +385,5 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
         )}
       </div>
     </div>
-  );
+  )
 }
