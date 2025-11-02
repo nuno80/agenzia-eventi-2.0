@@ -35,9 +35,12 @@ import type { StaffDTO } from '@/lib/dal/staff'
 
 interface StaffListClientProps {
   staff: StaffDTO[]
+  events: { id: string; title: string; startDate?: Date | string; endDate?: Date | string }[]
 }
 
-export function StaffListClient({ staff }: StaffListClientProps) {
+import { StaffAssignmentModal } from '@/components/dashboard/staff/StaffAssignmentModal'
+
+export function StaffListClient({ staff, events }: StaffListClientProps) {
   const [filters, setFilters] = useState<StaffFilterState>({
     search: '',
     role: 'all',
@@ -163,7 +166,12 @@ export function StaffListClient({ staff }: StaffListClientProps) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredAndSorted.map((s) => (
-            <StaffCard key={s.id} staff={s} />
+            <div key={s.id} className="space-y-2">
+              <StaffCard staff={s} />
+              <div className="flex justify-end">
+                <StaffAssignmentModal staff={{ id: s.id, firstName: s.firstName, lastName: s.lastName, role: s.role }} events={events} triggerVariant="button" />
+              </div>
+            </div>
           ))}
         </div>
       )}

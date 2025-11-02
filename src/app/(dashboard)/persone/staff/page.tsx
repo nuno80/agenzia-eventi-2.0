@@ -11,10 +11,12 @@ import { Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { getAllStaff } from '@/lib/dal/staff'
+import { getAllEvents } from '@/lib/dal/events'
 import { StaffListClient } from './StaffListClient'
 
 export default async function StaffPage() {
   const staff = await getAllStaff()
+  const events = await getAllEvents()
 
   return (
     <div className="space-y-6">
@@ -27,7 +29,7 @@ export default async function StaffPage() {
 
       <Card className="p-6">
         <Suspense fallback={<div>Caricamento staff...</div>}>
-          <StaffListClient staff={staff} />
+          <StaffListClient staff={staff} events={events} />
         </Suspense>
       </Card>
     </div>
