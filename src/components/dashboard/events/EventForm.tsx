@@ -33,6 +33,7 @@
 import { AlertCircle, Loader2, Plus, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
+import type { ActionResult } from '@/app/actions/events'
 import { createEvent, updateEvent } from '@/app/actions/events'
 import type { Event } from '@/db'
 
@@ -74,7 +75,7 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
     formData.set('tags', JSON.stringify(tags))
 
     startTransition(async () => {
-      let result;
+      let result: ActionResult = { success: false, message: '' }
       if (mode === 'create') {
         result = await createEvent(formData)
       } else {

@@ -361,6 +361,29 @@ async function canEditPost(postId: string, userId: string): Promise<boolean> {
 }
 ```
 
+## Scrivi codice TypeScript fortemente tipizzato, senza usare il tipo any
+
+Segui queste regole:
+
+Se una variabile può assumere più tipi, utilizza union types (es. string | number).
+
+Per strutture dati o oggetti sconosciuti, definisci interfacce o tipi espliciti (interface o type).
+
+Evita qualsiasi uso diretto o indiretto di any.
+
+Se necessario, usa unknown o Record<string, unknown> al posto di any, ma definisci successivamente un tipo più preciso.
+
+Il codice deve essere leggibile, sicuro e conforme alle best practice TypeScript.
+
+❌ Esempio da evitare:
+
+let value: any = getData();
+
+✅ Esempio corretto:
+
+type ApiResponse = { id: number; name: string };
+let value: ApiResponse | null = getData();
+
 ### Available Commands (Quick Reference)
 
 ```bash

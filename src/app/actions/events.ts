@@ -30,7 +30,7 @@ import { createEventSchema, updateEventSchema } from '@/lib/validations/events'
  * Action Result Type
  * Consistent return type for all actions
  */
-type ActionResult = {
+export type ActionResult = {
   success: boolean
   message: string
   data?: any
