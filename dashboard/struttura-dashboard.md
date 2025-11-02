@@ -16,14 +16,16 @@ src/
 │   │   │           └── page.tsx                 ✅ CREATO (Server + Suspense)
 │   │   │
 │   │   ├── personale/
-│   │   │   ├── page.tsx                         🟡 DA FARE (Server) - FACILE
-│   │   │   ├── StaffListClient.tsx              🟡 DA FARE (Client) - MEDIO
+│   │   │   ├── page.tsx                         ✅ CREATO (Server)
+│   │   │   ├── StaffListClient.tsx              ✅ CREATO (Client)
 │   │   │   ├── nuovo/
-│   │   │   │   └── page.tsx                     🟡 DA FARE (Server) - FACILE
+│   │   │   │   └── page.tsx                     ✅ CREATO (Server)
 │   │   │   └── [id]/
-│   │   │       ├── page.tsx                     🟡 DA FARE (Server) - MEDIO
+│   │   │       ├── page.tsx                     ✅ CREATO (Server)
+│   │   │       ├── [tab]/
+│   │   │       │   └── page.tsx                 ✅ CREATO (Server + Suspense)
 │   │   │       └── edit/
-│   │   │           └── page.tsx                 🟡 DA FARE (Server) - FACILE
+│   │   │           └── page.tsx                 ✅ CREATO (Server)
 │   │   │
 │   │   ├── persone/
 │   │   │   ├── partecipanti/

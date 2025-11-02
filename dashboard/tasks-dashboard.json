@@ -1,7 +1,7 @@
 {
   "project": "EventHub Dashboard",
-  "lastUpdated": "2025-11-01",
-  "overallProgress": 38,
+  "lastUpdated": "2025-11-02",
+  "overallProgress": 45,
   "modules": [
     {
       "id": "core",
@@ -338,7 +338,7 @@
     {
       "id": "staff",
       "name": "Personale/Staff",
-      "progress": 30,
+      "progress": 85,
       "tasks": [
         {
           "id": "staff-1",
@@ -393,7 +393,7 @@
         {
           "id": "staff-8",
           "name": "Staff list page /personale (Server)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "easy",
           "componentType": "Server",
           "description": "Wrapper con Suspense, fetch data, pass to Client"
@@ -401,7 +401,7 @@
         {
           "id": "staff-9",
           "name": "StaffListClient (Client)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Client",
           "description": "Grid cards + filtri + search + sorting in-memory"
@@ -409,7 +409,7 @@
         {
           "id": "staff-10",
           "name": "StaffCard component (Server)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "easy",
           "componentType": "Server",
           "description": "Card con foto, info, tags, prossimi eventi, quick actions"
@@ -417,7 +417,7 @@
         {
           "id": "staff-11",
           "name": "StaffFilters component (Client)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "easy",
           "componentType": "Client",
           "description": "Filtri ruolo, disponibilità, tags"
@@ -425,7 +425,7 @@
         {
           "id": "staff-12",
           "name": "StaffForm component (Client)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Client",
           "description": "Form completo staff (create/edit) con upload foto"
@@ -433,7 +433,7 @@
         {
           "id": "staff-13",
           "name": "Create staff page (Server)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "easy",
           "componentType": "Server",
           "description": "Wrapper con StaffForm in create mode"
@@ -441,7 +441,7 @@
         {
           "id": "staff-14",
           "name": "Staff detail page (Server)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server",
           "description": "Header + tabs (Info, Assignments, Payments, Documents)"
@@ -449,7 +449,7 @@
         {
           "id": "staff-15",
           "name": "Edit staff page (Server)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "easy",
           "componentType": "Server",
           "description": "Wrapper con StaffForm in edit mode"
@@ -650,19 +650,19 @@
     {
       "priority": 1,
       "module": "staff",
-      "tasks": ["staff-8", "staff-9", "staff-10", "staff-11"],
+      "tasks": ["staff-12", "staff-13", "staff-15"],
       "rationale": "UI lista staff completa; dipende dal completamento DAL e validation (ora completati)"
     },
     {
       "priority": 2,
       "module": "staff",
-      "tasks": ["staff-8", "staff-9", "staff-10", "staff-11"],
+      "tasks": ["staff-16", "staff-17"],
       "rationale": "UI lista staff completa; dipende dal completamento DAL e validation"
     },
     {
       "priority": 3,
       "module": "staff",
-      "tasks": ["staff-12", "staff-13", "staff-15"],
+      "tasks": ["staff-16", "staff-17"],
       "rationale": "CRUD completo staff per gestione autonoma"
     },
     {
@@ -710,8 +710,8 @@
   ],
   "statistics": {
     "totalTasks": 98,
-    "completedTasks": 35,
-    "pendingTasks": 64,
+    "completedTasks": 43,
+    "pendingTasks": 56,
     "byComplexity": {
       "easy": 28,
       "medium": 45,
@@ -729,14 +729,14 @@
   },
   "nextSteps": {
     "immediate": [
-      "Creare validations/staffAssignments.ts (Zod)",
-      "Creare DAL staff.ts e DAL staffAssignments.ts",
-      "Creare pagina /personale lista staff con filtri"
+      "Implementare quick actions staff (toggleActive, assegnazione rapida)",
+      "Implementare StaffAssignmentModal per assegnare staff a eventi",
+      "Aggiungere PaymentStatusBadge e tracking pagamenti"
     ],
     "shortTerm": [
-      "Completare CRUD staff completo (create, edit, detail)",
+      "Completare CRUD staff completo (create, edit)",
       "Implementare StaffAssignmentModal per assegnare staff a eventi",
-      "Creare tab Staff nel dettaglio evento"
+      "Aggiungere PaymentStatusBadge e tracking pagamenti"
     ],
     "mediumTerm": [
       "Implementare tab Speaker e Sponsor negli eventi",

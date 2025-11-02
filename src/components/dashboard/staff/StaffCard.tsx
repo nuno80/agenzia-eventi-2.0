@@ -41,7 +41,7 @@ export function StaffCard({ staff }: StaffCardProps) {
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center space-x-2 mb-1">
-            <Link href={`#`} className="text-lg font-semibold text-gray-900 hover:text-blue-600">
+            <Link href={`/persone/staff/${staff.id}/overview`} className="text-lg font-semibold text-gray-900 hover:text-blue-600">
               {fullName}
             </Link>
             {!staff.isActive && (

@@ -20,9 +20,8 @@ export default async function StaffPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Staff</h1>
-        <Link href="#">
-          {/* TODO: collegare alla pagina di creazione staff quando disponibile */}
-          <Button disabled>Nuovo Membro</Button>
+        <Link href="/persone/staff/nuovo">
+          <Button>Nuovo Membro</Button>
         </Link>
       </div>
 
