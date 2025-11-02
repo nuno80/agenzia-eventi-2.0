@@ -74,10 +74,19 @@
     }
   },
   "css": {
+    "formatter": {
+      "enabled": true,
+      "indentStyle": "space",
+      "indentWidth": 2,
+      "lineWidth": 100,
+      "quoteStyle": "double"
+    },
     "parser": {
       "allowWrongLineComments": false,
-      "cssModules": true,
-      "tailwindDirectives": true
+      "cssModules": true
+    },
+    "linter": {
+      "enabled": true
     }
   }
 }

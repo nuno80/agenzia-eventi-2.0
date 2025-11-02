@@ -1,25 +1,41 @@
 {
+  // Imposta Biome come formatter di default globale
   "editor.defaultFormatter": "biomejs.biome",
+
+  // Abilita format on save
   "editor.formatOnSave": true,
+
+  // Abilita fix automatici on save
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit"
   },
+
+  // Configurazioni specifiche per linguaggio
   "[javascript]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.formatOnSave": true
   },
   "[javascriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.formatOnSave": true
   },
   "[typescript]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.formatOnSave": true
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.formatOnSave": true
   },
   "[json]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.formatOnSave": true
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  }
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.formatOnSave": true
+  },
+
+  // Disabilita formatter concorrenti
+  "prettier.enable": false
 }

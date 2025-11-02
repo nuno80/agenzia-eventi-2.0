@@ -99,26 +99,19 @@ pnpm dev
 ### Biome.js
 This project uses [Biome.js](https://biomejs.dev/) for code formatting and linting. Biome is a fast formatter and linter that replaces Prettier and ESLint with a single tool.
 
-#### Available Scripts
-```bash
-# Format code and fix issues
-pnpm format
 
-# Check formatting without making changes
-pnpm format:check
+### Code Quality
+Questo progetto usa [Biome](https://biomejs.dev/) per linting e formatting.
 
-# Lint code
-pnpm lint
+**Comandi utili:**
+- `pnpm run check` - Verifica errori
+- `pnpm run check:fix` - Corregge automaticamente
+- `pnpm run format` - Formatta tutto
+- `pnpm run clean:imports` - Rimuove import inutilizzati
 
-# Fix linting issues
-pnpm lint:fix
+**Pre-commit hook:**
+Il codice viene automaticamente formattato prima di ogni commit tramite Husky + lint-staged.
 
-# Run all checks
-pnpm check
-
-# Fix all issues
-pnpm check:fix
-```
 
 #### VS Code Integration
 The project includes VS Code settings that configure Biome as the default formatter:
