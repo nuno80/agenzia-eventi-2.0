@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 interface FileItem {
   id: number
@@ -16,11 +16,7 @@ export default function FileList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchFiles()
-  }, [fetchFiles])
-
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async () => {
     try {
       setLoading(true)
       const response = await fetch('/api/files/list')
@@ -44,7 +40,11 @@ export default function FileList() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchFiles()
+  }, [fetchFiles])
 
   const handleDelete = async (id: number, filename: string) => {
     const confirmed = confirm(`Are you sure you want to delete "${filename}"?`)

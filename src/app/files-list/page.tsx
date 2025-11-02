@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import CustomNavbar from '@/components/landing/Navbar'
 
 interface FileItem {
@@ -18,11 +18,7 @@ export default function FilesListPage() {
   const [error, setError] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<number | null>(null)
 
-  useEffect(() => {
-    fetchFiles()
-  }, [fetchFiles])
-
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -40,7 +36,11 @@ export default function FilesListPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchFiles()
+  }, [fetchFiles])
 
   const handleDelete = async (id: number, filename: string) => {
     const confirmed = confirm(`Are you sure you want to delete "${filename}"?`)

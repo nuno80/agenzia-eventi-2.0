@@ -31,6 +31,8 @@ import {
   services,
   speakers,
   sponsors,
+  staff,
+  staffAssignments,
 } from '../../db/libsql-schemas'
 
 async function seed() {
@@ -614,6 +616,140 @@ async function seed() {
     console.log('✅ Created budget categories and items\n')
 
     // ========================================================================
+    // STAFF
+    // ========================================================================
+    console.log('👷 Creating staff...')
+
+    const staffList = [
+      {
+        firstName: 'Giulia',
+        lastName: 'Ferrari',
+        email: 'giulia.ferrari@example.com',
+        phone: '+39 345 1112222',
+        role: 'hostess',
+        specialization: 'Accoglienza e accrediti',
+        hourlyRate: 18,
+        isActive: true,
+        tags: JSON.stringify(['italiano', 'inglese']),
+        notes: 'Ottime capacità relazionali',
+      },
+      {
+        firstName: 'Luca',
+        lastName: 'Bianchi',
+        email: 'luca.bianchi@example.com',
+        phone: '+39 333 4445555',
+        role: 'steward',
+        specialization: 'Gestione sala',
+        hourlyRate: 17,
+        isActive: true,
+        tags: JSON.stringify(['inglese']),
+        notes: null,
+      },
+      {
+        firstName: 'Sara',
+        lastName: 'Conti',
+        email: 'sara.conti@example.com',
+        phone: '+39 320 7778888',
+        role: 'photographer',
+        specialization: 'Ritratti e backstage',
+        hourlyRate: 35,
+        isActive: true,
+        tags: JSON.stringify(['reflex', 'lightroom']),
+        notes: null,
+      },
+      {
+        firstName: 'Marco',
+        lastName: 'Riva',
+        email: 'marco.riva@example.com',
+        phone: '+39 347 9990000',
+        role: 'av_tech',
+        specialization: 'Audio e microfonia',
+        hourlyRate: 28,
+        isActive: true,
+        tags: JSON.stringify(['mixer', 'shure']),
+        notes: 'Disponibile a trasferte',
+      },
+      {
+        firstName: 'Elena',
+        lastName: 'Moretti',
+        email: 'elena.moretti@example.com',
+        phone: '+39 340 1234567',
+        role: 'driver',
+        specialization: 'Transfer VIP',
+        hourlyRate: 22,
+        isActive: false,
+        tags: JSON.stringify(['B patente', 'NCC']),
+        notes: 'Non disponibile i weekend',
+      },
+      {
+        firstName: 'Davide',
+        lastName: 'Serra',
+        email: 'davide.serra@example.com',
+        phone: '+39 338 6543210',
+        role: 'security',
+        specialization: 'Controllo accessi',
+        hourlyRate: 25,
+        isActive: true,
+        tags: JSON.stringify(['notturno']),
+        notes: null,
+      },
+      {
+        firstName: 'Anna',
+        lastName: 'Valli',
+        email: 'anna.valli@example.com',
+        phone: '+39 331 2468101',
+        role: 'catering',
+        specialization: 'Coordinamento catering',
+        hourlyRate: 20,
+        isActive: true,
+        tags: JSON.stringify(['veg', 'gluten-free']),
+        notes: null,
+      },
+      {
+        firstName: 'Paolo',
+        lastName: 'Galli',
+        email: 'paolo.galli@example.com',
+        phone: '+39 339 1122334',
+        role: 'videographer',
+        specialization: 'Riprese multicamera',
+        hourlyRate: 38,
+        isActive: true,
+        tags: JSON.stringify(['premiere', 'sony']),
+        notes: null,
+      },
+    ]
+
+    const insertedStaff = await db.insert(staff).values(staffList).returning()
+
+    console.log(`✅ Created ${insertedStaff.length} staff members\n`)
+
+    // Optionally create a few assignments
+    await db.insert(staffAssignments).values([
+      {
+        eventId: event1[0].id,
+        staffId: insertedStaff[0].id, // Giulia
+        startTime: new Date(event1[0].startDate),
+        endTime: new Date(event1[0].endDate),
+        assignmentStatus: 'confirmed',
+        paymentStatus: 'pending',
+        paymentTerms: '30_days',
+        paymentAmount: 300,
+      },
+      {
+        eventId: event2[0].id,
+        staffId: insertedStaff[3].id, // Marco
+        startTime: new Date(event2[0].startDate),
+        endTime: new Date(event2[0].endDate),
+        assignmentStatus: 'confirmed',
+        paymentStatus: 'not_due',
+        paymentTerms: 'immediate',
+        paymentAmount: 500,
+      },
+    ])
+
+    console.log('✅ Created sample staff assignments\n')
+
+    // ========================================================================
     // SERVICES
     // ========================================================================
     console.log('🔧 Creating services...')
@@ -657,6 +793,7 @@ async function seed() {
     console.log('   - 8 Deadlines')
     console.log('   - 3 Budget Categories')
     console.log('   - 3 Budget Items')
+    console.log(`   - ${insertedStaff.length} Staff members`)
     console.log('   - 2 Services')
     console.log('\n✅ You can now run your dashboard!\n')
   } catch (error) {

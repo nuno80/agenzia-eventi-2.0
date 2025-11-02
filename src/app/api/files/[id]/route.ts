@@ -4,7 +4,6 @@ import { NextResponse } from 'next/server'
 import { db, files } from '@/db/libsql'
 
 // Use Edge Runtime for better performance
-export const runtime = 'edge'
 
 // DELETE /api/files/[id] - Delete a file
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {

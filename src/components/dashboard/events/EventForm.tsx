@@ -74,10 +74,16 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
     formData.set('tags', JSON.stringify(tags))
 
     startTransition(async () => {
-      const result =
-        mode === 'create'
-          ? await createEvent(formData)
-          : await updateEvent(initialData?.id, formData)
+      let result;
+      if (mode === 'create') {
+        result = await createEvent(formData)
+      } else {
+        if (!initialData?.id) {
+          setMessage({ type: 'error', text: 'ID evento mancante per aggiornamento' })
+          return
+        }
+        result = await updateEvent(initialData.id, formData)
+      }
 
       if (result.success) {
         setMessage({ type: 'success', text: result.message })

@@ -4,7 +4,6 @@ import { eq } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 import { db, files } from '@/db/libsql'
 
-export const runtime = 'edge'
 
 // POST /api/upload - Upload a file
 export async function POST(request: Request) {

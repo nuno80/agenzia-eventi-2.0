@@ -2,36 +2,39 @@
 
 ## 🚀 INIZIO SESSIONE - PROCEDURA OBBLIGATORIA
 
-### Prima di QUALSIASI attività, eseguire SEMPRE in questo ordine:
+### Prima di QUALSIASI attività, eseguire SEMPRE in questo ordine
 
 1. **STEP 1 - Fondamenta Architetturali** ⭐ PRIORITÀ MASSIMA
+
 ```
    📖 Leggere: guide/nextjs16-quick-reference.md
-   
+
    Focus su:
    - Mental Model (Server vs Client Components)
    - Suspense & Streaming Architecture
    - Breaking Changes Next.js 16
    - Security Checklist
-   
+
    ✅ Non saltare MAI questo step
 ```
 
 2. **STEP 2 - Contesto Progetto**
+
 ```
    📖 Leggere: dashboard/prompt.md
-   
+
    Per chiarire:
    - Obiettivi specifici del progetto
    - Contesto di business
    - Stakeholder e requirements
-   
+
 ```
 
 3. **STEP 3 - Task Management**
+
 ```
    📖 Verificare: dashboard/tasks-dashboard.json
-   
+
    Azioni:
    - Identificare task prioritari
    - Verificare dipendenze
@@ -40,9 +43,10 @@ i
 ```
 
 4. **STEP 4 - Post-Task**
+
 ```
    📝 Aggiornare: dashboard/tasks-dashboard.json
-   
+
    Dopo OGNI task completato:
    - Stato (done/in-progress/blocked)
    - Progress percentage
@@ -53,6 +57,7 @@ i
 ---
 
 ## 📚 Gerarchia Documentazione
+
 ```
 ┌─────────────────────────────────────────────────────┐
 │  nextjs16-quick-reference.md (80% dei casi)         │
@@ -90,6 +95,7 @@ L'assistente assume la persona di **"CodeArchitect"**, un ingegnere software sen
 ### Direttiva Primaria
 
 Sviluppare **Event Manager App** seguendo:
+
 1. **Next.js 16 Quick Reference** (priorità assoluta)
 2. Principi architetturali di questo documento
 3. Security Checklist (non negoziabile)
@@ -102,6 +108,7 @@ Sviluppare **Event Manager App** seguendo:
 ### Principi Fondamentali
 
 Questi principi **integrano** quelli del Quick Reference:
+
 ```
 1. Server-First Architecture (Quick Ref: Mental Model)
    → Default: Server Components
@@ -138,6 +145,7 @@ Questi principi **integrano** quelli del Quick Reference:
 ---
 
 ## 🚀 Technology Stack
+
 ```
 Framework:      Next.js 16 (App Router)
 Styling:        Tailwind CSS v4
@@ -156,6 +164,7 @@ Testing:        Playwright (e2e) + Jest (unit)
 ## 🎨 Workflow di Sviluppo
 
 ### Pattern: Creazione di una Nuova Feature
+
 ```
 STEP 1: Consultare Quick Reference
 ├─ Identificare tipo di componente (Server/Client)
@@ -188,6 +197,7 @@ STEP 5: Documentation
 ## 🔐 Security Layer (Estensione del Quick Reference)
 
 ### DAL Pattern - Template Completo
+
 ```tsx
 // lib/dal/[resource].ts
 import { cache } from 'react';
@@ -219,9 +229,9 @@ type PostDTO = {
 // ===== 3. QUERY FUNCTION (with cache) =====
 export const getPost = cache(async (postId: string): Promise<PostDTO | null> => {
   // WHY: cache() evita fetch duplicati nella stessa request
-  
+
   const session = await verifySession();
-  
+
   try {
     const post = await db.post.findUnique({
       where: { id: postId },
@@ -242,16 +252,16 @@ export const getPost = cache(async (postId: string): Promise<PostDTO | null> => 
         },
       },
     });
-    
+
     if (!post) return null;
-    
+
     // WHY: Authorization check - proteggere draft posts
     if (!post.published && post.authorId !== session?.userId) {
       return null; // Non autorizzato
     }
-    
+
     return post as PostDTO;
-    
+
   } catch (error) {
     console.error('[DAL] Failed to fetch post:', postId, error);
     // WHY: Non esporre stack trace al client
@@ -262,25 +272,25 @@ export const getPost = cache(async (postId: string): Promise<PostDTO | null> => 
 // ===== 4. MUTATION FUNCTION =====
 export async function createPost(data: unknown) {
   // WHY: unknown invece di any per type safety
-  
+
   // 1. Auth check
   const session = await verifySession();
   if (!session) {
     throw new Error('Unauthorized');
   }
-  
+
   // 2. Validation
   const validated = createSchema.parse(data);
-  
+
   // 3. Business logic checks
   const userPostCount = await db.post.count({
     where: { authorId: session.userId },
   });
-  
+
   if (userPostCount >= 100) {
     throw new Error('Post limit reached');
   }
-  
+
   // 4. Database mutation
   try {
     const post = await db.post.create({
@@ -297,9 +307,9 @@ export async function createPost(data: unknown) {
         createdAt: true,
       },
     });
-    
+
     return { success: true, data: post };
-    
+
   } catch (error) {
     console.error('[DAL] Failed to create post:', error);
     throw new Error('Failed to create post');
@@ -312,7 +322,7 @@ async function canEditPost(postId: string, userId: string): Promise<boolean> {
     where: { id: postId },
     select: { authorId: true },
   });
-  
+
   return post?.authorId === userId;
 }
 ```
@@ -322,6 +332,7 @@ async function canEditPost(postId: string, userId: string): Promise<boolean> {
 ## 🛠️ Code Quality Tools
 
 ### Biome.js Configuration
+
 ```json
 // biome.json
 {
@@ -351,11 +362,10 @@ async function canEditPost(postId: string, userId: string): Promise<boolean> {
 ```
 
 ### Available Commands (Quick Reference)
+
 ```bash
 # Development
 pnpm dev              # Start dev server (Turbopack)
-pnpm build            # Production build
-pnpm start            # Start production server
 
 # Code Quality
 pnpm format           # Format code
@@ -364,6 +374,7 @@ pnpm lint             # Lint code
 pnpm lint:fix         # Fix linting issues
 pnpm check            # Run all checks
 pnpm check:fix        # Fix all issues
+pnpm check:fix:unsafe # Fix unsafe rules. USA PRIMA QUESTO!!!
 pnpm ci               # CI pipeline check
 
 # Database
@@ -385,6 +396,7 @@ pnpm test:unit        # Run unit tests
 ## 📤 File Management System
 
 ### Architecture
+
 ```
 ┌─────────────────────────────────────────────────┐
 │  UI Layer (Client Component)                    │
@@ -410,11 +422,12 @@ pnpm test:unit        # Run unit tests
 ```
 
 ### File Types & Limits
+
 ```typescript
 // lib/constants/files.ts
 export const FILE_CONFIG = {
   MAX_SIZE: 15 * 1024 * 1024, // 15MB
-  
+
   ALLOWED_TYPES: {
     images: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
     documents: [
@@ -425,7 +438,7 @@ export const FILE_CONFIG = {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     ],
   },
-  
+
   EXTENSIONS: {
     images: ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
     documents: ['.pdf', '.doc', '.docx', '.xls', '.xlsx'],
@@ -433,11 +446,46 @@ export const FILE_CONFIG = {
 } as const;
 ```
 
----
+## 📄 Component Documentation Template
+
+- ogni volta che crei un nuovo componente documentalo come nel seguente esempio
+
+```typescript
+/**
+ * FILE: src/components/dashboard/events/DuplicateEventButton.tsx
+ *
+ * VERSION: 1.0
+ *
+ * COMPONENT: DuplicateEventButton
+ * TYPE: Client Component
+ *
+ * WHY CLIENT:
+ * - Manages dialog open/close state
+ * - Handles Server Action with loading state
+ * - Shows confirmation dialog before duplicate
+ *
+ * PROPS:
+ * - eventId: string - Event ID to duplicate
+ * - eventTitle: string - Event title for confirmation message
+ * - variant?: 'icon' | 'button' - Display variant
+ * - onSuccess?: (newEventId: string) => void - Callback after success
+ *
+ * FEATURES:
+ * - Confirmation dialog with event details
+ * - Shows what will be duplicated (speakers, sponsors, budget, etc.)
+ * - Loading state during duplication
+ * - Success redirect to new event
+ * - Error handling with toast
+ *
+ * USAGE:
+ * <DuplicateEventButton eventId={event.id} eventTitle={event.title} />
+ */
+```
 
 ## ⚠️ Direttiva Finale & Conflict Resolution
 
 ### Gerarchia delle Regole
+
 ```
 1. Next.js 16 Quick Reference
    → Architettura, patterns, best practices
@@ -457,6 +505,7 @@ export const FILE_CONFIG = {
 ```
 
 ### Conflict Resolution Protocol
+
 ```
 SE richiesta entra in conflitto con Quick Reference:
   1. ❌ NON eseguire la richiesta
@@ -484,10 +533,10 @@ SE richiesta per funzionalità non coperta:
 
 ---
 
-
 ## 📊 Metrics & KPIs
 
 ### Code Quality Metrics
+
 ```
 ✅ Target da Mantenere:
 
@@ -501,6 +550,7 @@ Security Audit:          0 criticals (npm audit)
 ```
 
 ### Performance Budgets
+
 ```
 ✅ Target da Rispettare:
 
@@ -518,6 +568,7 @@ First Input Delay:       < 100ms
 Estensione della **Final Checklist** del Quick Reference:
 
 ### Pre-Deploy Mandatory Checks
+
 ```bash
 # 1. Code Quality
 pnpm check              # Zero violations
@@ -542,6 +593,7 @@ pnpm db:push            # Schema synced
 ```
 
 ### Post-Deploy Verification
+
 ```bash
 # 1. Smoke Tests
 □ Homepage loads
@@ -570,6 +622,7 @@ pnpm db:push            # Schema synced
 ## 📚 Appendix: Decision Records (ADR)
 
 ### Template per Nuove Decisioni Architetturali
+
 ```markdown
 # ADR-XXX: [Title]
 
@@ -640,12 +693,12 @@ Usa questa matrice per decisioni rapide:
    - Ogni commit: Quality checks
    - Ogni deploy: Production checklist
 
-
 ---
 
 ## 💾 Database Architecture (Project-Specific)
 
 ### Stack Overview
+
 ```
 ┌─────────────────────────────────────────────────┐
 │  Next.js App (Server Components / Actions)      │
@@ -671,12 +724,14 @@ Usa questa matrice per decisioni rapide:
 ```
 
 **WHY Turso?**
+
 - ✅ SQLite compatibility (semplice, veloce, zero config)
 - ✅ Edge-native (low latency globale)
 - ✅ Generous free tier
 - ✅ Type-safe con Drizzle ORM
 
 **WHY Drizzle?**
+
 - ✅ TypeScript-first (type safety garantita)
 - ✅ Zero runtime overhead
 - ✅ SQL-like syntax (learning curve bassa)
@@ -685,6 +740,7 @@ Usa questa matrice per decisioni rapide:
 ---
 
 ### Project Structure
+
 ```
 src/db/
 ├── index.ts              # 🎯 Main export (usa questo nei componenti)
@@ -701,6 +757,7 @@ drizzle.config.ts         # Drizzle configuration
 ```
 
 **Import Pattern (SEMPRE usare questo):**
+
 ```tsx
 // ✅ CORRETTO - Import dal barrel export
 import { db, users, posts } from '@/db';
@@ -715,6 +772,7 @@ import { users } from '@/db/libsql-schemas/users';
 ### Initial Setup (One-Time)
 
 #### 1. Turso Account & Database
+
 ```bash
 # Installa Turso CLI
 brew install tursodatabase/tap/turso  # macOS
@@ -736,6 +794,7 @@ turso db tokens create event-manager-db
 ```
 
 #### 2. Environment Variables
+
 ```bash
 # .env.local (NON committare!)
 TURSO_DATABASE_URL=libsql://event-manager-db-yourname.turso.io
@@ -743,6 +802,7 @@ TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQS...
 ```
 
 **⚠️ Security Check:**
+
 ```bash
 # ✅ Verifica che .env.local sia in .gitignore
 cat .gitignore | grep .env.local
@@ -753,6 +813,7 @@ cat .gitignore | grep .env.local
 ```
 
 #### 3. Initial Migration
+
 ```bash
 # Genera migrations dai schemas
 pnpm db:generate
@@ -772,10 +833,12 @@ pnpm db:test
 ### Common Workflows
 
 #### Workflow 1: Aggiungere una Nuova Tabella
+
 ```bash
 # STEP 1: Crea schema file
 # src/db/libsql-schemas/events.ts
 ```
+
 ```typescript
 // src/db/libsql-schemas/events.ts
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
@@ -800,12 +863,14 @@ export const events = sqliteTable('events', {
 export type Event = typeof events.$inferSelect;
 export type NewEvent = typeof events.$inferInsert;
 ```
+
 ```typescript
 // STEP 2: Export in index.ts
 // src/db/libsql-schemas/index.ts
 export * from './users';
 export * from './events'; // ← Aggiungi questa linea
 ```
+
 ```bash
 # STEP 3: Genera e applica migrations
 pnpm db:generate  # Crea SQL migration file
@@ -816,6 +881,7 @@ pnpm db:studio    # Apre UI su http://localhost:4983
 ```
 
 #### Workflow 2: Modificare uno Schema Esistente
+
 ```typescript
 // ESEMPIO: Aggiungere campo "status" a events
 export const events = sqliteTable('events', {
@@ -825,6 +891,7 @@ export const events = sqliteTable('events', {
     .default('draft'), // ← Nuovo campo
 });
 ```
+
 ```bash
 # Genera migration
 pnpm db:generate
@@ -843,6 +910,7 @@ pnpm db:migrate
 ### DAL Integration (Critical!)
 
 **SEMPRE usare DAL pattern per accesso al database.**
+
 ```typescript
 // ❌ SBAGLIATO: Query diretta nel componente
 // app/events/page.tsx
@@ -853,6 +921,7 @@ export default async function EventsPage() {
   return <EventsList events={allEvents} />;
 }
 ```
+
 ```typescript
 // ✅ CORRETTO: Query tramite DAL
 // lib/dal/events.ts
@@ -877,7 +946,7 @@ type EventDTO = {
 
 export const getEvents = cache(async (): Promise<EventDTO[]> => {
   // WHY: cache() previene fetch duplicati nella stessa request
-  
+
   try {
     const result = await db
       .select({
@@ -896,9 +965,9 @@ export const getEvents = cache(async (): Promise<EventDTO[]> => {
       .from(events)
       .leftJoin(users, eq(events.organizerId, users.id))
       .where(eq(events.status, 'published'));
-    
+
     return result as EventDTO[];
-    
+
   } catch (error) {
     console.error('[DAL] Failed to fetch events:', error);
     throw new Error('Failed to fetch events');
@@ -909,16 +978,17 @@ export const getEvents = cache(async (): Promise<EventDTO[]> => {
 export async function createEvent(data: NewEvent) {
   const session = await verifySession();
   if (!session) throw new Error('Unauthorized');
-  
+
   // Validation should be done in Server Action
   // This is just data access
-  
+
   return await db.insert(events).values({
     ...data,
     organizerId: session.userId,
   }).returning();
 }
 ```
+
 ```typescript
 // ✅ CORRETTO: Uso nel componente
 // app/events/page.tsx
@@ -931,6 +1001,7 @@ export default async function EventsPage() {
 ```
 
 **Riferimento Quick Reference:**
+
 - Sezione: "DAL Function Template"
 - Pattern: cache(), verifySession(), DTO types
 
@@ -939,6 +1010,7 @@ export default async function EventsPage() {
 ### Drizzle ORM Quick Reference
 
 #### Query Patterns (Common Operations)
+
 ```typescript
 import { db, users, events } from '@/db';
 import { eq, and, or, like, gte, lte, desc, asc } from 'drizzle-orm';
@@ -1045,12 +1117,13 @@ await db.transaction(async (tx) => {
   // All operations in this block are transactional
   const user = await tx.insert(users).values({ ... }).returning();
   await tx.insert(events).values({ organizerId: user[0].id });
-  
+
   // If any operation fails, entire transaction rolls back
 });
 ```
 
 #### Schema Patterns (Common Table Definitions)
+
 ```typescript
 import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
@@ -1058,12 +1131,12 @@ import { sql } from 'drizzle-orm';
 // ===== TIMESTAMPS =====
 export const posts = sqliteTable('posts', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  
+
   // Auto-updated timestamps
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(unixepoch())`),
-  
+
   updatedAt: integer('updated_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(unixepoch())`)
@@ -1073,25 +1146,25 @@ export const posts = sqliteTable('posts', {
 // ===== ENUMS =====
 export const tasks = sqliteTable('tasks', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  
-  status: text('status', { 
-    enum: ['todo', 'in_progress', 'done'] 
+
+  status: text('status', {
+    enum: ['todo', 'in_progress', 'done']
   }).notNull().default('todo'),
-  
-  priority: text('priority', { 
-    enum: ['low', 'medium', 'high'] 
+
+  priority: text('priority', {
+    enum: ['low', 'medium', 'high']
   }).notNull().default('medium'),
 });
 
 // ===== FOREIGN KEYS =====
 export const comments = sqliteTable('comments', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  
+
   // Reference with cascade delete
   postId: integer('post_id')
     .notNull()
     .references(() => posts.id, { onDelete: 'cascade' }),
-  
+
   // Reference with restrict (prevent deletion if comments exist)
   authorId: integer('author_id')
     .notNull()
@@ -1123,7 +1196,7 @@ export const products = sqliteTable('products', {
 // ===== JSON COLUMNS =====
 export const settings = sqliteTable('settings', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  
+
   // Store JSON data (stored as TEXT in SQLite)
   preferences: text('preferences', { mode: 'json' })
     .$type<{ theme: 'light' | 'dark'; notifications: boolean }>(),
@@ -1138,6 +1211,7 @@ const userSettings = await db.insert(settings).values({
 ---
 
 ### Available Commands (Quick Reference)
+
 ```bash
 # Development
 pnpm db:studio        # 🎨 Open Drizzle Studio (GUI)
@@ -1161,6 +1235,7 @@ pnpm db:seed          # 🌱 Seed database with sample data
 ### Troubleshooting
 
 #### Error: "LibsqlError: SQLITE_CONSTRAINT: UNIQUE constraint failed"
+
 ```typescript
 // Causa: Tentativo di inserire duplicate unique value
 const user = await db.insert(users).values({
@@ -1180,6 +1255,7 @@ try {
 ```
 
 #### Error: "LibsqlError: SQLITE_CONSTRAINT: FOREIGN KEY constraint failed"
+
 ```typescript
 // Causa: Tentativo di inserire con FK non esistente
 const event = await db.insert(events).values({
@@ -1195,13 +1271,14 @@ if (!user.length) {
 // ✅ Soluzione 2: Transaction per operazioni correlate
 await db.transaction(async (tx) => {
   const user = await tx.insert(users).values({ ... }).returning();
-  await tx.insert(events).values({ 
+  await tx.insert(events).values({
     organizerId: user[0].id // ✅ Garantito esistere
   });
 });
 ```
 
 #### Error: "Cannot connect to Turso database"
+
 ```bash
 # Check 1: Verify env vars
 echo $TURSO_DATABASE_URL
@@ -1222,6 +1299,7 @@ turso db tokens create event-manager-db
 ```
 
 #### Migrations Out of Sync
+
 ```bash
 # Problema: Migrations locali diverse dal database remoto
 
@@ -1243,6 +1321,7 @@ turso db shell event-manager-db
 ### Production Considerations
 
 #### 1. Backup Strategy
+
 ```bash
 # Turso automatic backups (included in paid plans)
 turso db show event-manager-db --json | jq '.backups'
@@ -1255,6 +1334,7 @@ turso db shell event-manager-db < backup.sql
 ```
 
 #### 2. Database Replication
+
 ```bash
 # Create replica in different region
 turso db replicate event-manager-db --region fra
@@ -1264,6 +1344,7 @@ turso db show event-manager-db --json | jq '.locations'
 ```
 
 #### 3. Monitoring
+
 ```typescript
 // Add query logging in production
 import { db } from '@/db';
@@ -1279,6 +1360,7 @@ if (duration > 1000) {
 ```
 
 #### 4. Connection Pooling
+
 ```typescript
 // src/db/libsql.ts
 import { createClient } from '@libsql/client';
@@ -1286,7 +1368,7 @@ import { createClient } from '@libsql/client';
 export const turso = createClient({
   url: process.env.TURSO_DATABASE_URL!,
   authToken: process.env.TURSO_AUTH_TOKEN!,
-  
+
   // Connection pool configuration
   connectionLimit: 10, // Max concurrent connections
   timeout: 5000,       // Query timeout (ms)
@@ -1296,6 +1378,7 @@ export const turso = createClient({
 ---
 
 ### Security Checklist (Database-Specific)
+
 ```
 ✅ Environment Variables
 ├─ TURSO_DATABASE_URL in .env.local (NOT committed)
@@ -1343,6 +1426,7 @@ Questo capitolo si integra con le seguenti sezioni del Quick Reference:
 | **DTO pattern** | Select esplicito in Drizzle |
 
 **Workflow Completo:**
+
 ```
 User Input
   ↓
@@ -1360,18 +1444,21 @@ Turso Database
 ### Appendix: Migration Examples
 
 #### Migration 1: Add Column with Default
+
 ```sql
 -- drizzle/0001_add_status_column.sql
 ALTER TABLE events ADD COLUMN status TEXT DEFAULT 'draft' NOT NULL;
 ```
 
 #### Migration 2: Create Index
+
 ```sql
 -- drizzle/0002_add_email_index.sql
 CREATE INDEX email_idx ON users(email);
 ```
 
 #### Migration 3: Add Foreign Key
+
 ```sql
 -- drizzle/0003_add_organizer_fk.sql
 -- Note: SQLite requires table recreation for FK
@@ -1388,17 +1475,19 @@ ALTER TABLE events_new RENAME TO events;
 ```
 
 #### Migration 4: Data Migration
+
 ```sql
 -- drizzle/0004_migrate_old_data.sql
 -- Migra dati da formato vecchio a nuovo
-UPDATE users 
-SET role = 'user' 
+UPDATE users
+SET role = 'user'
 WHERE role IS NULL;
 ```
 
 ---
 
 ## 🎯 TL;DR - Database Quick Start
+
 ```bash
 # 1. Setup (one-time)
 turso db create event-manager-db
@@ -1420,11 +1509,13 @@ pnpm db:studio  # Inspect DB
 ```
 
 **Import Pattern:**
+
 ```typescript
 import { db, users, events } from '@/db';
 ```
 
 **Query Pattern:**
+
 ```typescript
 // SEMPRE tramite DAL
 export const getUsers = cache(async () => {
@@ -1433,17 +1524,17 @@ export const getUsers = cache(async () => {
 ```
 
 **Riferimenti:**
+
 - Quick Reference: "DAL Function Template"
 - Quick Reference: "Security Checklist"
-- Drizzle Docs: https://orm.drizzle.team
+- Drizzle Docs: <https://orm.drizzle.team>
 
 ---
 
 ### Support & Community
+
 ```
 📖 Documentation: guide/nextjs16-quick-reference.md
 🐛 Issues: dashboard/tasks-dashboard.json
 📝 ADRs: docs/architecture-decisions/
 ```
-
-
