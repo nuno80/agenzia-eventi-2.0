@@ -89,8 +89,8 @@ export async function createAssignment(
       .returning()
 
     // Revalidate
-    revalidatePath('/personale')
-    revalidatePath(`/personale/${validated.staffId}`)
+    revalidatePath('/persone/staff')
+    revalidatePath(`/persone/staff/${validated.staffId}`)
     revalidatePath(`/eventi/${validated.eventId}/staff`)
 
     return {
@@ -173,8 +173,8 @@ export async function updateAssignment(
       .where(eq(staffAssignments.id, assignmentId))
 
     // Revalidate
-    revalidatePath('/personale')
-    revalidatePath(`/personale/${current.staffId}`)
+    revalidatePath('/persone/staff')
+    revalidatePath(`/persone/staff/${current.staffId}`)
     revalidatePath(`/eventi/${current.eventId}/staff`)
 
     return {
@@ -221,8 +221,8 @@ export async function deleteAssignment(assignmentId: string): Promise<ActionResu
     await db.delete(staffAssignments).where(eq(staffAssignments.id, assignmentId))
 
     // Revalidate
-    revalidatePath('/personale')
-    revalidatePath(`/personale/${assignment.staffId}`)
+    revalidatePath('/persone/staff')
+    revalidatePath(`/persone/staff/${assignment.staffId}`)
     revalidatePath(`/eventi/${assignment.eventId}/staff`)
 
     return {
@@ -282,8 +282,8 @@ export async function markPaid(data: FormData | Record<string, unknown>): Promis
       .where(eq(staffAssignments.id, validated.assignmentId))
 
     // Revalidate
-    revalidatePath('/personale')
-    revalidatePath(`/personale/${assignment.staffId}`)
+    revalidatePath('/persone/staff')
+    revalidatePath(`/persone/staff/${assignment.staffId}`)
     revalidatePath(`/eventi/${assignment.eventId}/staff`)
     revalidatePath('/')
 
@@ -364,8 +364,8 @@ export async function postponePayment(
       .where(eq(staffAssignments.id, validated.assignmentId))
 
     // Revalidate
-    revalidatePath('/personale')
-    revalidatePath(`/personale/${assignment.staffId}`)
+    revalidatePath('/persone/staff')
+    revalidatePath(`/persone/staff/${assignment.staffId}`)
     revalidatePath(`/eventi/${assignment.eventId}/staff`)
 
     return {
@@ -430,8 +430,8 @@ export async function updateAssignmentStatus(
       .where(eq(staffAssignments.id, assignmentId))
 
     // Revalidate
-    revalidatePath('/personale')
-    revalidatePath(`/personale/${assignment.staffId}`)
+    revalidatePath('/persone/staff')
+    revalidatePath(`/persone/staff/${assignment.staffId}`)
     revalidatePath(`/eventi/${assignment.eventId}/staff`)
 
     return {

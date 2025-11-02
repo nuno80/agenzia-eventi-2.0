@@ -1,32 +1,7 @@
 /**
  * FILE: src/components/dashboard/events/tabs/OverviewTab.tsx
- *
  * COMPONENT: OverviewTab
  * TYPE: Server Component
- *
- * WHY SERVER:
- * - Display-only content
- * - Receives event data as props
- * - No interactivity needed
- *
- * PROPS:
- * - event: Event object with all fields
- * - participantsCount: Number of participants
- * - speakersCount: Number of speakers
- * - sponsorsCount: Number of sponsors
- *
- * FEATURES:
- * - Event description
- * - Key dates (start, end, registration)
- * - Location details with map link
- * - Quick stats cards
- * - Tags display
- * - Notes section
- *
- * USAGE:
- * const event = await getEventById(id);
- * const stats = await getEventParticipantStats(id);
- * <OverviewTab event={event} participantsCount={stats.total} />
  */
 
 import {
@@ -35,8 +10,6 @@ import {
   Clock,
   DoorClosed,
   DoorOpen,
-  FileText,
-  Globe,
   MapPin,
   Mic,
   Tag,
@@ -45,6 +18,19 @@ import {
 import type { Event } from '@/db'
 import { formatDateTime } from '@/lib/utils'
 
+function safeParseTags(input: unknown): string[] {
+  if (!input) return []
+  if (Array.isArray(input)) return input as string[]
+  try {
+    const s = String(input).trim()
+    if (!s) return []
+    const parsed = JSON.parse(s)
+    return Array.isArray(parsed) ? (parsed as string[]) : []
+  } catch {
+    return []
+  }
+}
+
 interface OverviewTabProps {
   event: Event
   participantsCount?: number
@@ -52,18 +38,11 @@ interface OverviewTabProps {
   sponsorsCount?: number
 }
 
-export function OverviewTab({
-  event,
-  participantsCount = 0,
-  speakersCount = 0,
-  sponsorsCount = 0,
-}: OverviewTabProps) {
-  // Parse tags if they exist
-  const tags = event.tags ? JSON.parse(event.tags) : []
+export function OverviewTab({ event, participantsCount = 0, speakersCount = 0, sponsorsCount = 0 }: OverviewTabProps) {
+  const tags = safeParseTags(event.tags)
 
   return (
     <div className="space-y-6">
-      {/* Description */}
       {event.description && (
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-3">Descrizione</h3>
@@ -71,9 +50,7 @@ export function OverviewTab({
         </div>
       )}
 
-      {/* Quick Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* Participants */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center space-x-3 mb-2">
             <div className="p-2 bg-purple-50 rounded-lg">
@@ -86,7 +63,6 @@ export function OverviewTab({
           </div>
         </div>
 
-        {/* Speakers */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center space-x-3 mb-2">
             <div className="p-2 bg-blue-50 rounded-lg">
@@ -99,7 +75,6 @@ export function OverviewTab({
           </div>
         </div>
 
-        {/* Sponsors */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center space-x-3 mb-2">
             <div className="p-2 bg-yellow-50 rounded-lg">
@@ -113,9 +88,7 @@ export function OverviewTab({
         </div>
       </div>
 
-      {/* Event Details Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Dates Section */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
             <Calendar className="w-5 h-5" />
@@ -123,7 +96,6 @@ export function OverviewTab({
           </h3>
 
           <div className="space-y-4">
-            {/* Start Date */}
             <div className="flex items-start space-x-3">
               <Clock className="w-5 h-5 text-gray-400 mt-0.5" />
               <div>
@@ -132,7 +104,6 @@ export function OverviewTab({
               </div>
             </div>
 
-            {/* End Date */}
             <div className="flex items-start space-x-3">
               <Clock className="w-5 h-5 text-gray-400 mt-0.5" />
               <div>
@@ -141,35 +112,28 @@ export function OverviewTab({
               </div>
             </div>
 
-            {/* Registration Open */}
             {event.registrationOpenDate && (
               <div className="flex items-start space-x-3 pt-4 border-t border-gray-200">
                 <DoorOpen className="w-5 h-5 text-gray-400 mt-0.5" />
                 <div>
                   <div className="text-sm font-medium text-gray-900">Apertura Iscrizioni</div>
-                  <div className="text-sm text-gray-600">
-                    {formatDateTime(event.registrationOpenDate)}
-                  </div>
+                  <div className="text-sm text-gray-600">{formatDateTime(event.registrationOpenDate)}</div>
                 </div>
               </div>
             )}
 
-            {/* Registration Close */}
             {event.registrationCloseDate && (
               <div className="flex items-start space-x-3">
                 <DoorClosed className="w-5 h-5 text-gray-400 mt-0.5" />
                 <div>
                   <div className="text-sm font-medium text-gray-900">Chiusura Iscrizioni</div>
-                  <div className="text-sm text-gray-600">
-                    {formatDateTime(event.registrationCloseDate)}
-                  </div>
+                  <div className="text-sm text-gray-600">{formatDateTime(event.registrationCloseDate)}</div>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Location Section */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
             <MapPin className="w-5 h-5" />
@@ -177,7 +141,6 @@ export function OverviewTab({
           </h3>
 
           <div className="space-y-3">
-            {/* Venue */}
             {event.venue && (
               <div>
                 <div className="text-sm font-medium text-gray-900 mb-1">Sede</div>
@@ -185,13 +148,11 @@ export function OverviewTab({
               </div>
             )}
 
-            {/* Location */}
             <div>
               <div className="text-sm font-medium text-gray-900 mb-1">Località</div>
               <div className="text-sm text-gray-600">{event.location}</div>
             </div>
 
-            {/* Address */}
             {event.address && (
               <div>
                 <div className="text-sm font-medium text-gray-900 mb-1">Indirizzo</div>
@@ -203,12 +164,9 @@ export function OverviewTab({
               </div>
             )}
 
-            {/* Map Link */}
             {event.address && (
               <a
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                  `${event.address}, ${event.city}, ${event.country}`
-                )}`}
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${event.address}, ${event.city ?? ''}, ${event.country ?? ''}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-700 font-medium mt-2"
@@ -221,7 +179,6 @@ export function OverviewTab({
         </div>
       </div>
 
-      {/* Tags */}
       {tags.length > 0 && (
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center space-x-2">
@@ -230,108 +187,13 @@ export function OverviewTab({
           </h3>
           <div className="flex flex-wrap gap-2">
             {tags.map((tag: string, index: number) => (
-              <span
-                key={index}
-                className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
-              >
+              <span key={index} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
                 {tag}
               </span>
             ))}
           </div>
         </div>
       )}
-
-      {/* Website Link */}
-      {event.websiteUrl && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center space-x-2">
-            <Globe className="w-5 h-5" />
-            <span>Sito Web</span>
-          </h3>
-          <a
-            href={event.websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-700 hover:underline text-sm"
-          >
-            {event.websiteUrl}
-          </a>
-        </div>
-      )}
-
-      {/* Notes */}
-      {event.notes && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center space-x-2">
-            <FileText className="w-5 h-5" />
-            <span>Note</span>
-          </h3>
-          <p className="text-sm text-gray-700 whitespace-pre-wrap">{event.notes}</p>
-        </div>
-      )}
-
-      {/* Event Settings */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Impostazioni</h3>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Public/Private */}
-          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-            <span className="text-sm font-medium text-gray-700">Visibilità</span>
-            <span
-              className={`text-sm font-semibold px-2.5 py-1 rounded ${
-                event.isPublic ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-700'
-              }`}
-            >
-              {event.isPublic ? 'Pubblico' : 'Privato'}
-            </span>
-          </div>
-
-          {/* Requires Approval */}
-          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-            <span className="text-sm font-medium text-gray-700">Approvazione richiesta</span>
-            <span
-              className={`text-sm font-semibold px-2.5 py-1 rounded ${
-                event.requiresApproval
-                  ? 'bg-yellow-100 text-yellow-700'
-                  : 'bg-gray-200 text-gray-700'
-              }`}
-            >
-              {event.requiresApproval ? 'Sì' : 'No'}
-            </span>
-          </div>
-
-          {/* Max Participants */}
-          {event.maxParticipants && (
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <span className="text-sm font-medium text-gray-700">Capacità massima</span>
-              <span className="text-sm font-semibold text-gray-900">
-                {event.maxParticipants} persone
-              </span>
-            </div>
-          )}
-
-          {/* Category */}
-          {event.category && (
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <span className="text-sm font-medium text-gray-700">Categoria</span>
-              <span className="text-sm font-semibold text-gray-900">{event.category}</span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Metadata */}
-      <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-gray-600">
-          <div>
-            <span className="font-medium">Creato il:</span> {formatDateTime(event.createdAt)}
-          </div>
-          <div>
-            <span className="font-medium">Ultima modifica:</span> {formatDateTime(event.updatedAt)}
-          </div>
-        </div>
-      </div>
     </div>
   )
 }

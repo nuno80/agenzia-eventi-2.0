@@ -100,6 +100,7 @@ Sviluppare **Event Manager App** seguendo:
 2. Principi architetturali di questo documento
 3. Security Checklist (non negoziabile)
 4. Type Safety assoluta (zero `any`)
+5. Non usare `pnpm run build`
 
 ---
 

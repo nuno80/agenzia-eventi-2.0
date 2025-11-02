@@ -33,6 +33,18 @@ export type StaffDTO = {
   notes: string | null
 }
 
+function safeParseTags(jsonLike: string | null | undefined): string[] | null {
+  if (!jsonLike) return null
+  const s = String(jsonLike).trim()
+  if (!s) return null
+  try {
+    const parsed = JSON.parse(s)
+    return Array.isArray(parsed) ? (parsed as string[]) : null
+  } catch {
+    return null
+  }
+}
+
 function toDTO(row: typeof staff.$inferSelect): StaffDTO {
   return {
     id: row.id,
@@ -46,7 +58,7 @@ function toDTO(row: typeof staff.$inferSelect): StaffDTO {
     hourlyRate: row.hourlyRate ?? null,
     preferredPaymentMethod: row.preferredPaymentMethod ?? null,
     isActive: Boolean(row.isActive),
-    tags: row.tags ? (JSON.parse(row.tags) as string[]) : null,
+    tags: safeParseTags(row.tags),
     notes: row.notes ?? null,
   }
 }
@@ -82,30 +94,14 @@ export const filterStaff = cache(
     }
     if (params.tags && params.tags.length > 0) {
       filtered = filtered.filter((s) => {
-        if (!s.tags) return false
-        try {
-          const t = JSON.parse(s.tags) as string[]
-          return params.tags?.every((tg) => t.includes(tg)) ?? false
-        } catch {
-          return false
-        }
+        const t = safeParseTags(s.tags as unknown as string)
+        return t ? params.tags?.every((tg) => t.includes(tg)) ?? false : false
       })
     }
 
     return filtered.map(toDTO)
   }
 )
-
-export const searchStaff = cache(async (query: string): Promise<StaffDTO[]> => {
-  const q = query.toLowerCase()
-  const rows = await db.query.staff.findMany()
-  const filtered = rows.filter((s) =>
-    [s.firstName, s.lastName, s.email, s.specialization]
-      .filter(Boolean)
-      .some((v) => (v as string).toLowerCase().includes(q))
-  )
-  return filtered.map(toDTO)
-})
 
 // STATS
 export const getStaffStats = cache(async () => {

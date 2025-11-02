@@ -2,27 +2,7 @@
  * FILE: src/app/(dashboard)/eventi/[id]/edit/page.tsx
  *
  * PAGE: Edit Event
- * TYPE: Server Component (async)
- *
- * WHY SERVER:
- * - Fetches event data from database
- * - Validates event exists (notFound if not)
- * - Passes data to EventForm component
- *
- * ROUTE PARAMS:
- * - id: string - Event ID to edit
- *
- * DATA SOURCES:
- * - getEventById(id): Fetch event data
- *
- * FEATURES:
- * - Page header with breadcrumb
- * - EventForm in edit mode with initialData
- * - Success redirect back to event detail
- * - 404 if event doesn't exist
- *
- * USAGE:
- * Accessible at /eventi/[id]/edit route
+ * TYPE: Server Component (Async content wrapped in Suspense)
  */
 
 import { ArrowLeft, Loader2 } from 'lucide-react'
@@ -32,87 +12,59 @@ import { Suspense } from 'react'
 import { EventForm } from '@/components/dashboard/events/EventForm'
 import { getEventById } from '@/lib/dal/events'
 
-interface EditEventPageProps {
-  params: Promise<{
-    id: string
-  }>
+interface PageParams { id: string }
+interface EditEventPageProps { params: Promise<PageParams> }
+
+export default function EditEventPage({ params }: EditEventPageProps) {
+  return (
+    <Suspense fallback={<EditEventSkeleton />}>
+      <EditEventContent paramsPromise={params} />
+    </Suspense>
+  )
 }
 
-/**
- * Main Edit Event Page
- */
-export default async function EditEventPage({ params }: EditEventPageProps) {
-  const { id } = await params
+async function EditEventContent({ paramsPromise }: { paramsPromise: Promise<PageParams> }) {
+  const { id } = await paramsPromise
+
+  // Header + link back
+  const header = (
+    <div>
+      <Link
+        href={`/eventi/${id}/overview`}
+        className="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-blue-600 mb-4 transition-colors"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        <span>Torna all'evento</span>
+      </Link>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Modifica Evento</h1>
+        <p className="text-sm text-gray-600 mt-1">Aggiorna i dettagli dell'evento</p>
+      </div>
+    </div>
+  )
+
+  // Fetch event data
+  const event = await getEventById(id)
+  if (!event) notFound()
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div>
-        {/* Breadcrumb */}
-        <Link
-          href={`/eventi/${id}/overview`}
-          className="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-blue-600 mb-4 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Torna all'evento</span>
-        </Link>
-
-        {/* Title */}
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Modifica Evento</h1>
-          <p className="text-sm text-gray-600 mt-1">Aggiorna i dettagli dell'evento</p>
-        </div>
-      </div>
-
-      {/* Event Form with Suspense */}
-      <Suspense fallback={<EditEventSkeleton />}>
-        <EditEventContent eventId={id} />
-      </Suspense>
+      {header}
+      {/* Client form without function props from server */}
+      <EventForm mode="edit" initialData={event} />
     </div>
   )
 }
 
-/**
- * Edit Event Content Component
- * Async Server Component that fetches event data
- */
-async function EditEventContent({ eventId }: { eventId: string }) {
-  // Fetch event data
-  const event = await getEventById(eventId)
-
-  // 404 if event not found
-  if (!event) {
-    notFound()
-  }
-
-  return (
-    <EventForm
-      mode="edit"
-      initialData={event}
-      onSuccess={(_id) => {
-        // Success callback will redirect to event detail
-        // This is handled in the EventForm component
-      }}
-    />
-  )
-}
-
-/**
- * Loading Skeleton
- * Shown while event data is being fetched
- */
 function EditEventSkeleton() {
   return (
     <div className="space-y-6">
-      {/* Loading indicator */}
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto mb-3" />
           <p className="text-sm text-gray-600">Caricamento dati evento...</p>
         </div>
       </div>
-
-      {/* Skeleton form sections */}
       <div className="space-y-6">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse">
@@ -132,19 +84,12 @@ function EditEventSkeleton() {
   )
 }
 
-/**
- * Generate metadata for SEO
- */
-export async function generateMetadata({ params }: EditEventPageProps) {
+export async function generateMetadata({ params }: { params: Promise<PageParams> }) {
   const { id } = await params
   const event = await getEventById(id)
-
   if (!event) {
-    return {
-      title: 'Evento non trovato',
-    }
+    return { title: 'Evento non trovato' }
   }
-
   return {
     title: `Modifica ${event.title} | EventHub Dashboard`,
     description: `Modifica i dettagli di ${event.title}`,

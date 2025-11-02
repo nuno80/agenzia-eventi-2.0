@@ -1,41 +1,30 @@
+'use client'
+
 /**
  * FILE: src/components/dashboard/events/EventForm.tsx
- *
  * COMPONENT: EventForm
  * TYPE: Client Component
- *
- * WHY CLIENT:
- * - Form state management with useState
- * - Input handlers and validation feedback
- * - Server Action submission with loading states
- * - Error display and success handling
- *
- * PROPS:
- * - mode: 'create' | 'edit' - Form mode
- * - initialData?: Event - Initial data for edit mode
- * - onSuccess?: (eventId: string) => void - Callback after successful submission
- *
- * FEATURES:
- * - Complete event form with all fields
- * - Real-time validation feedback
- * - Loading states during submission
- * - Error messages per field
- * - Success/error toast messages
- * - Tags input with add/remove
- * - Date/time pickers
- *
- * USAGE:
- * <EventForm mode="create" onSuccess={(id) => router.push(`/eventi/${id}/overview`)} />
  */
-
-'use client'
 
 import { AlertCircle, Loader2, Plus, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import type { ActionResult } from '@/app/actions/events'
 import { createEvent, updateEvent } from '@/app/actions/events'
 import type { Event } from '@/db'
+
+function safeParseTags(input: unknown): string[] {
+  if (!input) return []
+  if (Array.isArray(input)) return input as string[]
+  try {
+    const s = String(input).trim()
+    if (!s) return []
+    const parsed = JSON.parse(s)
+    return Array.isArray(parsed) ? (parsed as string[]) : []
+  } catch {
+    return []
+  }
+}
 
 interface EventFormProps {
   mode: 'create' | 'edit'
@@ -49,8 +38,9 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
   const [errors, setErrors] = useState<Record<string, string[]>>({})
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  // Tags state
-  const [tags, setTags] = useState<string[]>(initialData?.tags ? JSON.parse(initialData.tags) : [])
+  // Tags state (safe parse)
+  const initialTags = useMemo(() => safeParseTags(initialData?.tags), [initialData?.tags])
+  const [tags, setTags] = useState<string[]>(initialTags)
   const [tagInput, setTagInput] = useState('')
 
   const handleAddTag = () => {
@@ -91,14 +81,14 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
         if (onSuccess) {
           // Use custom callback if provided
-          if (mode === 'create' && result.data?.id) {
-            onSuccess(result.data.id)
+          if (mode === 'create' && (result as any).data?.id) {
+            onSuccess((result as any).data.id)
           } else if (mode === 'edit' && initialData?.id) {
             onSuccess(initialData.id)
           }
-        } else if (mode === 'create' && result.data?.id) {
+        } else if (mode === 'create' && (result as any).data?.id) {
           // Default: redirect to new event
-          router.push(`/eventi/${result.data.id}/overview`)
+          router.push(`/eventi/${(result as any).data.id}/overview`)
         } else if (mode === 'edit' && initialData?.id) {
           // Default: redirect back to event detail
           router.push(`/eventi/${initialData.id}/overview`)
@@ -108,8 +98,8 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
         }
       } else {
         setMessage({ type: 'error', text: result.message })
-        if (result.errors) {
-          setErrors(result.errors)
+        if ((result as any).errors) {
+          setErrors((result as any).errors)
         }
       }
     })
@@ -214,9 +204,7 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
               name="startDate"
               required
               defaultValue={
-                initialData?.startDate
-                  ? new Date(initialData.startDate).toISOString().slice(0, 16)
-                  : ''
+                initialData?.startDate ? new Date(initialData.startDate).toISOString().slice(0, 16) : ''
               }
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 getErrorMessage('startDate') ? 'border-red-300' : 'border-gray-300'
@@ -251,10 +239,7 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
           {/* Registration Open */}
           <div>
-            <label
-              htmlFor="registrationOpenDate"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="registrationOpenDate" className="block text-sm font-medium text-gray-700 mb-1">
               Apertura Iscrizioni
             </label>
             <input
@@ -272,10 +257,7 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
           {/* Registration Close */}
           <div>
-            <label
-              htmlFor="registrationCloseDate"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="registrationCloseDate" className="block text sm font-medium text-gray-700 mb-1">
               Chiusura Iscrizioni
             </label>
             <input
@@ -455,17 +437,14 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
           {/* Max Participants */}
           <div>
-            <label
-              htmlFor="maxParticipants"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="maxParticipants" className="block text-sm font-medium text-gray-700 mb-1">
               Capacità Massima
             </label>
             <input
               type="number"
               id="maxParticipants"
               name="maxParticipants"
-              min="1"
+              min={1}
               defaultValue={initialData?.maxParticipants || ''}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Es: 500"
@@ -481,8 +460,8 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
               type="number"
               id="totalBudget"
               name="totalBudget"
-              min="0"
-              step="0.01"
+              min={0}
+              step={0.01}
               defaultValue={initialData?.totalBudget || ''}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Es: 150000"
@@ -623,3 +602,5 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
     </form>
   )
 }
+
+export default EventForm

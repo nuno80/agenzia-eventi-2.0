@@ -29,47 +29,38 @@ const nonNegativeMoney = z
 const optionalUrl = z.string().url('URL non valido').max(500).optional().nullable()
 const optionalString = z.string().max(5000).optional().nullable()
 
-export const createStaffAssignmentSchema = z
-  .object({
-    eventId: cuid,
-    staffId: cuid,
+// Base schema (senza refine). Evita il problema di extend() su schema raffinato
+const staffAssignmentBase = z.object({
+  eventId: cuid,
+  staffId: cuid,
 
-    startTime: z.coerce.date(),
-    endTime: z.coerce.date(),
+  startTime: z.coerce.date(),
+  endTime: z.coerce.date(),
 
-    assignmentStatus: assignmentStatusEnum.default('requested'),
+  assignmentStatus: assignmentStatusEnum.default('requested'),
 
-    paymentAmount: nonNegativeMoney,
+  paymentAmount: nonNegativeMoney,
 
-    paymentTerms: paymentTermsEnum.default('custom'),
-    paymentDueDate: z.coerce.date().optional().nullable(),
+  paymentTerms: paymentTermsEnum.default('custom'),
+  paymentDueDate: z.coerce.date().optional().nullable(),
 
-    paymentNotes: optionalString,
+  paymentNotes: optionalString,
 
-    invoiceNumber: z.string().max(100).optional().nullable(),
-    invoiceUrl: optionalUrl,
-  })
-  .refine((d) => d.endTime >= d.startTime, {
+  invoiceNumber: z.string().max(100).optional().nullable(),
+  invoiceUrl: optionalUrl,
+})
+
+// Create: aggiunge la validazione endTime >= startTime
+export const createStaffAssignmentSchema = staffAssignmentBase.refine(
+  (d) => d.endTime >= d.startTime,
+  {
     message: 'La data di fine deve essere successiva alla data di inizio',
     path: ['endTime'],
-  })
+  }
+)
 
-export const updateStaffAssignmentSchema = createStaffAssignmentSchema
-  .extend({
-    // Consentiamo aggiornamenti parziali
-    eventId: cuid.optional(),
-    staffId: cuid.optional(),
-    startTime: z.coerce.date().optional(),
-    endTime: z.coerce.date().optional(),
-    assignmentStatus: assignmentStatusEnum.optional(),
-    paymentTerms: paymentTermsEnum.optional(),
-    paymentDueDate: z.coerce.date().optional().nullable(),
-    paymentAmount: nonNegativeMoney,
-    invoiceNumber: z.string().max(100).optional().nullable(),
-    invoiceUrl: optionalUrl,
-    paymentNotes: optionalString,
-  })
-  .partial()
+// Update: campi opzionali (aggiornamento parziale)
+export const updateStaffAssignmentSchema = staffAssignmentBase.partial()
 
 export const markPaidSchema = z.object({
   assignmentId: cuid,

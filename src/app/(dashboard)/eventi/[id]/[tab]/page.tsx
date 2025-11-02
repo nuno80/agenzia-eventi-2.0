@@ -2,36 +2,7 @@
  * FILE: src/app/(dashboard)/eventi/[id]/[tab]/page.tsx
  *
  * PAGE: Event Detail with Tabs
- * TYPE: Server Component (async)
- *
- * WHY SERVER:
- * - Fetches event data from database
- * - Dynamic route with [id] and [tab] params
- * - Uses Suspense for progressive loading
- *
- * ROUTE PARAMS:
- * - id: string - Event ID
- * - tab: string - Tab slug (overview, partecipanti, relatori, etc.)
- *
- * DATA SOURCES:
- * - getEventById(id): Fetch event data
- * - getEventWithParticipants(id): For participant count
- * - getEventWithSpeakers(id): For speaker count
- * - getEventWithSponsors(id): For sponsor count
- *
- * PATTERN:
- * - Server Component fetches data
- * - EventHeader shows event info (Server)
- * - EventTabs for navigation (Client)
- * - Tab content based on [tab] param (Server)
- *
- * VALID TABS:
- * - overview, partecipanti, relatori, sponsor, agenda,
- *   servizi, budget, comunicazioni, sondaggi, checkin
- *
- * USAGE:
- * /eventi/[id]/overview → Shows Overview tab
- * /eventi/[id]/partecipanti → Shows Participants tab (when created)
+ * TYPE: Server Component (Async content wrapped in Suspense)
  */
 
 import { Loader2 } from 'lucide-react'
@@ -48,7 +19,6 @@ import {
   getEventWithSponsors,
 } from '@/lib/dal/events'
 
-// Define valid tab values
 const VALID_TABS = [
   'overview',
   'partecipanti',
@@ -64,40 +34,39 @@ const VALID_TABS = [
 
 type ValidTab = (typeof VALID_TABS)[number]
 
-interface PageProps {
-  params: Promise<{
-    id: string
-    tab: string
-  }>
+interface PageParams {
+  id: string
+  tab: string
 }
 
-/**
- * Main Event Detail Page
- */
-export default async function EventDetailPage({ params }: PageProps) {
-  const { id, tab } = await params
+interface PageProps {
+  params: Promise<PageParams>
+}
 
-  // Validate tab parameter
+// NOTE: Wrap async content in Suspense to avoid blocking route errors
+export default function EventDetailPage({ params }: PageProps) {
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      {/* Pass the promise down and unwrap inside */}
+      <EventDetailContent paramsPromise={params} />
+    </Suspense>
+  )
+}
+
+async function EventDetailContent({ paramsPromise }: { paramsPromise: Promise<PageParams> }) {
+  const { id, tab } = await paramsPromise
+
   if (!VALID_TABS.includes(tab as ValidTab)) {
     notFound()
   }
 
-  // Fetch event data
   const event = await getEventById(id)
-
-  if (!event) {
-    notFound()
-  }
+  if (!event) notFound()
 
   return (
     <div className="space-y-6">
-      {/* Event Header */}
       <EventHeader event={event} />
-
-      {/* Navigation Tabs */}
       <EventTabs eventId={id} currentTab={tab} />
-
-      {/* Tab Content with Suspense */}
       <Suspense fallback={<TabContentSkeleton />}>
         <TabContent eventId={id} tab={tab as ValidTab} />
       </Suspense>
@@ -105,53 +74,34 @@ export default async function EventDetailPage({ params }: PageProps) {
   )
 }
 
-/**
- * Tab Content Component
- * Renders different content based on active tab
- */
 async function TabContent({ eventId, tab }: { eventId: string; tab: ValidTab }) {
   switch (tab) {
     case 'overview':
       return <OverviewTabContent eventId={eventId} />
-
     case 'partecipanti':
       return <ParticipantsTab eventId={eventId} />
-
     case 'relatori':
       return <PlaceholderTab title="Relatori" />
-
     case 'sponsor':
       return <PlaceholderTab title="Sponsor" />
-
     case 'agenda':
       return <PlaceholderTab title="Agenda" />
-
     case 'servizi':
       return <PlaceholderTab title="Servizi" />
-
     case 'budget':
       return <PlaceholderTab title="Budget" />
-
     case 'comunicazioni':
       return <PlaceholderTab title="Comunicazioni" />
-
     case 'sondaggi':
       return <PlaceholderTab title="Sondaggi" />
-
     case 'checkin':
       return <PlaceholderTab title="Check-in" />
-
     default:
       return <PlaceholderTab title="Tab non implementato" />
   }
 }
 
-/**
- * Overview Tab Content with Data
- * Fetches counts for participants, speakers, sponsors
- */
 async function OverviewTabContent({ eventId }: { eventId: string }) {
-  // Fetch data in parallel
   const [event, eventWithParticipants, eventWithSpeakers, eventWithSponsors] = await Promise.all([
     getEventById(eventId),
     getEventWithParticipants(eventId),
@@ -159,9 +109,7 @@ async function OverviewTabContent({ eventId }: { eventId: string }) {
     getEventWithSponsors(eventId),
   ])
 
-  if (!event) {
-    notFound()
-  }
+  if (!event) notFound()
 
   const participantsCount = eventWithParticipants?.participants?.length || 0
   const speakersCount = eventWithSpeakers?.speakers?.length || 0
@@ -177,10 +125,6 @@ async function OverviewTabContent({ eventId }: { eventId: string }) {
   )
 }
 
-/**
- * Placeholder Tab Component
- * For tabs not yet implemented
- */
 function PlaceholderTab({ title }: { title: string }) {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
@@ -189,21 +133,15 @@ function PlaceholderTab({ title }: { title: string }) {
           <Loader2 className="w-8 h-8 text-gray-400" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-        <p className="text-sm text-gray-600">
-          Questa sezione è in fase di sviluppo e sarà disponibile a breve.
-        </p>
+        <p className="text-sm text-gray-600">Questa sezione è in fase di sviluppo e sarà disponibile a breve.</p>
       </div>
     </div>
   )
 }
 
-/**
- * Loading Skeleton for Tab Content
- */
 function TabContentSkeleton() {
   return (
     <div className="space-y-6">
-      {/* Description skeleton */}
       <div className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse">
         <div className="h-6 bg-gray-200 rounded w-32 mb-3" />
         <div className="space-y-2">
@@ -213,7 +151,6 @@ function TabContentSkeleton() {
         </div>
       </div>
 
-      {/* Stats skeleton */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[1, 2, 3].map((i) => (
           <div key={i} className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse">
@@ -228,7 +165,6 @@ function TabContentSkeleton() {
         ))}
       </div>
 
-      {/* Details skeleton */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {[1, 2].map((i) => (
           <div key={i} className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse">
@@ -245,19 +181,22 @@ function TabContentSkeleton() {
   )
 }
 
-/**
- * Generate metadata for SEO
- */
-export async function generateMetadata({ params }: PageProps) {
+function PageSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="h-10 bg-gray-100 rounded" />
+      <div className="h-8 bg-gray-100 rounded" />
+      <div className="h-72 bg-gray-100 rounded" />
+    </div>
+  )
+}
+
+export async function generateMetadata({ params }: { params: Promise<PageParams> }) {
   const { id } = await params
   const event = await getEventById(id)
-
   if (!event) {
-    return {
-      title: 'Evento non trovato',
-    }
+    return { title: 'Evento non trovato' }
   }
-
   return {
     title: `${event.title} | EventHub Dashboard`,
     description: event.description || event.tagline || `Gestisci ${event.title}`,

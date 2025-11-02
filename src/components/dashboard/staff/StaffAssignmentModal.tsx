@@ -2,25 +2,13 @@
 
 /**
  * FILE: src/components/dashboard/staff/StaffAssignmentModal.tsx
- *
- * VERSION: 1.0
- *
- * COMPONENT: StaffAssignmentModal
- * TYPE: Client Component
- *
- * WHY CLIENT:
- * - Gestisce stato di apertura/chiusura modale
- * - Gestisce form interattivo con react-hook-form
- * - Invoca Server Action (createAssignment) e mostra toast
- *
- * PROPS:
- * - staff: { id: string; firstName: string; lastName: string; role: string }
- * - events: { id: string; title: string; startDate?: Date | string; endDate?: Date | string }[]
- * - defaultEventId?: string
+ * VERSION: 1.3
+ * COMPONENT: StaffAssignmentModal (Client)
  */
 
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CalendarClock, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -35,19 +23,28 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { toast } from '@/components/ui/use-toast'
 import { createAssignment } from '@/app/actions/staff-assignments'
-import {
-  createStaffAssignmentSchema,
-  type CreateStaffAssignmentInput,
-} from '@/lib/validations/staff-assignments'
+import { assignmentStatusEnum, paymentTermsEnum } from '@/lib/validations/staff-assignments'
 
-// Local form shape for RHF. We'll coerce string -> Date where needed on submit.
-// We reuse Zod schema via resolver but allow strings for datetime inputs.
+const uiSchema = z
+  .object({
+    eventId: z.string().min(1),
+    staffId: z.string().min(1),
+    startTime: z.string().min(1),
+    endTime: z.string().min(1),
+    assignmentStatus: assignmentStatusEnum,
+    paymentAmount: z.union([z.string(), z.literal('')]).nullable(),
+    paymentTerms: paymentTermsEnum,
+    paymentDueDate: z.string().nullable().optional(),
+    paymentNotes: z.string().nullable().optional(),
+    invoiceNumber: z.string().nullable().optional(),
+    invoiceUrl: z.string().nullable().optional(),
+  })
+  .refine((d) => new Date(d.endTime).getTime() >= new Date(d.startTime).getTime(), {
+    message: 'La data di fine deve essere successiva alla data di inizio',
+    path: ['endTime'],
+  })
 
-type FormValues = Omit<CreateStaffAssignmentInput, 'startTime' | 'endTime' | 'paymentDueDate'> & {
-  startTime: string
-  endTime: string
-  paymentDueDate?: string | null
-}
+type FormValues = z.infer<typeof uiSchema>
 
 interface StaffAssignmentModalProps {
   staff: { id: string; firstName: string; lastName: string; role: string }
@@ -65,20 +62,17 @@ export function StaffAssignmentModal({
   const [open, setOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
-  const eventOptions = useMemo(
-    () => events.map((e) => ({ id: e.id, label: e.title })),
-    [events]
-  )
+  const eventOptions = useMemo(() => events.map((e) => ({ id: e.id, label: e.title })), [events])
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(createStaffAssignmentSchema),
+    resolver: zodResolver(uiSchema),
     defaultValues: {
       eventId: defaultEventId ?? (eventOptions[0]?.id || ''),
       staffId: staff.id,
       startTime: '',
       endTime: '',
       assignmentStatus: 'requested',
-      paymentAmount: null,
+      paymentAmount: '',
       paymentTerms: 'custom',
       paymentDueDate: null,
       paymentNotes: null,
@@ -92,17 +86,25 @@ export function StaffAssignmentModal({
     try {
       setSubmitting(true)
 
-      // Coercions for server action schema
+      const parsedAmount =
+        values.paymentAmount === '' || values.paymentAmount === null
+          ? null
+          : Number.isNaN(Number.parseFloat(values.paymentAmount as string))
+            ? null
+            : Number.parseFloat(values.paymentAmount as string)
+
       const payload: Record<string, unknown> = {
-        ...values,
+        eventId: values.eventId,
+        staffId: values.staffId,
         startTime: values.startTime ? new Date(values.startTime) : new Date(),
         endTime: values.endTime ? new Date(values.endTime) : new Date(),
+        assignmentStatus: values.assignmentStatus,
+        paymentAmount: parsedAmount,
+        paymentTerms: values.paymentTerms,
         paymentDueDate: values.paymentDueDate ? new Date(values.paymentDueDate) : null,
-        // Ensure numbers
-        paymentAmount:
-          typeof values.paymentAmount === 'string'
-            ? Number.parseFloat(values.paymentAmount as unknown as string)
-            : values.paymentAmount ?? null,
+        paymentNotes: values.paymentNotes ?? null,
+        invoiceNumber: values.invoiceNumber ?? null,
+        invoiceUrl: values.invoiceUrl ?? null,
       }
 
       const res = await createAssignment(payload)
@@ -111,13 +113,8 @@ export function StaffAssignmentModal({
         setOpen(false)
         form.reset()
       } else {
-        toast({
-          title: 'Errore',
-          description: res.message,
-          // @ts-expect-error toast supports variant via classNames; keeping simple
-        })
+        toast({ title: 'Errore', description: res.message })
         if (res.errors) {
-          // Map first error per field into form
           Object.entries(res.errors).forEach(([name, msgs]) => {
             form.setError(name as keyof FormValues, { message: msgs?.[0] || 'Campo non valido' })
           })
@@ -156,10 +153,9 @@ export function StaffAssignmentModal({
 
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                {/* Evento */}
                 <FormField
                   control={form.control}
-                  name={"eventId" as any}
+                  name="eventId"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Evento</FormLabel>
@@ -182,16 +178,15 @@ export function StaffAssignmentModal({
                   )}
                 />
 
-                {/* Date/ora inizio-fine */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name={"startTime" as any}
+                    name="startTime"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Inizio</FormLabel>
                         <FormControl>
-                          <Input type="datetime-local" value={field.value} onChange={field.onChange} />
+                          <Input type="datetime-local" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -199,12 +194,12 @@ export function StaffAssignmentModal({
                   />
                   <FormField
                     control={form.control}
-                    name={"endTime" as any}
+                    name="endTime"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Fine</FormLabel>
                         <FormControl>
-                          <Input type="datetime-local" value={field.value} onChange={field.onChange} />
+                          <Input type="datetime-local" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -212,10 +207,9 @@ export function StaffAssignmentModal({
                   />
                 </div>
 
-                {/* Status assegnazione */}
                 <FormField
                   control={form.control}
-                  name={"assignmentStatus" as any}
+                  name="assignmentStatus"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Status assegnazione</FormLabel>
@@ -238,11 +232,10 @@ export function StaffAssignmentModal({
                   )}
                 />
 
-                {/* Pagamento */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name={"paymentAmount" as any}
+                    name="paymentAmount"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Importo pagamento (EUR)</FormLabel>
@@ -251,7 +244,7 @@ export function StaffAssignmentModal({
                             type="number"
                             step="0.01"
                             placeholder="Es. 150.00"
-                            value={field.value as unknown as string}
+                            value={field.value ?? ''}
                             onChange={field.onChange}
                           />
                         </FormControl>
@@ -262,7 +255,7 @@ export function StaffAssignmentModal({
 
                   <FormField
                     control={form.control}
-                    name={"paymentTerms" as any}
+                    name="paymentTerms"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Termini pagamento</FormLabel>
@@ -286,16 +279,15 @@ export function StaffAssignmentModal({
                   />
                 </div>
 
-                {/* Scadenza pagamento (visibile se custom) */}
                 {form.watch('paymentTerms') === 'custom' && (
                   <FormField
                     control={form.control}
-                    name={"paymentDueDate" as any}
+                    name="paymentDueDate"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Scadenza pagamento</FormLabel>
                         <FormControl>
-                          <Input type="date" value={(field.value as string | null) ?? ''} onChange={field.onChange} />
+                          <Input type="date" value={field.value ?? ''} onChange={field.onChange} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -303,16 +295,15 @@ export function StaffAssignmentModal({
                   />
                 )}
 
-                {/* Note fattura */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name={"invoiceNumber" as any}
+                    name="invoiceNumber"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Numero fattura (opz.)</FormLabel>
                         <FormControl>
-                          <Input placeholder="Es. 2025-INV-001" value={(field.value as string | null) ?? ''} onChange={field.onChange} />
+                          <Input placeholder="Es. 2025-INV-001" value={field.value ?? ''} onChange={field.onChange} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -320,12 +311,12 @@ export function StaffAssignmentModal({
                   />
                   <FormField
                     control={form.control}
-                    name={"invoiceUrl" as any}
+                    name="invoiceUrl"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>URL fattura (opz.)</FormLabel>
                         <FormControl>
-                          <Input placeholder="https://..." value={(field.value as string | null) ?? ''} onChange={field.onChange} />
+                          <Input placeholder="https://..." value={field.value ?? ''} onChange={field.onChange} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -341,7 +332,7 @@ export function StaffAssignmentModal({
                     {submitting ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        <span>Salvataggio  a</span>
+                        <span>Salvataggio…</span>
                       </>
                     ) : (
                       <span>Salva assegnazione</span>

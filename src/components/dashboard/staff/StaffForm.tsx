@@ -2,32 +2,17 @@
 /**
  * FILE: src/components/dashboard/staff/StaffForm.tsx
  *
- * VERSION: 1.0
+ * VERSION: 1.3
  *
  * COMPONENT: StaffForm
  * TYPE: Client Component
- *
- * WHY CLIENT:
- * - Usa react-hook-form per stato e validazione client-side
- * - Invoca Server Actions createStaff/updateStaff con FormData
- * - Gestisce UI: loading, errori Zod, messaggi
- *
- * PROPS:
- * - mode: 'create' | 'edit' - Modalità form
- * - defaultValues?: Partial<CreateStaffInput & { id?: string; tagsText?: string }> - valori iniziali in edit
- * - onSuccess?: (staffId?: string) => void - callback su successo
- *
- * FEATURES:
- * - Campi principali: firstName, lastName, email, phone, role, specialization, hourlyRate, isActive, tags, notes
- * - Supporto tags come stringa comma-separated (tagsText) con preview
- * - UI accessibile con components/ui
  */
 
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { createStaffSchema, type CreateStaffInput } from '@/lib/validations/staff'
+import { createStaffSchema } from '@/lib/validations/staff'
 import { createStaff, updateStaff } from '@/app/actions/staff'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -35,15 +20,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button'
 
 const formSchema = createStaffSchema.extend({
-  // Helper field per input testuale di tags
+  // Helper field per input testuale di tags (stringa comma-separated)
   tagsText: z.string().optional().nullable(),
 })
 
-export type StaffFormValues = z.infer<typeof formSchema>
+// IMPORTANT: use the INPUT type for react-hook-form values
+// because zodResolver expects schema INPUT (pre-transform) types.
+export type StaffFormValues = z.input<typeof formSchema>
 
 interface StaffFormProps {
   mode: 'create' | 'edit'
-  defaultValues?: Partial<StaffFormValues & { id?: string }>
+  defaultValues?: Partial<StaffFormValues & { id?: string; tagsText?: string }>
   onSuccess?: (staffId?: string) => void
 }
 
@@ -55,17 +42,19 @@ export function StaffForm({ mode, defaultValues, onSuccess }: StaffFormProps) {
       firstName: defaultValues?.firstName ?? '',
       lastName: defaultValues?.lastName ?? '',
       email: defaultValues?.email ?? '',
-      phone: defaultValues?.phone ?? '',
-      photoUrl: defaultValues?.photoUrl ?? '',
+      phone: (defaultValues as any)?.phone ?? '',
+      photoUrl: (defaultValues as any)?.photoUrl ?? '',
       role: (defaultValues?.role as StaffFormValues['role']) ?? 'hostess',
-      specialization: defaultValues?.specialization ?? '',
-      hourlyRate: (defaultValues?.hourlyRate as number | null | undefined) ?? null,
-      preferredPaymentMethod: defaultValues?.preferredPaymentMethod ?? '',
-      isActive: defaultValues?.isActive ?? true,
-      tags: (defaultValues?.tags as string[] | null | undefined) ?? [],
-      notes: defaultValues?.notes ?? '',
-      tagsText: Array.isArray(defaultValues?.tags)
-        ? (defaultValues?.tags as string[]).join(', ')
+      specialization: (defaultValues as any)?.specialization ?? '',
+      hourlyRate: (defaultValues as any)?.hourlyRate ?? null,
+      preferredPaymentMethod: (defaultValues as any)?.preferredPaymentMethod ?? '',
+      isActive: (defaultValues as any)?.isActive ?? true,
+      // Schema INPUT expects tags as string[] | null | undefined
+      // We use tagsText for UI, so leave tags undefined by default
+      tags: Array.isArray((defaultValues as any)?.tags) ? ((defaultValues as any).tags as string[]) : undefined,
+      notes: (defaultValues as any)?.notes ?? '',
+      tagsText: Array.isArray((defaultValues as any)?.tags)
+        ? ((defaultValues as any).tags as string[]).join(', ')
         : (defaultValues as any)?.tagsText ?? '',
     }
     return base
@@ -92,8 +81,8 @@ export function StaffForm({ mode, defaultValues, onSuccess }: StaffFormProps) {
           fd.append(key, String(val))
         }
       })
-      // Se tagsText presente, convertilo in array e append come tags
-      if (values.tagsText && !values.tags?.length) {
+      // Se tagsText presente e non abbiamo già un array tags, convertilo e append come tags
+      if (values.tagsText && !(Array.isArray(values.tags) && values.tags.length)) {
         const arr = values.tagsText
           .split(',')
           .map((t) => t.trim())
