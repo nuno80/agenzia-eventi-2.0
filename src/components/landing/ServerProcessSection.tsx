@@ -1,8 +1,6 @@
 // src/components/landing/ServerProcessSection.tsx
 // Server Component version of ProcessSection - no interactivity needed
 
-import React from 'react'
-
 const processSteps = [
   { title: 'Briefing', description: 'Analizziamo obiettivi, target e budget' },
   { title: 'Strategia', description: 'Progettiamo soluzioni su misura' },

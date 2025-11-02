@@ -1,4 +1,4 @@
-## Errori da Evitare
+c## Errori da Evitare
 
 ### ❌ Keyword Stuffing
 ```
@@ -189,7 +189,7 @@ export default function TableOfContents() {
     text: string;
     level: number;
   }>>([]);
-  const [activeId, setActiveId] = useState('');
+  const [_activeId, setActiveId] = useState('');
 
   useEffect(() => {
     // Estrai tutti gli H2 e H3 dall'articolo
@@ -200,7 +200,7 @@ export default function TableOfContents() {
     const headingsData = elements.map((elem) => ({
       id: elem.id,
       text: elem.textContent || '',
-      level: parseInt(elem.tagName[1]),
+      level: parseInt(elem.tagName[1], 10),
     }));
 
     setHeadings(headingsData);
@@ -229,13 +229,13 @@ export default function TableOfContents() {
       </h3>
       <ul className="space-y-2">
         {headings.map((heading) => (
-          <li
-            key={heading.id}
-            style={{ paddingLeft: `${(heading.level - 2) * 1}rem` }}
+          <_li
+            _key={heading.id}
+            _style={{ paddingLeft: `${(heading.level - 2) * 1}_rem` }}
           >
-            <a
-              href={`#${heading.id}`}
-              className={`text-sm hover:text-amber-600 transition-colors block py-1 ${
+            <_a
+              _href={`#${heading.id}`}
+              _className={`text-sm hover:text-amber-600 transition-colors block py-1 ${
                 activeId === heading.id
                   ? 'text-amber-600 font-semibold'
                   : 'text-slate-600'
@@ -378,8 +378,8 @@ export const trackLeadGen = (source: string) => {
 ```html
 <!-- app/layout.tsx - Solo per blog pages -->
 <script>
-  (function(h,o,t,j,a,r){
-    h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+  ((h,o,t,j,a,r)=> {
+    h.hj=h.hj||(()=> {(h.hj.q=h.hj.q||[]).push(arguments)});
     h._hjSettings={hjid:YOUR_SITE_ID,hjsv:6};
     a=o.getElementsByTagName('head')[0];
     r=o.createElement('script');r.async=1;
@@ -583,11 +583,10 @@ export default null;
 // SBAGLIATO
 "Organizzazione eventi Roma è la nostra specialità. 
 Organizzazione eventi Roma richiede esper// ===== 1. STRUTTURA FILE NEXT.JS 15 =====
+
 // app/blog/page.tsx - Lista articoli blog
 
-import { Metadata } from 'next';
-import Link from 'next/link';
-import { Calendar, Clock, ArrowRight, Tag } from 'lucide-react';
+import { ArrowRight, } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Blog Eventi Corporate | Guide e Consigli per PMI - EventiPro Roma',
@@ -647,51 +646,49 @@ export default function BlogPage() {
           </p>
         </div>
       </section>
-
-      {/* Blog Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogPosts.map((post) => (
-            <article key={post.slug} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group">
-              <div className="aspect-video bg-slate-200 relative overflow-hidden">
+            <_article _key={post.slug} _className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group">
+              <_div _className="aspect-video bg-slate-200 relative overflow-hidden">
                 {/* Placeholder per immagine */}
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500 to-slate-700 opacity-80" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-white text-sm font-medium">Immagine articolo</span>
+                <_div _className="absolute inset-0 bg-gradient-to-br from-amber-500 to-slate-700 opacity-80" />
+                <_div _className="absolute inset-0 flex items-center justify-center">
+                  <_span _className="text-white text-sm font-medium">Immagine articolo</_span>
                 </div>
               </div>
               
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-semibold">
+              <_div _className="p-6">
+                <_div _className="flex items-center gap-3 mb-3">
+                  <_span _className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-semibold">
                     {post.category}
                   </span>
-                  <div className="flex items-center gap-1 text-slate-500 text-sm">
-                    <Clock className="w-4 h-4" />
-                    <span>{post.readTime}</span>
+                  <_div _className="flex items-center gap-1 text-slate-500 text-sm">
+                    <_Clock className="w-4 h-4" />
+                    <_span>{post.readTime}</span>
                   </div>
                 </div>
 
-                <h2 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-amber-600 transition-colors">
-                  <Link href={`/blog/${post.slug}`}>
+                <_h2 _className="text-xl font-bold text-slate-900 mb-3 group-hover:text-amber-600 transition-colors">
+                  <_Link _href={`/blog/${post.slug}`}>
                     {post.title}
                   </Link>
-                </h2>
+                </_h2>
 
-                <p className="text-slate-600 mb-4 line-clamp-3">
+                <_p _className="text-slate-600 mb-4 line-clamp-3">
                   {post.excerpt}
-                </p>
+                </_p>
 
-                <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                  <div className="flex items-center gap-2 text-sm text-slate-500">
-                    <Calendar className="w-4 h-4" />
-                    <time dateTime={post.publishedAt}>
+                <_div _className="flex items-center justify-between pt-4 border-t border-slate-100">
+                  <_div _className="flex items-center gap-2 text-sm text-slate-500">
+                    <_Calendar className="w-4 h-4" />
+                    <_time _dateTime={post.publishedAt}>
                       {new Date(post.publishedAt).toLocaleDateString('it-IT', {
                         day: 'numeric',
                         month: 'long',
                         year: 'numeric'
                       })}
-                    </time>
+                    </_time>
                   </div>
 
                   <Link 
@@ -699,11 +696,11 @@ export default function BlogPage() {
                     className="text-amber-600 hover:text-amber-700 font-semibold flex items-center gap-1 text-sm"
                   >
                     Leggi
-                    <ArrowRight className="w-4 h-4" />
+                    <_ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
               </div>
-            </article>
+            </_article>
           ))}
         </div>
       </section>
@@ -715,10 +712,10 @@ export default function BlogPage() {
 // ===== 2. TEMPLATE SINGOLO ARTICOLO =====
 // app/blog/[slug]/page.tsx
 
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { Calendar, Clock, User, Share2, ArrowLeft } from 'lucide-react';
+import type { ArrowLeft, Calendar, Clock, User } from 'lucide-react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 // Props per la pagina dinamica
 type Props = {
@@ -1145,7 +1142,7 @@ export default function BlogPostPage({ params }: Props) {
               prose-table:border-collapse prose-table:w-full
               prose-th:bg-slate-100 prose-th:p-3 prose-th:text-left
               prose-td:border prose-td:border-slate-200 prose-td:p-3"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={__html: post.content }
           />
 
           {/* Author Bio */}
@@ -1310,7 +1307,7 @@ export default function BlogPostPage({ params }: Props) {
 // ===== 4. GENERATORE SITEMAP DINAMICO =====
 // app/sitemap.ts
 
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // In produzione, questi verranno da CMS/database
@@ -1369,7 +1366,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 // ===== 5. TEMPLATE ALTRI 2 ARTICOLI =====
 
 // ARTICOLO 2: Checklist Congresso
-const article2Content = `
+const _article2Content = `
 <p class="lead">Organizzare un congresso aziendale richiede pianificazione meticolosa. Questa checklist in 30 punti ti guida passo-passo, dalla scelta della location al follow-up post-evento. Basata su 15+ anni di esperienza in eventi ECM e corporate.</p>
 
 <h2>Fase 1: Pianificazione Strategica (12-16 Settimane Prima)</h2>
@@ -1829,7 +1826,7 @@ const article2Content = `
 `;
 
 // ARTICOLO 3: Formazione & ROI
-const article3Content = `
+const _article3Content = `
 <p class="lead">Integrare formazione corporate nei tuoi eventi aziendali aumenta del 40% l'efficacia complessiva. Scopri come calcolare il ROI di public speaking, portamento e business etiquette, e perché le PMI più performanti investono in coaching pre-evento.</p>
 
 <h2>Il Problema: Eventi con Speaker Impreparati</h2>

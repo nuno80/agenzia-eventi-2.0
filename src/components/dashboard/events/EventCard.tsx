@@ -23,7 +23,7 @@
  * <EventCard event={event} />
  */
 
-import { ArrowRight, Calendar, Copy, Edit, Euro, MapPin, TrendingUp, Users } from 'lucide-react'
+import { ArrowRight, Calendar, Edit, Euro, MapPin, Users } from 'lucide-react'
 import Link from 'next/link'
 import { DuplicateEventButton } from '@/components/dashboard/events/DuplicateEventButton'
 import type { Event } from '@/db'
@@ -40,8 +40,8 @@ interface EventCardProps {
 }
 
 export function EventCard({ event }: EventCardProps) {
-  const statusColors = getStatusColor(event.status)
-  const priorityColors = getPriorityColor(event.priority)
+  const statusColors = getStatusColor(event.status || 'draft')
+  const priorityColors = getPriorityColor(event.priority || 'medium')
 
   const occupancyPercentage = event.maxParticipants
     ? Math.round(((event.currentParticipants || 0) / event.maxParticipants) * 100)

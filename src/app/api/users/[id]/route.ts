@@ -1,15 +1,15 @@
 import { eq } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 // Use libsql implementation exclusively (Turso database)
-import { db, users } from '@/db/libsql'
+import { db, users } from '@/db'
 
 // DELETE /api/users/[id] - Delete a user
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    const userId = parseInt(id)
+    const userId = parseInt(id, 10)
 
-    if (isNaN(userId)) {
+    if (Number.isNaN(userId)) {
       return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 })
     }
 

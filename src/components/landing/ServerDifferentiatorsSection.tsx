@@ -2,7 +2,6 @@
 // Server Component version of DifferentiatorsSection - no interactivity needed
 
 import { GraduationCap, Target, TrendingUp, Video } from 'lucide-react'
-import React from 'react'
 
 const differentiators = [
   {

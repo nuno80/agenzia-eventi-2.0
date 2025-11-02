@@ -1,7 +1,5 @@
 'use client'
 
-import React from 'react'
-
 const caseStudies = [
   {
     title: 'Congresso Medico 300+ Partecipanti',

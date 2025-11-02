@@ -1,7 +1,7 @@
 'use client'
 
 import { Mail, MapPin, Phone } from 'lucide-react'
-import React from 'react'
+import Link from 'next/link'
 
 const Footer = () => {
   return (
@@ -110,17 +110,26 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-slate-300 hover:text-amber-400 transition-colors">
+                <a
+                  href="/portfolio"
+                  className="text-slate-300 hover:text-amber-400 transition-colors"
+                >
                   Portfolio
                 </a>
               </li>
               <li>
-                <a href="#" className="text-slate-300 hover:text-amber-400 transition-colors">
+                <Link
+                  href="/blog"
+                  className="text-slate-300 hover:text-amber-400 transition-colors"
+                >
                   Blog
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-slate-300 hover:text-amber-400 transition-colors">
+                <a
+                  href="/privacy-policy"
+                  className="text-slate-300 hover:text-amber-400 transition-colors"
+                >
                   Privacy Policy
                 </a>
               </li>
@@ -135,13 +144,22 @@ const Footer = () => {
               © 2025 EventiPro Roma. P.IVA 12345678901 - Tutti i diritti riservati.
             </p>
             <div className="flex gap-6">
-              <a href="#" className="text-slate-400 hover:text-amber-400 transition-colors text-sm">
+              <a
+                href="/privacy-policy"
+                className="text-slate-400 hover:text-amber-400 transition-colors text-sm"
+              >
                 Privacy Policy
               </a>
-              <a href="#" className="text-slate-400 hover:text-amber-400 transition-colors text-sm">
+              <a
+                href="/cookie-policy"
+                className="text-slate-400 hover:text-amber-400 transition-colors text-sm"
+              >
                 Cookie Policy
               </a>
-              <a href="#" className="text-slate-400 hover:text-amber-400 transition-colors text-sm">
+              <a
+                href="/terms"
+                className="text-slate-400 hover:text-amber-400 transition-colors text-sm"
+              >
                 Termini di Servizio
               </a>
             </div>

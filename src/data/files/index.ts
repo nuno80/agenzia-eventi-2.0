@@ -3,7 +3,6 @@
 import 'server-only'
 import { desc, eq } from 'drizzle-orm'
 import { db, files } from '@/db'
-import { requireUser } from '../server-only'
 
 // Type definitions
 export type File = typeof files.$inferSelect

@@ -1,8 +1,6 @@
 // src/components/landing/ServerStatsSection.tsx
 // Server Component version of StatsSection - no interactivity needed
 
-import React from 'react'
-
 const stats = [
   { number: '15+', label: 'Anni Esperienza', sublabel: 'in event management' },
   { number: '200+', label: 'Eventi Gestiti', sublabel: 'inclusi ECM nazionali' },

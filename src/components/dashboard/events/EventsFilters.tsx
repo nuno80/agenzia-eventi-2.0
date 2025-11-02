@@ -25,7 +25,7 @@
 
 'use client'
 
-import { Filter, Search, SlidersHorizontal, X } from 'lucide-react'
+import { Search, SlidersHorizontal, X } from 'lucide-react'
 import { useState } from 'react'
 
 export interface FilterState {

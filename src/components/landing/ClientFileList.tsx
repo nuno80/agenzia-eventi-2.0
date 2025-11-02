@@ -34,10 +34,10 @@ export default function ClientFileList({
     const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i]
+    return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`
   }
 
-  const handleDelete = async (id: number, filename: string) => {
+  const handleDelete = async (_id: number, filename: string) => {
     const confirmed = confirm(`Are you sure you want to delete "${filename}"?`)
     if (!confirmed) return
 
@@ -47,7 +47,7 @@ export default function ClientFileList({
       alert('In a real implementation, this would call a Server Action to delete the file.')
     } catch (err: any) {
       console.error('Delete error:', err)
-      alert('An error occurred while deleting the file: ' + (err.message || 'Unknown error'))
+      alert(`An error occurred while deleting the file: ${err.message || 'Unknown error'}`)
     }
   }
 

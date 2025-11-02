@@ -1,7 +1,7 @@
 {
   "project": "EventHub Dashboard",
-  "lastUpdated": "2024-11-05",
-  "overallProgress": 37,
+  "lastUpdated": "2025-11-01",
+  "overallProgress": 38,
   "modules": [
     {
       "id": "core",
@@ -16,7 +16,7 @@
         },
         {
           "id": "core-2",
-          "name": "Torso database connection",
+          "name": "Turso database connection",
           "status": "completed",
           "complexity": "easy"
         },
@@ -72,7 +72,7 @@
         {
           "id": "db-6",
           "name": "Staff + StaffAssignments tables",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium"
         },
         {
@@ -343,13 +343,13 @@
         {
           "id": "staff-1",
           "name": "DAL staff.ts",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium"
         },
         {
           "id": "staff-2",
           "name": "DAL staffAssignments.ts",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium"
         },
         {
@@ -369,7 +369,7 @@
         {
           "id": "staff-5",
           "name": "Validation schema staffAssignments (Zod)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "easy",
           "componentType": "Validation",
           "description": "Schema per assignments: date, ruolo, pagamento con termini"
@@ -650,8 +650,8 @@
     {
       "priority": 1,
       "module": "staff",
-      "tasks": ["staff-1", "staff-2", "staff-5"],
-      "rationale": "Priorità su DAL (staff, assignments) e validation mancante; le Actions sono già pronte"
+      "tasks": ["staff-8", "staff-9", "staff-10", "staff-11"],
+      "rationale": "UI lista staff completa; dipende dal completamento DAL e validation (ora completati)"
     },
     {
       "priority": 2,
@@ -710,7 +710,7 @@
   ],
   "statistics": {
     "totalTasks": 98,
-    "completedTasks": 34,
+    "completedTasks": 35,
     "pendingTasks": 64,
     "byComplexity": {
       "easy": 28,
@@ -807,7 +807,7 @@
     "Le mutations usano Server Actions con revalidatePath/revalidateTag",
     "Il sistema pagamenti staff supporta scadenze personalizzate e tracking automatico",
     "L'evento può essere duplicato mantenendo speaker, sponsor, budget ma NON partecipanti",
-    "Il database è su Torso cloud, non locale",
+    "Il database è su Turso cloud, non locale",
     "Clerk gestisce l'autenticazione (già configurato)",
     "Vercel Blob gestisce file uploads (già configurato)"
   ]

@@ -3,7 +3,6 @@
 import 'server-only'
 import { eq } from 'drizzle-orm'
 import { db, users } from '@/db'
-import { requireAdminUser, requireUser } from '../server-only'
 
 // Type definitions
 export type User = typeof users.$inferSelect

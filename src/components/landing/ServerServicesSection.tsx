@@ -2,7 +2,6 @@
 // Server Component version of ServicesSection - static version without interactivity
 
 import { Award, CheckCircle2, GraduationCap, Users, Video } from 'lucide-react'
-import React from 'react'
 
 const services = [
   {

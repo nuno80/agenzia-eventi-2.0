@@ -1,0 +1,8 @@
+.next/
+out/
+dist/
+build/
+.cache/
+node_modules/
+guide/
+dashboard/

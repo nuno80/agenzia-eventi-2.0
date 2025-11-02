@@ -2,7 +2,6 @@
 // Server Component version of FAQSection - using HTML details/summary for interactivity
 
 import { ChevronDown } from 'lucide-react'
-import React from 'react'
 
 const faqs = [
   {

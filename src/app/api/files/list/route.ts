@@ -14,7 +14,7 @@ export async function GET() {
   } catch (error: any) {
     console.error('Error fetching files:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch files: ' + (error.message || 'Unknown error') },
+      { error: `Failed to fetch files: ${error.message || 'Unknown error'}` },
       { status: 500 }
     )
   }

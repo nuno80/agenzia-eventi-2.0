@@ -2,7 +2,6 @@
 // Server Component version of Footer - no interactivity needed
 
 import { Mail, MapPin, Phone } from 'lucide-react'
-import React from 'react'
 
 const ServerFooter = () => {
   return (

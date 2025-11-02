@@ -1,7 +1,5 @@
 'use client'
 
-import React from 'react'
-
 const processSteps = [
   { title: 'Briefing', description: 'Analizziamo obiettivi, target e budget' },
   { title: 'Strategia', description: 'Progettiamo soluzioni su misura' },

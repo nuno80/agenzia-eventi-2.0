@@ -219,7 +219,7 @@ export function getEventProgress(startDate: Date | string, endDate: Date | strin
  */
 export function truncate(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text
-  return text.slice(0, maxLength - 3) + '...'
+  return `${text.slice(0, maxLength - 3)}...`
 }
 
 /**
@@ -263,4 +263,71 @@ export function getRegistrationStatusLabel(status: string): string {
   }
 
   return labels[status as keyof typeof labels] || status
+}
+
+// ================================
+// Staff Assignments - Payment utils
+// ================================
+
+export type PaymentTerms = 'immediate' | '30_days' | '60_days' | '90_days'
+export type AssignmentStatus = 'requested' | 'confirmed' | 'declined' | 'completed' | 'cancelled'
+export type PaymentStatus = 'not_due' | 'pending' | 'overdue' | 'paid'
+
+/**
+ * Calculate payment due date based on end time and terms
+ * - immediate: same day as endTime
+ * - 30/60/90_days: add N days to endTime
+ */
+export function calculatePaymentDueDate(
+  endTime: Date | null | undefined,
+  terms: PaymentTerms
+): Date {
+  const base = new Date(endTime ?? new Date())
+  base.setHours(0, 0, 0, 0)
+
+  switch (terms) {
+    case 'immediate':
+      return base
+    case '30_days': {
+      const d = new Date(base)
+      d.setDate(d.getDate() + 30)
+      return d
+    }
+    case '60_days': {
+      const d = new Date(base)
+      d.setDate(d.getDate() + 60)
+      return d
+    }
+    case '90_days': {
+      const d = new Date(base)
+      d.setDate(d.getDate() + 90)
+      return d
+    }
+    default:
+      return base
+  }
+}
+
+/**
+ * Determine current payment status.
+ * Rules:
+ * - If paymentDate exists => 'paid'
+ * - If assignment is cancelled/declined => 'not_due'
+ * - If no dueDate => 'not_due'
+ * - If today > dueDate => 'overdue', else 'pending'
+ */
+export function calculatePaymentStatus(
+  dueDate: Date | null,
+  paymentDate: Date | null,
+  assignmentStatus: AssignmentStatus
+): PaymentStatus {
+  if (paymentDate) return 'paid'
+  if (assignmentStatus === 'cancelled' || assignmentStatus === 'declined') return 'not_due'
+  if (!dueDate) return 'not_due'
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  if (today.getTime() > dueDate.getTime()) return 'overdue'
+  return 'pending'
 }

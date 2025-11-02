@@ -1,7 +1,7 @@
 'use client'
 
 import { Award, CheckCircle2, ChevronDown, GraduationCap, Users, Video } from 'lucide-react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 const services = [
   {
@@ -78,9 +78,10 @@ const ServicesSection = () => {
             const isActive = activeService === service.id
 
             return (
-              <div
+              <button
                 key={service.id}
-                className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer"
+                type="button"
+                className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer text-left w-full"
                 onClick={() => setActiveService(isActive ? null : service.id)}
               >
                 <div className="p-6">
@@ -93,7 +94,9 @@ const ServicesSection = () => {
                       <p className="text-slate-600">{service.subtitle}</p>
                     </div>
                     <ChevronDown
-                      className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isActive ? 'rotate-180' : ''}`}
+                      className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${
+                        isActive ? 'rotate-180' : ''
+                      }`}
                     />
                   </div>
 
@@ -108,7 +111,7 @@ const ServicesSection = () => {
                     </div>
                   )}
                 </div>
-              </div>
+              </button>
             )
           })}
         </div>

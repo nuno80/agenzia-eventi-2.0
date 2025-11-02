@@ -161,7 +161,7 @@ export async function POST(request: Request) {
       }
 
       return NextResponse.json(
-        { error: 'Database error: ' + (dbError.message || 'Failed to save metadata') },
+        { error: `Database error: ${dbError.message || 'Failed to save metadata'}` },
         { status: 500 }
       )
     }
@@ -191,7 +191,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { error: 'Upload failed: ' + (error.message || 'Unknown error') },
+      { error: `Upload failed: ${error.message || 'Unknown error'}` },
       { status: 500 }
     )
   }
@@ -245,7 +245,7 @@ export async function DELETE(request: Request) {
     const [fileToDelete] = await db
       .select()
       .from(files)
-      .where(eq(files.id, parseInt(fileId)))
+      .where(eq(files.id, parseInt(fileId, 10)))
       .limit(1)
 
     if (!fileToDelete) {
@@ -272,7 +272,7 @@ export async function DELETE(request: Request) {
     }
 
     // Delete from database
-    await db.delete(files).where(eq(files.id, parseInt(fileId)))
+    await db.delete(files).where(eq(files.id, parseInt(fileId, 10)))
     console.log('✅ Deleted from database')
 
     return NextResponse.json({
@@ -285,6 +285,6 @@ export async function DELETE(request: Request) {
     })
   } catch (error: any) {
     console.error('❌ Delete error:', error)
-    return NextResponse.json({ error: 'Failed to delete file: ' + error.message }, { status: 500 })
+    return NextResponse.json({ error: `Failed to delete file: ${error.message}` }, { status: 500 })
   }
 }

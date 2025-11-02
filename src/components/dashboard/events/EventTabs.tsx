@@ -118,7 +118,7 @@ interface EventTabsProps {
 }
 
 export function EventTabs({ eventId, currentTab }: EventTabsProps) {
-  const pathname = usePathname()
+  const _pathname = usePathname()
 
   return (
     <div className="bg-white border-b border-gray-200 sticky top-16 z-20">

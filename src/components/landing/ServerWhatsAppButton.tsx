@@ -2,7 +2,6 @@
 // Server Component version of WhatsAppButton - static version without interactivity
 
 import { MessageCircle } from 'lucide-react'
-import React from 'react'
 
 const ServerWhatsAppButton = () => {
   return (

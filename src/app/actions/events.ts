@@ -22,10 +22,8 @@
 
 import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { z } from 'zod'
-import { db } from '@/db'
-import { events } from '@/db'
+import { db, events } from '@/db'
 import { createEventSchema, updateEventSchema } from '@/lib/validations/events'
 
 /**
@@ -59,7 +57,7 @@ export async function createEvent(formData: FormData | Record<string, any>): Pro
 
       // Parse numbers
       if (data.maxParticipants) {
-        data.maxParticipants = parseInt(data.maxParticipants as string)
+        data.maxParticipants = parseInt(data.maxParticipants as string, 10)
       }
       if (data.totalBudget) {
         data.totalBudget = parseFloat(data.totalBudget as string)
@@ -141,7 +139,7 @@ export async function updateEvent(
 
       // Parse numbers
       if (data.maxParticipants) {
-        data.maxParticipants = parseInt(data.maxParticipants as string)
+        data.maxParticipants = parseInt(data.maxParticipants as string, 10)
       }
       if (data.totalBudget) {
         data.totalBudget = parseFloat(data.totalBudget as string)

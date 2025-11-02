@@ -1,8 +1,6 @@
 // src/components/landing/ServerCaseStudiesSection.tsx
 // Server Component version of CaseStudiesSection - no interactivity needed
 
-import React from 'react'
-
 const caseStudies = [
   {
     title: 'Congresso Medico 300+ Partecipanti',

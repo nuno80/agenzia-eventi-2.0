@@ -31,7 +31,7 @@
 import { Loader2 } from 'lucide-react'
 import { Suspense } from 'react'
 import { getAllEvents } from '@/lib/dal/events'
-import { EventsListClient } from './EventsListClient'
+import { EventsListClient } from './eventi/EventsListClient'
 
 /**
  * Main Events Page (Server Component)

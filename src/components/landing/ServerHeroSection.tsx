@@ -2,7 +2,6 @@
 // Server Component version of HeroSection - simplified static version
 
 import { ArrowRight, Award, Calendar, Users } from 'lucide-react'
-import React from 'react'
 
 const ServerHeroSection = () => {
   const stats = [

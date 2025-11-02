@@ -89,7 +89,7 @@ async function EditEventContent({ eventId }: { eventId: string }) {
     <EventForm
       mode="edit"
       initialData={event}
-      onSuccess={(id) => {
+      onSuccess={(_id) => {
         // Success callback will redirect to event detail
         // This is handled in the EventForm component
       }}

@@ -1,7 +1,7 @@
 'use client'
 
 import { MessageCircle } from 'lucide-react'
-import React, { type FormEvent, useState } from 'react'
+import { type FormEvent, useState } from 'react'
 
 interface FormData {
   name: string

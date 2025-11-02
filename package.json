@@ -12,6 +12,8 @@
     "lint:fix": "biome lint --write .",
     "check": "biome check .",
     "check:fix": "biome check --write .",
+    "check:fix:unsafe": "biome check --write --unsafe .",
+    "clean:imports": "biome check --write --only=correctness/noUnusedImports .",
     "ci": "biome ci .",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -20,6 +22,11 @@
     "db:seed": "tsx src/lib/db/seed.ts",
     "db:create": "tsx src/scripts/create-tables.ts",
     "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,jsonc,css}": [
+      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
+    ]
   },
   "dependencies": {
     "@heroui/navbar": "^2.2.25",
@@ -64,6 +71,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.0",
     "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
     "tailwindcss": "^4",
     "tsx": "^4.20.6",
     "typescript": "^5"

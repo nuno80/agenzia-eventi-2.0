@@ -29,11 +29,11 @@
  */
 
 'use client'
-import { useMemo, useState } from 'react'
+import { CalendarDays, Plus } from 'lucide-react'
 import Link from 'next/link'
-import { Plus, CalendarDays } from 'lucide-react'
-import { EventsFilters, type FilterState } from '@/components/dashboard/events/EventsFilters'
+import { useMemo, useState } from 'react'
 import { EventCard } from '@/components/dashboard/events/EventCard'
+import { EventsFilters, type FilterState } from '@/components/dashboard/events/EventsFilters'
 import type { Event } from '../../../db/libsql-schemas'
 
 interface EventsListClientProps {

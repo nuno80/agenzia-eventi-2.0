@@ -43,7 +43,7 @@ import {
   Users,
 } from 'lucide-react'
 import type { Event } from '@/db'
-import { formatDate, formatDateTime } from '@/lib/utils'
+import { formatDateTime } from '@/lib/utils'
 
 interface OverviewTabProps {
   event: Event

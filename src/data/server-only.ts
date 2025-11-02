@@ -13,7 +13,7 @@ export const requireUser = cache(async () => {
 
 export const requireAdminUser = cache(async () => {
   // Placeholder for admin user authentication logic
-  const user = await requireUser()
+  const _user = await requireUser()
   // Add admin check logic here
   throw new Error('Admin authorization not implemented')
 })

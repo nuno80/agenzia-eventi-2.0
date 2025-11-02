@@ -24,20 +24,19 @@
 import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { db } from '@/db'
-import { staffAssignments } from '@/db'
+import { db, staffAssignments } from '@/db'
 import { calculatePaymentDueDate, calculatePaymentStatus } from '@/lib/utils'
 import {
   createStaffAssignmentSchema,
   markPaidSchema,
   postponePaymentSchema,
   updateStaffAssignmentSchema,
-} from '@/lib/validations/staffAssignments'
+} from '@/lib/validations/staff-assignments'
 
 type ActionResult = {
   success: boolean
   message: string
-  data?: any
+  data?: Record<string, unknown>
   errors?: Record<string, string[]>
 }
 
@@ -45,10 +44,10 @@ type ActionResult = {
  * Create Staff Assignment Action
  */
 export async function createAssignment(
-  formData: FormData | Record<string, any>
+  formData: FormData | Record<string, unknown>
 ): Promise<ActionResult> {
   try {
-    let data: Record<string, any>
+    let data: Record<string, unknown>
 
     if (formData instanceof FormData) {
       data = Object.fromEntries(formData)
@@ -67,13 +66,17 @@ export async function createAssignment(
     let paymentDueDate = validated.paymentDueDate
     if (validated.paymentTerms !== 'custom' && validated.paymentAmount) {
       paymentDueDate = calculatePaymentDueDate(
-        validated.endTime,
+        validated.endTime as Date,
         validated.paymentTerms as 'immediate' | '30_days' | '60_days' | '90_days'
       )
     }
 
     // Calculate initial payment status
-    const paymentStatus = calculatePaymentStatus(paymentDueDate, null, validated.assignmentStatus)
+    const paymentStatus = calculatePaymentStatus(
+      paymentDueDate ?? null,
+      null,
+      validated.assignmentStatus
+    )
 
     // Insert
     const [newAssignment] = await db
@@ -118,10 +121,10 @@ export async function createAssignment(
  */
 export async function updateAssignment(
   assignmentId: string,
-  formData: FormData | Record<string, any>
+  formData: FormData | Record<string, unknown>
 ): Promise<ActionResult> {
   try {
-    let data: Record<string, any>
+    let data: Record<string, unknown>
 
     if (formData instanceof FormData) {
       data = Object.fromEntries(formData)
@@ -239,9 +242,9 @@ export async function deleteAssignment(assignmentId: string): Promise<ActionResu
 /**
  * Mark Payment as Paid Action
  */
-export async function markPaid(data: FormData | Record<string, any>): Promise<ActionResult> {
+export async function markPaid(data: FormData | Record<string, unknown>): Promise<ActionResult> {
   try {
-    let parsed: Record<string, any>
+    let parsed: Record<string, unknown>
 
     if (data instanceof FormData) {
       parsed = Object.fromEntries(data)
@@ -309,9 +312,11 @@ export async function markPaid(data: FormData | Record<string, any>): Promise<Ac
 /**
  * Postpone Payment Action
  */
-export async function postponePayment(data: FormData | Record<string, any>): Promise<ActionResult> {
+export async function postponePayment(
+  data: FormData | Record<string, unknown>
+): Promise<ActionResult> {
   try {
-    let parsed: Record<string, any>
+    let parsed: Record<string, unknown>
 
     if (data instanceof FormData) {
       parsed = Object.fromEntries(data)

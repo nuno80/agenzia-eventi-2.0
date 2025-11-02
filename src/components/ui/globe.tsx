@@ -2,7 +2,7 @@
 
 import createGlobe from 'cobe'
 import type React from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { cn } from '@/lib/utils'
 
 interface EarthProps {
@@ -33,7 +33,11 @@ const Earth: React.FC<EarthProps> = ({
 
   useEffect(() => {
     let width = 0
-    const onResize = () => canvasRef.current && (width = canvasRef.current.offsetWidth)
+    const onResize = () => {
+      if (canvasRef.current) {
+        width = canvasRef.current.offsetWidth
+      }
+    }
     window.addEventListener('resize', onResize)
     onResize()
     let phi = 0
@@ -58,7 +62,7 @@ const Earth: React.FC<EarthProps> = ({
       markers: [
         // longitude latitude
       ],
-      onRender: (state: Record<string, any>) => {
+      onRender: (state: Record<string, unknown>) => {
         // Called on every animation frame.
         // `state` will be an empty object, return updated params.\
         state.phi = phi
@@ -69,7 +73,7 @@ const Earth: React.FC<EarthProps> = ({
     return () => {
       globe.destroy()
     }
-  }, [dark])
+  }, [dark, baseColor, diffuse, glowColor, mapBrightness, mapSamples, markerColor, scale, theta])
 
   return (
     <div

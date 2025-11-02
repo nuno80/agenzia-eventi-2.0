@@ -11,7 +11,7 @@ import {
 } from '@heroui/navbar'
 import { ArrowRight, Phone } from 'lucide-react'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 type MenuItem = {
   name: string

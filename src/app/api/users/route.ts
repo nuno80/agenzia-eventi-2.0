@@ -1,7 +1,6 @@
-import { eq } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 // Use libsql implementation exclusively (Turso database)
-import { db, users } from '@/db/libsql'
+import { db, users } from '@/db'
 
 // GET /api/users - Get all users
 export async function GET() {

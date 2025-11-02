@@ -1,7 +1,6 @@
 'use client'
 
 import { MessageCircle } from 'lucide-react'
-import React from 'react'
 
 const WhatsAppButton = () => {
   const handleWhatsAppClick = () => {

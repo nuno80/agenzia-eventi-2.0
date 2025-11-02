@@ -33,16 +33,14 @@ import {
   CheckCircle,
   Clock,
   Download,
-  Filter,
   Mail,
   Phone,
   Search,
   Users as UsersIcon,
-  XCircle,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import type { Participant } from '@/db'
-import { formatDate, getPaymentStatusLabel, getRegistrationStatusLabel } from '@/lib/utils'
+import { getPaymentStatusLabel, getRegistrationStatusLabel } from '@/lib/utils'
 
 interface ParticipantsTableProps {
   participants: Participant[]
@@ -88,9 +86,15 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
         case 'name-desc':
           return `${b.lastName} ${b.firstName}`.localeCompare(`${a.lastName} ${a.firstName}`)
         case 'date-desc':
-          return new Date(b.registrationDate).getTime() - new Date(a.registrationDate).getTime()
+          return (
+            (b.registrationDate ? new Date(b.registrationDate).getTime() : 0) -
+            (a.registrationDate ? new Date(a.registrationDate).getTime() : 0)
+          )
         case 'date-asc':
-          return new Date(a.registrationDate).getTime() - new Date(b.registrationDate).getTime()
+          return (
+            (a.registrationDate ? new Date(a.registrationDate).getTime() : 0) -
+            (b.registrationDate ? new Date(b.registrationDate).getTime() : 0)
+          )
         case 'company-asc':
           return (a.company || '').localeCompare(b.company || '')
         case 'company-desc':
@@ -153,7 +157,7 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
               <option value="confirmed">Confermati</option>
               <option value="pending">In attesa</option>
               <option value="cancelled">Annullati</option>
-              <option value="waitlist">Lista d'attesa</option>
+              <option value="waitlist">Lista d&apos;attesa</option>
             </select>
           </div>
 
@@ -295,9 +299,9 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <span
-                          className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getPaymentBadge(participant.paymentStatus)}`}
+                          className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getPaymentBadge(participant.paymentStatus ?? '')}`}
                         >
-                          {getPaymentStatusLabel(participant.paymentStatus)}
+                          {getPaymentStatusLabel(participant.paymentStatus ?? '')}
                         </span>
                         {participant.ticketPrice && participant.ticketPrice > 0 && (
                           <div className="text-xs text-gray-500 mt-1">
@@ -375,9 +379,9 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
                   {getRegistrationStatusLabel(participant.registrationStatus)}
                 </span>
                 <span
-                  className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getPaymentBadge(participant.paymentStatus)}`}
+                  className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getPaymentBadge(participant.paymentStatus ?? '')}`}
                 >
-                  {getPaymentStatusLabel(participant.paymentStatus)}
+                  {getPaymentStatusLabel(participant.paymentStatus ?? '')}
                 </span>
               </div>
             </div>

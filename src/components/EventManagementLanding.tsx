@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import CaseStudiesSection from './landing/CaseStudiesSection'
 import ContactFormSection from './landing/ContactFormSection'
 import ContactUs1 from './landing/contact-us-1'

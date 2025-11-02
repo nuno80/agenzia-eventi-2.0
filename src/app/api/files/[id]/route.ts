@@ -7,7 +7,7 @@ import { db, files } from '@/db/libsql'
 export const runtime = 'edge'
 
 // DELETE /api/files/[id] - Delete a file
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     // Check if BLOB_READ_WRITE_TOKEN is set
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
@@ -22,9 +22,9 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     // Unwrap the params promise
     const { id } = await params
-    const fileId = parseInt(id)
+    const fileId = parseInt(id, 10)
 
-    if (isNaN(fileId)) {
+    if (Number.isNaN(fileId)) {
       return NextResponse.json({ error: 'Invalid file ID' }, { status: 400 })
     }
 
@@ -60,7 +60,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     }
 
     return NextResponse.json(
-      { error: 'Failed to delete file: ' + (error.message || 'Unknown error') },
+      { error: `Failed to delete file: ${error.message || 'Unknown error'}` },
       { status: 500 }
     )
   }

@@ -1,7 +1,6 @@
 'use client'
 
 import { GraduationCap, Target, TrendingUp, Video } from 'lucide-react'
-import React from 'react'
 
 const differentiators = [
   {

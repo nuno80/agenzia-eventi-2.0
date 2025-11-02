@@ -3,7 +3,6 @@
 import { motion, useInView } from 'framer-motion'
 import { Check, Loader2, MessageCircle } from 'lucide-react'
 import { useRef, useState } from 'react'
-import { Button } from '@/components/ui/button'
 import Earth from '@/components/ui/globe'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'

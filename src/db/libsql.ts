@@ -1,9 +1,9 @@
-import { createClient } from '@libsql/client'
+import { type Client, createClient } from '@libsql/client'
 import { drizzle } from 'drizzle-orm/libsql'
 import * as schema from './libsql-schemas'
 
 // Determine database configuration based on environment variables
-let client
+let client: Client
 
 if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
   // Use Turso database

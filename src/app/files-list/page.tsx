@@ -20,7 +20,7 @@ export default function FilesListPage() {
 
   useEffect(() => {
     fetchFiles()
-  }, [])
+  }, [fetchFiles])
 
   const fetchFiles = async () => {
     try {
@@ -36,7 +36,7 @@ export default function FilesListPage() {
       }
     } catch (err: any) {
       console.error('Fetch error:', err)
-      setError('An error occurred while fetching files: ' + (err.message || 'Unknown error'))
+      setError(`An error occurred while fetching files: ${err.message || 'Unknown error'}`)
     } finally {
       setLoading(false)
     }
@@ -62,7 +62,7 @@ export default function FilesListPage() {
       }
     } catch (err: any) {
       console.error('Delete error:', err)
-      alert('An error occurred while deleting the file: ' + (err.message || 'Unknown error'))
+      alert(`An error occurred while deleting the file: ${err.message || 'Unknown error'}`)
     } finally {
       setDeletingId(null)
     }
@@ -73,7 +73,7 @@ export default function FilesListPage() {
     const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i]
+    return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`
   }
 
   if (loading)

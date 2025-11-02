@@ -23,7 +23,7 @@
  * <StatsOverview stats={stats} />
  */
 
-import { Calendar, CheckCircle, Clock, PlayCircle, TrendingUp, Users } from 'lucide-react'
+import { Calendar, CheckCircle, PlayCircle, TrendingUp } from 'lucide-react'
 
 interface EventStats {
   total: number

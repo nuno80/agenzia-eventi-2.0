@@ -3,7 +3,6 @@
 'use server'
 
 import { del } from '@vercel/blob'
-import { requireUser } from '../server-only'
 import { deleteFile, getAllFiles } from './index'
 
 // Server Action to fetch all files
@@ -35,7 +34,7 @@ export async function deleteFileAction(id: number) {
       }
     }
 
-    if (isNaN(id)) {
+    if (Number.isNaN(id)) {
       return { success: false, error: 'Invalid file ID' }
     }
 
@@ -67,6 +66,6 @@ export async function deleteFileAction(id: number) {
       }
     }
 
-    return { success: false, error: 'Failed to delete file: ' + (error.message || 'Unknown error') }
+    return { success: false, error: `Failed to delete file: ${error.message || 'Unknown error'}` }
   }
 }

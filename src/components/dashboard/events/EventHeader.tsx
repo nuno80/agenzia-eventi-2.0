@@ -28,7 +28,6 @@
 import {
   ArrowLeft,
   Calendar,
-  Copy,
   Download,
   Edit,
   Euro,
@@ -53,8 +52,8 @@ interface EventHeaderProps {
 }
 
 export function EventHeader({ event }: EventHeaderProps) {
-  const statusColors = getStatusColor(event.status)
-  const priorityColors = getPriorityColor(event.priority)
+  const statusColors = getStatusColor(event.status || 'draft')
+  const priorityColors = getPriorityColor(event.priority || 'medium')
 
   const occupancyPercentage = event.maxParticipants
     ? Math.round(((event.currentParticipants || 0) / event.maxParticipants) * 100)

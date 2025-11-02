@@ -77,7 +77,7 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
       const result =
         mode === 'create'
           ? await createEvent(formData)
-          : await updateEvent(initialData!.id, formData)
+          : await updateEvent(initialData?.id, formData)
 
       if (result.success) {
         setMessage({ type: 'success', text: result.message })
@@ -503,7 +503,7 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
               <input
                 type="checkbox"
                 name="isPublic"
-                defaultChecked={initialData?.isPublic}
+                defaultChecked={!!initialData?.isPublic}
                 className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
               />
               <span className="text-sm font-medium text-gray-700">Evento pubblico</span>
@@ -513,7 +513,7 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
               <input
                 type="checkbox"
                 name="requiresApproval"
-                defaultChecked={initialData?.requiresApproval}
+                defaultChecked={!!initialData?.requiresApproval}
                 className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
               />
               <span className="text-sm font-medium text-gray-700">Richiede approvazione</span>

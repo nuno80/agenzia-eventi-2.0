@@ -18,7 +18,7 @@ export default function FileList() {
 
   useEffect(() => {
     fetchFiles()
-  }, [])
+  }, [fetchFiles])
 
   const fetchFiles = async () => {
     try {
@@ -40,7 +40,7 @@ export default function FileList() {
       }
     } catch (err: any) {
       console.error('Fetch error:', err)
-      setError('An error occurred while fetching files: ' + (err.message || 'Unknown error'))
+      setError(`An error occurred while fetching files: ${err.message || 'Unknown error'}`)
     } finally {
       setLoading(false)
     }
@@ -70,7 +70,7 @@ export default function FileList() {
       }
     } catch (err: any) {
       console.error('Delete error:', err)
-      alert('An error occurred while deleting the file: ' + (err.message || 'Unknown error'))
+      alert(`An error occurred while deleting the file: ${err.message || 'Unknown error'}`)
     }
   }
 
