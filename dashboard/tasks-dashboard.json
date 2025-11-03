@@ -1,7 +1,7 @@
 {
   "project": "EventHub Dashboard",
   "lastUpdated": "2025-11-03",
-  "overallProgress": 55,
+  "overallProgress": 56,
   "modules": [
     {
       "id": "core",
@@ -471,7 +471,7 @@
         {
           "id": "staff-18",
           "name": "Payments dashboard widget",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server",
           "description": "Widget home con scaduti/in scadenza + CTA"
@@ -667,14 +667,14 @@
     },
     {
       "priority": 3,
-      "module": "staff",
-      "tasks": ["staff-18"],
-      "rationale": "CRUD completo staff per gestione autonoma"
+      "module": "events-detail",
+      "tasks": ["detail-14"],
+      "rationale": "Tab Staff negli eventi per vedere assegnazioni"
     },
     {
       "priority": 4,
       "module": "staff",
-      "tasks": ["staff-14", "staff-18"],
+      "tasks": ["staff-14"],
       "rationale": "Dettaglio staff + assegnazioni per collegare con eventi"
     },
     {
@@ -716,8 +716,8 @@
   ],
   "statistics": {
     "totalTasks": 99,
-    "completedTasks": 49,
-    "pendingTasks": 51,
+    "completedTasks": 50,
+    "pendingTasks": 50,
     "byComplexity": { "easy": 29, "medium": 45, "hard": 25 },
     "byComponentType": {
       "Server": 32,
