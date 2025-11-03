@@ -204,7 +204,9 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
               name="startDate"
               required
               defaultValue={
-                initialData?.startDate ? new Date(initialData.startDate).toISOString().slice(0, 16) : ''
+                initialData?.startDate
+                  ? new Date(initialData.startDate).toISOString().slice(0, 16)
+                  : ''
               }
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 getErrorMessage('startDate') ? 'border-red-300' : 'border-gray-300'
@@ -239,7 +241,10 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
           {/* Registration Open */}
           <div>
-            <label htmlFor="registrationOpenDate" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="registrationOpenDate"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Apertura Iscrizioni
             </label>
             <input
@@ -257,7 +262,10 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
           {/* Registration Close */}
           <div>
-            <label htmlFor="registrationCloseDate" className="block text sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="registrationCloseDate"
+              className="block text sm font-medium text-gray-700 mb-1"
+            >
               Chiusura Iscrizioni
             </label>
             <input
@@ -437,7 +445,10 @@ export function EventForm({ mode, initialData, onSuccess }: EventFormProps) {
 
           {/* Max Participants */}
           <div>
-            <label htmlFor="maxParticipants" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="maxParticipants"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Capacità Massima
             </label>
             <input

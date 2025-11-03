@@ -95,7 +95,7 @@ export const filterStaff = cache(
     if (params.tags && params.tags.length > 0) {
       filtered = filtered.filter((s) => {
         const t = safeParseTags(s.tags as unknown as string)
-        return t ? params.tags?.every((tg) => t.includes(tg)) ?? false : false
+        return t ? (params.tags?.every((tg) => t.includes(tg)) ?? false) : false
       })
     }
 

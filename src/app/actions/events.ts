@@ -31,12 +31,15 @@ function normalizeTags(input: unknown): string[] {
       // fallthrough to CSV
     }
   }
-  return raw.split(',').map((t) => t.trim()).filter(Boolean)
+  return raw
+    .split(',')
+    .map((t) => t.trim())
+    .filter(Boolean)
 }
 
 function normalizeEmptyStringsToNull(obj: Record<string, any>, keys: string[]) {
   for (const key of keys) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+    if (Object.hasOwn(obj, key)) {
       const val = obj[key]
       if (typeof val === 'string' && val.trim() === '') {
         obj[key] = null
@@ -101,13 +104,20 @@ export async function createEvent(formData: FormData | Record<string, any>): Pro
   } catch (error) {
     console.error('Create event error:', error)
     if (error instanceof z.ZodError) {
-      return { success: false, message: 'Errori di validazione', errors: error.flatten().fieldErrors as Record<string, string[]> }
+      return {
+        success: false,
+        message: 'Errori di validazione',
+        errors: error.flatten().fieldErrors as Record<string, string[]>,
+      }
     }
     return { success: false, message: "Errore durante la creazione dell'evento" }
   }
 }
 
-export async function updateEvent(eventId: string, formData: FormData | Record<string, any>): Promise<ActionResult> {
+export async function updateEvent(
+  eventId: string,
+  formData: FormData | Record<string, any>
+): Promise<ActionResult> {
   try {
     let data: Record<string, any>
 
@@ -150,7 +160,11 @@ export async function updateEvent(eventId: string, formData: FormData | Record<s
   } catch (error) {
     console.error('Update event error:', error)
     if (error instanceof z.ZodError) {
-      return { success: false, message: 'Errori di validazione', errors: error.flatten().fieldErrors as Record<string, string[]> }
+      return {
+        success: false,
+        message: 'Errori di validazione',
+        errors: error.flatten().fieldErrors as Record<string, string[]>,
+      }
     }
     return { success: false, message: "Errore durante l'aggiornamento dell'evento" }
   }
@@ -173,10 +187,7 @@ export async function updateEventStatus(
   status: 'draft' | 'planning' | 'open' | 'ongoing' | 'completed' | 'cancelled'
 ): Promise<ActionResult> {
   try {
-    await db
-      .update(events)
-      .set({ status, updatedAt: new Date() })
-      .where(eq(events.id, eventId))
+    await db.update(events).set({ status, updatedAt: new Date() }).where(eq(events.id, eventId))
 
     revalidatePath('/eventi')
     revalidatePath(`/eventi/${eventId}`)
@@ -206,7 +217,8 @@ export async function duplicateEvent(eventId: string): Promise<ActionResult> {
       await import('@/db')
 
     // Prepare new base event data
-    const { id, createdAt, updatedAt, currentParticipants, currentSpent, ...eventData } = originalEvent
+    const { id, createdAt, updatedAt, currentParticipants, currentSpent, ...eventData } =
+      originalEvent
 
     const [newEvent] = await db
       .insert(events)
@@ -232,7 +244,8 @@ export async function duplicateEvent(eventId: string): Promise<ActionResult> {
         registrationCloseDate: eventData.registrationCloseDate
           ? new Date(
               new Date(eventData.registrationCloseDate).setFullYear(
-                new Date(eventData.registrationCloseDate).getFullYear() + 1)
+                new Date(eventData.registrationCloseDate).getFullYear() + 1
+              )
             )
           : null,
       })
@@ -241,27 +254,31 @@ export async function duplicateEvent(eventId: string): Promise<ActionResult> {
     // Duplicate speakers
     const originalSpeakers = await db.select().from(speakers).where(eq(speakers.eventId, eventId))
     if (originalSpeakers.length > 0) {
-      const speakersToInsert = originalSpeakers.map(({ id, createdAt, updatedAt, eventId: _, ...speakerData }) => ({
-        ...speakerData,
-        eventId: newEvent.id,
-        confirmationStatus: 'invited' as const,
-        presentationUploaded: false,
-        presentationUrl: null,
-      }))
+      const speakersToInsert = originalSpeakers.map(
+        ({ id, createdAt, updatedAt, eventId: _, ...speakerData }) => ({
+          ...speakerData,
+          eventId: newEvent.id,
+          confirmationStatus: 'invited' as const,
+          presentationUploaded: false,
+          presentationUrl: null,
+        })
+      )
       await db.insert(speakers).values(speakersToInsert)
     }
 
     // Duplicate sponsors
     const originalSponsors = await db.select().from(sponsors).where(eq(sponsors.eventId, eventId))
     if (originalSponsors.length > 0) {
-      const sponsorsToInsert = originalSponsors.map(({ id, createdAt, updatedAt, eventId: _, ...sponsorData }) => ({
-        ...sponsorData,
-        eventId: newEvent.id,
-        contractSigned: false,
-        contractDate: null,
-        paymentStatus: 'pending' as const,
-        paymentDate: null,
-      }))
+      const sponsorsToInsert = originalSponsors.map(
+        ({ id, createdAt, updatedAt, eventId: _, ...sponsorData }) => ({
+          ...sponsorData,
+          eventId: newEvent.id,
+          contractSigned: false,
+          contractDate: null,
+          paymentStatus: 'pending' as const,
+          paymentDate: null,
+        })
+      )
       await db.insert(sponsors).values(sponsorsToInsert)
     }
 
@@ -272,7 +289,14 @@ export async function duplicateEvent(eventId: string): Promise<ActionResult> {
       .where(eq(budgetCategories.eventId, eventId))
 
     for (const category of originalCategories) {
-      const { id: oldCategoryId, createdAt, updatedAt, eventId: _, spentAmount, ...categoryData } = category
+      const {
+        id: oldCategoryId,
+        createdAt,
+        updatedAt,
+        eventId: _,
+        spentAmount,
+        ...categoryData
+      } = category
 
       const [newCategory] = await db
         .insert(budgetCategories)
@@ -286,7 +310,19 @@ export async function duplicateEvent(eventId: string): Promise<ActionResult> {
 
       if (originalItems.length > 0) {
         const itemsToInsert = originalItems.map(
-          ({ id, createdAt, updatedAt, categoryId: _, eventId: __, actualCost, status, paymentDate, invoiceNumber, invoiceUrl, ...itemData }) => ({
+          ({
+            id,
+            createdAt,
+            updatedAt,
+            categoryId: _,
+            eventId: __,
+            actualCost,
+            status,
+            paymentDate,
+            invoiceNumber,
+            invoiceUrl,
+            ...itemData
+          }) => ({
             ...itemData,
             categoryId: newCategory.id,
             eventId: newEvent.id,
@@ -305,7 +341,17 @@ export async function duplicateEvent(eventId: string): Promise<ActionResult> {
     const originalServices = await db.select().from(services).where(eq(services.eventId, eventId))
     if (originalServices.length > 0) {
       const servicesToInsert = originalServices.map(
-        ({ id, createdAt, updatedAt, eventId: _, contractStatus, finalPrice, deliveryDate, paymentStatus, ...serviceData }) => ({
+        ({
+          id,
+          createdAt,
+          updatedAt,
+          eventId: _,
+          contractStatus,
+          finalPrice,
+          deliveryDate,
+          paymentStatus,
+          ...serviceData
+        }) => ({
           ...serviceData,
           eventId: newEvent.id,
           contractStatus: 'requested' as const,
@@ -324,7 +370,9 @@ export async function duplicateEvent(eventId: string): Promise<ActionResult> {
         ({ id, createdAt, updatedAt, eventId: _, startTime, endTime, status, ...agendaData }) => ({
           ...agendaData,
           eventId: newEvent.id,
-          startTime: new Date(new Date(startTime).setFullYear(new Date(startTime).getFullYear() + 1)),
+          startTime: new Date(
+            new Date(startTime).setFullYear(new Date(startTime).getFullYear() + 1)
+          ),
           endTime: new Date(new Date(endTime).setFullYear(new Date(endTime).getFullYear() + 1)),
           status: 'scheduled' as const,
         })
@@ -333,10 +381,22 @@ export async function duplicateEvent(eventId: string): Promise<ActionResult> {
     }
 
     // Duplicate deadlines (shift dates by +1 year)
-    const originalDeadlines = await db.select().from(deadlines).where(eq(deadlines.eventId, eventId))
+    const originalDeadlines = await db
+      .select()
+      .from(deadlines)
+      .where(eq(deadlines.eventId, eventId))
     if (originalDeadlines.length > 0) {
       const deadlinesToInsert = originalDeadlines.map(
-        ({ id, createdAt, updatedAt, eventId: _, dueDate, status, completedDate, ...deadlineData }) => ({
+        ({
+          id,
+          createdAt,
+          updatedAt,
+          eventId: _,
+          dueDate,
+          status,
+          completedDate,
+          ...deadlineData
+        }) => ({
           ...deadlineData,
           eventId: newEvent.id,
           dueDate: new Date(new Date(dueDate).setFullYear(new Date(dueDate).getFullYear() + 1)),

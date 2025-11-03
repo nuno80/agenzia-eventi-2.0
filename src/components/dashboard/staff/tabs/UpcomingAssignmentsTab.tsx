@@ -16,8 +16,9 @@
  * - Lista delle assegnazioni future con link all'evento
  */
 
-import Link from 'next/link'
 import { CalendarClock } from 'lucide-react'
+import Link from 'next/link'
+import { PaymentStatusBadge } from '@/components/dashboard/staff'
 import { getUpcomingAssignmentsForStaff } from '@/lib/dal/staff'
 
 interface Props {
@@ -39,17 +40,29 @@ export async function UpcomingAssignmentsTab({ staffId }: Props) {
     <div className="bg-white border border-gray-200 rounded-lg divide-y">
       {assignments.map((a) => (
         <div key={a.id} className="p-4 flex items-center justify-between">
-          <div>
+          <div className="flex flex-col gap-1">
             <div className="text-sm font-medium text-gray-900 flex items-center gap-2">
               <CalendarClock className="w-4 h-4 text-blue-600" />
               <span>{a.event?.title}</span>
             </div>
-            <div className="text-xs text-gray-600 mt-1">
+            <div className="text-xs text-gray-600">
               {new Date(a.startTime).toLocaleString()} → {new Date(a.endTime).toLocaleString()}
+            </div>
+            <div>
+              <PaymentStatusBadge
+                paymentTerms={a.paymentTerms}
+                paymentDueDate={a.paymentDueDate}
+                paymentDate={a.paymentDate}
+                assignmentStatus={a.assignmentStatus}
+                endTime={a.endTime}
+              />
             </div>
           </div>
           {a.event?.id && (
-            <Link href={`/eventi/${a.event.id}/overview`} className="text-sm text-blue-600 hover:text-blue-700">
+            <Link
+              href={`/eventi/${a.event.id}/overview`}
+              className="text-sm text-blue-600 hover:text-blue-700"
+            >
               Vai all'evento
             </Link>
           )}

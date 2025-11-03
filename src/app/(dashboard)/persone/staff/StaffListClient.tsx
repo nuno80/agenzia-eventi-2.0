@@ -169,7 +169,11 @@ export function StaffListClient({ staff, events }: StaffListClientProps) {
             <div key={s.id} className="space-y-2">
               <StaffCard staff={s} />
               <div className="flex justify-end">
-                <StaffAssignmentModal staff={{ id: s.id, firstName: s.firstName, lastName: s.lastName, role: s.role }} events={events} triggerVariant="button" />
+                <StaffAssignmentModal
+                  staff={{ id: s.id, firstName: s.firstName, lastName: s.lastName, role: s.role }}
+                  events={events}
+                  triggerVariant="button"
+                />
               </div>
             </div>
           ))}

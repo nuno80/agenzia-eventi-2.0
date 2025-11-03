@@ -76,7 +76,13 @@ export const postponePaymentSchema = z.object({
   reason: optionalString,
 })
 
+export const cancelPaymentSchema = z.object({
+  assignmentId: cuid,
+  reason: optionalString,
+})
+
 export type CreateStaffAssignmentInput = z.infer<typeof createStaffAssignmentSchema>
 export type UpdateStaffAssignmentInput = z.infer<typeof updateStaffAssignmentSchema>
 export type MarkPaidInput = z.infer<typeof markPaidSchema>
 export type PostponePaymentInput = z.infer<typeof postponePaymentSchema>
+export type CancelPaymentInput = z.infer<typeof cancelPaymentSchema>

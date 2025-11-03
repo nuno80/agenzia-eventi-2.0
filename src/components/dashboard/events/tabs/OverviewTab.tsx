@@ -15,7 +15,9 @@ import {
   Tag,
   Users,
 } from 'lucide-react'
+import { PaymentQuickActions, PaymentStatusBadge } from '@/components/dashboard/staff'
 import type { Event } from '@/db'
+import { getAssignmentsByEvent } from '@/lib/dal/staff-assignments'
 import { formatDateTime } from '@/lib/utils'
 
 function safeParseTags(input: unknown): string[] {
@@ -38,8 +40,15 @@ interface OverviewTabProps {
   sponsorsCount?: number
 }
 
-export function OverviewTab({ event, participantsCount = 0, speakersCount = 0, sponsorsCount = 0 }: OverviewTabProps) {
+export async function OverviewTab({
+  event,
+  participantsCount = 0,
+  speakersCount = 0,
+  sponsorsCount = 0,
+}: OverviewTabProps) {
   const tags = safeParseTags(event.tags)
+
+  const assignments = await getAssignmentsByEvent(event.id)
 
   return (
     <div className="space-y-6">
@@ -117,7 +126,9 @@ export function OverviewTab({ event, participantsCount = 0, speakersCount = 0, s
                 <DoorOpen className="w-5 h-5 text-gray-400 mt-0.5" />
                 <div>
                   <div className="text-sm font-medium text-gray-900">Apertura Iscrizioni</div>
-                  <div className="text-sm text-gray-600">{formatDateTime(event.registrationOpenDate)}</div>
+                  <div className="text-sm text-gray-600">
+                    {formatDateTime(event.registrationOpenDate)}
+                  </div>
                 </div>
               </div>
             )}
@@ -127,7 +138,9 @@ export function OverviewTab({ event, participantsCount = 0, speakersCount = 0, s
                 <DoorClosed className="w-5 h-5 text-gray-400 mt-0.5" />
                 <div>
                   <div className="text-sm font-medium text-gray-900">Chiusura Iscrizioni</div>
-                  <div className="text-sm text-gray-600">{formatDateTime(event.registrationCloseDate)}</div>
+                  <div className="text-sm text-gray-600">
+                    {formatDateTime(event.registrationCloseDate)}
+                  </div>
                 </div>
               </div>
             )}
@@ -187,9 +200,51 @@ export function OverviewTab({ event, participantsCount = 0, speakersCount = 0, s
           </h3>
           <div className="flex flex-wrap gap-2">
             {tags.map((tag: string, index: number) => (
-              <span key={index} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+              <span
+                key={index}
+                className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
+              >
                 {tag}
               </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Staff assegnato - anteprima */}
+      {assignments && assignments.length > 0 && (
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Staff assegnato</h3>
+            <a
+              href={`/eventi/${event.id}/staff`}
+              className="text-sm text-blue-600 hover:text-blue-700"
+            >
+              Vedi tutto
+            </a>
+          </div>
+          <div className="divide-y">
+            {assignments.slice(0, 5).map((a) => (
+              <div key={a.id} className="py-3 flex items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-gray-900 truncate">
+                    {a.staff ? `${a.staff.lastName} ${a.staff.firstName}` : 'Membro dello staff'}
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    {formatDateTime(a.startTime)} → {formatDateTime(a.endTime)}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <PaymentStatusBadge
+                    paymentTerms={a.paymentTerms}
+                    paymentDueDate={a.paymentDueDate}
+                    paymentDate={a.paymentDate}
+                    assignmentStatus={a.assignmentStatus}
+                    endTime={a.endTime}
+                  />
+                  <PaymentQuickActions assignmentId={a.id} currentDueDate={a.paymentDueDate} isPaid={a.paymentStatus === 'paid'} />
+                </div>
+              </div>
             ))}
           </div>
         </div>

@@ -10,8 +10,8 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { getAllStaff } from '@/lib/dal/staff'
 import { getAllEvents } from '@/lib/dal/events'
+import { getAllStaff } from '@/lib/dal/staff'
 import { StaffListClient } from './StaffListClient'
 
 export default async function StaffPage() {

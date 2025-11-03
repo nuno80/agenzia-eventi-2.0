@@ -17,16 +17,28 @@
 
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
-import { getStaffById } from '@/lib/dal/staff'
 import { StaffTabs } from '@/components/dashboard/staff/StaffTabs'
 import { OverviewTab } from '@/components/dashboard/staff/tabs/OverviewTab'
 import { UpcomingAssignmentsTab } from '@/components/dashboard/staff/tabs/UpcomingAssignmentsTab'
+import { getStaffById } from '@/lib/dal/staff'
 
 const VALID_TABS = ['overview', 'assegnazioni'] as const
 
 type TabSlug = (typeof VALID_TABS)[number]
 
-export default async function StaffDetailTabbedPage({
+export default function StaffDetailTabbedPage({
+  params,
+}: {
+  params: Promise<{ id: string; tab: string }>
+}) {
+  return (
+    <Suspense fallback={<div>Caricamento staff…</div>}>
+      <StaffDetailTabbedContent params={params} />
+    </Suspense>
+  )
+}
+
+async function StaffDetailTabbedContent({
   params,
 }: {
   params: Promise<{ id: string; tab: string }>
@@ -44,7 +56,9 @@ export default async function StaffDetailTabbedPage({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{staff.lastName} {staff.firstName}</h1>
+          <h1 className="text-2xl font-bold">
+            {staff.lastName} {staff.firstName}
+          </h1>
           <div className="text-sm text-gray-600 capitalize">{staff.role.replace('_', ' ')}</div>
         </div>
       </div>

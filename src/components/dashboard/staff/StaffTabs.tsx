@@ -1,4 +1,5 @@
 'use client'
+
 /**
  * FILE: src/components/dashboard/staff/StaffTabs.tsx
  *
@@ -20,9 +21,9 @@
  * - assegnazioni: Prossime assegnazioni
  */
 
+import { ClipboardList, LayoutPanelTop } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ClipboardList, LayoutPanelTop } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface StaffTabsProps {

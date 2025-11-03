@@ -5,6 +5,7 @@ This is a modern Next.js 16 application for an event management company, impleme
 ## 🚀 Key Features
 
 ### Modern Next.js Architecture
+
 - **Server-First Architecture**: Components default to Server Components with Client Components only when necessary
 - **Cache Components**: Next.js 16's implementation of Partial Pre-rendering for faster initial page loads
 - **Server Actions**: Replaced traditional API routes for mutations with Server Actions
@@ -12,6 +13,7 @@ This is a modern Next.js 16 application for an event management company, impleme
 - **Route Protection**: Proxy-based route protection for secure access control
 
 ### File Management System
+
 - **Vercel Blob Integration**: Secure file uploads with Vercel Blob storage
 - **Database Metadata**: File metadata stored in SQLite database via Drizzle ORM
 - **File Operations**: Complete CRUD functionality (Create, Read, Update, Delete)
@@ -49,10 +51,12 @@ src/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18.18 or later
 - pnpm package manager
 
 ### Installation
+
 ```bash
 # Install dependencies
 pnpm install
@@ -63,7 +67,9 @@ cp .env.example .env.local
 ```
 
 ### Environment Variables
+
 Create a `.env.local` file with:
+
 ```env
 # Vercel Blob (required for file uploads)
 BLOB_READ_WRITE_TOKEN=your_actual_vercel_blob_token_here
@@ -74,6 +80,7 @@ BLOB_READ_WRITE_TOKEN=your_actual_vercel_blob_token_here
 ```
 
 ### Database Setup
+
 ```bash
 # Create database tables
 pnpm db:create
@@ -87,6 +94,7 @@ pnpm db:studio
 ```
 
 ### Development
+
 ```bash
 # Start development server
 pnpm dev
@@ -97,13 +105,15 @@ pnpm dev
 ## 🎨 Code Quality Tools
 
 ### Biome.js
+
 This project uses [Biome.js](https://biomejs.dev/) for code formatting and linting. Biome is a fast formatter and linter that replaces Prettier and ESLint with a single tool.
 
-
 ### Code Quality
+
 Questo progetto usa [Biome](https://biomejs.dev/) per linting e formatting.
 
 **Comandi utili:**
+
 - `pnpm run check` - Verifica errori
 - `pnpm run check:fix` - Corregge automaticamente
 - `pnpm run format` - Formatta tutto
@@ -112,18 +122,21 @@ Questo progetto usa [Biome](https://biomejs.dev/) per linting e formatting.
 **Pre-commit hook:**
 Il codice viene automaticamente formattato prima di ogni commit tramite Husky + lint-staged.
 
-
 #### VS Code Integration
+
 The project includes VS Code settings that configure Biome as the default formatter:
+
 - Format on save is enabled
 - Automatic import organization
 - Quick fixes on save
 
 To use Biome in VS Code:
+
 1. Install the [Biome VS Code extension](https://marketplace.visualstudio.com/items?itemName=biomejs.biome)
 2. Ensure "Biome" is set as the default formatter in VS Code settings
 
 ### Pre-commit Hooks
+
 This project uses [Husky](https://typicode.github.io/husky/) to run pre-commit hooks that ensure code quality:
 
 - **Format Check**: Before each commit, the project runs `npm run format:check` to ensure all files are properly formatted
@@ -134,16 +147,19 @@ The pre-commit hook is automatically set up when you install dependencies. You c
 ## 📤 File Upload Features
 
 ### Supported File Types
+
 - Images: JPG, PNG, WebP, GIF
 - Documents: PDF, DOC, DOCX, XLS, XLSX
 - Maximum size: 15MB
 
 ### API Endpoints
+
 - `POST /api/files` - Upload a file
 - `GET /api/files/list` - List all files
 - `DELETE /api/files/[id]` - Delete a file
 
 ### UI Components
+
 - `FileUploader` - Drag-and-drop file upload with validation
 - `FileList` - Responsive table of uploaded files
 - `FileManager` - Tabbed interface combining upload and list views
@@ -151,19 +167,23 @@ The pre-commit hook is automatically set up when you install dependencies. You c
 ## 🏗️ Modern Architecture Implementation
 
 ### Data Access Layer (DAL)
+
 Centralized data operations in `src/data/`:
+
 - Server-only imports prevent client-side leakage
 - React.cache() deduplication for authorization functions
 - Consistent error handling and return formats
 - Type-safe database operations with Drizzle ORM
 
 ### Component Architecture
+
 - Server Components by default for better performance
 - Client Components only where interactivity is needed
 - "Pass the Promise" pattern for optimized data fetching
 - Suspense boundaries with loading skeletons
 
 ### Server Actions
+
 - Replace API routes for mutations
 - Built-in validation and error handling
 - Cache invalidation with revalidatePath()

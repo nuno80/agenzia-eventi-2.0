@@ -12,8 +12,12 @@ import { Suspense } from 'react'
 import { EventForm } from '@/components/dashboard/events/EventForm'
 import { getEventById } from '@/lib/dal/events'
 
-interface PageParams { id: string }
-interface EditEventPageProps { params: Promise<PageParams> }
+interface PageParams {
+  id: string
+}
+interface EditEventPageProps {
+  params: Promise<PageParams>
+}
 
 export default function EditEventPage({ params }: EditEventPageProps) {
   return (

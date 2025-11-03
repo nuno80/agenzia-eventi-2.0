@@ -1,4 +1,5 @@
 'use client'
+
 /**
  * FILE: src/components/dashboard/staff/StaffForm.tsx
  *
@@ -8,16 +9,29 @@
  * TYPE: Client Component
  */
 
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { createStaffSchema } from '@/lib/validations/staff'
 import { createStaff, updateStaff } from '@/app/actions/staff'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { createStaffSchema } from '@/lib/validations/staff'
 
 const formSchema = createStaffSchema.extend({
   // Helper field per input testuale di tags (stringa comma-separated)
@@ -32,9 +46,10 @@ interface StaffFormProps {
   mode: 'create' | 'edit'
   defaultValues?: Partial<StaffFormValues & { id?: string; tagsText?: string }>
   onSuccess?: (staffId?: string) => void
+  successRedirectBase?: string
 }
 
-export function StaffForm({ mode, defaultValues, onSuccess }: StaffFormProps) {
+export function StaffForm({ mode, defaultValues, onSuccess, successRedirectBase }: StaffFormProps) {
   const [submitting, setSubmitting] = useState(false)
 
   const initialValues = useMemo<StaffFormValues>(() => {
@@ -51,11 +66,13 @@ export function StaffForm({ mode, defaultValues, onSuccess }: StaffFormProps) {
       isActive: (defaultValues as any)?.isActive ?? true,
       // Schema INPUT expects tags as string[] | null | undefined
       // We use tagsText for UI, so leave tags undefined by default
-      tags: Array.isArray((defaultValues as any)?.tags) ? ((defaultValues as any).tags as string[]) : undefined,
+      tags: Array.isArray((defaultValues as any)?.tags)
+        ? ((defaultValues as any).tags as string[])
+        : undefined,
       notes: (defaultValues as any)?.notes ?? '',
       tagsText: Array.isArray((defaultValues as any)?.tags)
         ? ((defaultValues as any).tags as string[]).join(', ')
-        : (defaultValues as any)?.tagsText ?? '',
+        : ((defaultValues as any)?.tagsText ?? ''),
     }
     return base
   }, [defaultValues])
@@ -90,7 +107,7 @@ export function StaffForm({ mode, defaultValues, onSuccess }: StaffFormProps) {
         if (arr.length) fd.set('tags', JSON.stringify(arr))
       }
 
-      let result
+      let result: ActionResult
       if (mode === 'create') {
         result = await createStaff(fd)
       } else {
@@ -103,7 +120,24 @@ export function StaffForm({ mode, defaultValues, onSuccess }: StaffFormProps) {
       }
 
       if (result?.success) {
-        onSuccess?.((result.data as any)?.id)
+        if (onSuccess) {
+          onSuccess(
+            result.data &&
+              typeof result.data === 'object' &&
+              'id' in (result.data as Record<string, unknown>)
+              ? String((result.data as Record<string, unknown>).id)
+              : undefined
+          )
+        } else if (
+          mode === 'create' &&
+          successRedirectBase &&
+          result.data &&
+          typeof result.data === 'object' &&
+          'id' in (result.data as Record<string, unknown>)
+        ) {
+          const id = String((result.data as Record<string, unknown>).id)
+          window.location.href = `${successRedirectBase}/${id}/overview`
+        }
       } else if (result?.errors) {
         // Mappa errori Zod sui campi
         const errs = result.errors
@@ -192,9 +226,20 @@ export function StaffForm({ mode, defaultValues, onSuccess }: StaffFormProps) {
                       <SelectValue placeholder="Seleziona ruolo" />
                     </SelectTrigger>
                     <SelectContent>
-                      {['hostess','steward','driver','av_tech','photographer','videographer','security','catering','cleaning','other'].map((r) => (
+                      {[
+                        'hostess',
+                        'steward',
+                        'driver',
+                        'av_tech',
+                        'photographer',
+                        'videographer',
+                        'security',
+                        'catering',
+                        'cleaning',
+                        'other',
+                      ].map((r) => (
                         <SelectItem key={r} value={r}>
-                          {r.replace('_',' ')}
+                          {r.replace('_', ' ')}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -226,7 +271,13 @@ export function StaffForm({ mode, defaultValues, onSuccess }: StaffFormProps) {
               <FormItem>
                 <FormLabel>Tariffa oraria (€)</FormLabel>
                 <FormControl>
-                  <Input type="number" step="0.01" placeholder="Es. 25" value={field.value ?? ''} onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)} />
+                  <Input
+                    type="number"
+                    step="0.01"
+                    placeholder="Es. 25"
+                    value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -284,7 +335,10 @@ export function StaffForm({ mode, defaultValues, onSuccess }: StaffFormProps) {
               <FormItem>
                 <FormLabel>Stato</FormLabel>
                 <FormControl>
-                  <Select value={String(field.value)} onValueChange={(v) => field.onChange(v === 'true')}>
+                  <Select
+                    value={String(field.value)}
+                    onValueChange={(v) => field.onChange(v === 'true')}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -307,7 +361,10 @@ export function StaffForm({ mode, defaultValues, onSuccess }: StaffFormProps) {
             <FormItem>
               <FormLabel>Note</FormLabel>
               <FormControl>
-                <textarea className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm min-h-28" {...field} />
+                <textarea
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm min-h-28"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

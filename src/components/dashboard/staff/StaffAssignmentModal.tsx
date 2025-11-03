@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 /**
  * FILE: src/components/dashboard/staff/StaffAssignmentModal.tsx
@@ -6,12 +6,21 @@
  * COMPONENT: StaffAssignmentModal (Client)
  */
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { CalendarClock, Loader2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { CalendarClock, Loader2 } from 'lucide-react'
+import { createAssignment } from '@/app/actions/staff-assignments'
 import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -20,9 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { toast } from '@/components/ui/use-toast'
-import { createAssignment } from '@/app/actions/staff-assignments'
 import { assignmentStatusEnum, paymentTermsEnum } from '@/lib/validations/staff-assignments'
 
 const uiSchema = z
@@ -142,7 +149,12 @@ export function StaffAssignmentModal({
       {Trigger}
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
+          <button
+            type="button"
+            aria-label="Chiudi modale"
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setOpen(false)}
+          />
           <div className="relative z-10 w-full max-w-xl rounded-lg bg-white p-6 shadow-lg">
             <div className="mb-4">
               <h2 className="text-lg font-semibold">Nuova assegnazione</h2>
@@ -303,7 +315,11 @@ export function StaffAssignmentModal({
                       <FormItem>
                         <FormLabel>Numero fattura (opz.)</FormLabel>
                         <FormControl>
-                          <Input placeholder="Es. 2025-INV-001" value={field.value ?? ''} onChange={field.onChange} />
+                          <Input
+                            placeholder="Es. 2025-INV-001"
+                            value={field.value ?? ''}
+                            onChange={field.onChange}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -316,7 +332,11 @@ export function StaffAssignmentModal({
                       <FormItem>
                         <FormLabel>URL fattura (opz.)</FormLabel>
                         <FormControl>
-                          <Input placeholder="https://..." value={field.value ?? ''} onChange={field.onChange} />
+                          <Input
+                            placeholder="https://..."
+                            value={field.value ?? ''}
+                            onChange={field.onChange}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -325,7 +345,12 @@ export function StaffAssignmentModal({
                 </div>
 
                 <div className="flex items-center justify-end gap-3 pt-2">
-                  <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={submitting}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setOpen(false)}
+                    disabled={submitting}
+                  >
                     Annulla
                   </Button>
                   <Button type="submit" disabled={submitting}>

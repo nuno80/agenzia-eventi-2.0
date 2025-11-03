@@ -31,10 +31,15 @@ function normalizeTags(input: unknown): string[] {
       // fallthrough
     }
   }
-  return raw.split(',').map((t) => t.trim()).filter(Boolean)
+  return raw
+    .split(',')
+    .map((t) => t.trim())
+    .filter(Boolean)
 }
 
-export async function createStaff(formData: FormData | Record<string, unknown>): Promise<ActionResult> {
+export async function createStaff(
+  formData: FormData | Record<string, unknown>
+): Promise<ActionResult> {
   try {
     let data: Record<string, unknown>
 
@@ -64,7 +69,11 @@ export async function createStaff(formData: FormData | Record<string, unknown>):
   } catch (error) {
     console.error('Create staff error:', error)
     if (error instanceof z.ZodError) {
-      return { success: false, message: 'Errori di validazione', errors: error.flatten().fieldErrors }
+      return {
+        success: false,
+        message: 'Errori di validazione',
+        errors: error.flatten().fieldErrors,
+      }
     }
     return { success: false, message: 'Errore durante la creazione dello staff member' }
   }
@@ -111,7 +120,11 @@ export async function updateStaff(
   } catch (error) {
     console.error('Update staff error:', error)
     if (error instanceof z.ZodError) {
-      return { success: false, message: 'Errori di validazione', errors: error.flatten().fieldErrors }
+      return {
+        success: false,
+        message: 'Errori di validazione',
+        errors: error.flatten().fieldErrors,
+      }
     }
     return { success: false, message: "Errore durante l'aggiornamento dello staff member" }
   }
@@ -144,7 +157,9 @@ export async function toggleStaffActive(staffId: string, isActive: boolean): Pro
 
     return {
       success: true,
-      message: isActive ? 'Staff member attivato con successo' : 'Staff member disattivato con successo',
+      message: isActive
+        ? 'Staff member attivato con successo'
+        : 'Staff member disattivato con successo',
     }
   } catch (error) {
     console.error('Toggle staff active error:', error)

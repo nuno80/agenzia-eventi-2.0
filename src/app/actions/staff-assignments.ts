@@ -13,6 +13,7 @@
  * - deleteAssignment: Delete assignment
  * - markPaid: Mark payment as complete
  * - postponePayment: Change payment due date
+ * - cancelPayment: Remove a mistakenly recorded payment
  * - updateAssignmentStatus: Quick status change
  *
  * USAGE:
@@ -30,6 +31,7 @@ import {
   createStaffAssignmentSchema,
   markPaidSchema,
   postponePaymentSchema,
+  cancelPaymentSchema,
   updateStaffAssignmentSchema,
 } from '@/lib/validations/staff-assignments'
 
@@ -387,6 +389,65 @@ export async function postponePayment(
       success: false,
       message: 'Errore durante il posticipo del pagamento',
     }
+  }
+}
+
+/**
+ * Cancel Payment Action
+ */
+export async function cancelPayment(data: FormData | Record<string, unknown>): Promise<ActionResult> {
+  try {
+    const parsed = data instanceof FormData ? Object.fromEntries(data) : data
+    const validated = cancelPaymentSchema.parse(parsed)
+
+    const [assignment] = await db
+      .select()
+      .from(staffAssignments)
+      .where(eq(staffAssignments.id, validated.assignmentId))
+
+    if (!assignment) {
+      return { success: false, message: 'Assegnazione non trovata' }
+    }
+
+    // Clear payment info and recalculate status based on due date and assignment status
+    const newStatus = calculatePaymentStatus(
+      assignment.paymentDueDate,
+      null,
+      assignment.assignmentStatus
+    )
+
+    const updatedNotes = validated.reason
+      ? `${assignment.paymentNotes || ''}\n\nPagamento cancellato: ${validated.reason}`.trim()
+      : assignment.paymentNotes
+
+    await db
+      .update(staffAssignments)
+      .set({
+        paymentStatus: newStatus,
+        paymentDate: null,
+        invoiceNumber: null,
+        invoiceUrl: null,
+        paymentNotes: updatedNotes,
+        updatedAt: new Date(),
+      })
+      .where(eq(staffAssignments.id, validated.assignmentId))
+
+    revalidatePath('/persone/staff')
+    revalidatePath(`/persone/staff/${assignment.staffId}`)
+    revalidatePath(`/eventi/${assignment.eventId}/staff`)
+    revalidatePath('/')
+
+    return { success: true, message: 'Pagamento cancellato' }
+  } catch (error) {
+    console.error('Cancel payment error:', error)
+    if (error instanceof z.ZodError) {
+      return {
+        success: false,
+        message: 'Errori di validazione',
+        errors: error.flatten().fieldErrors as Record<string, string[]>,
+      }
+    }
+    return { success: false, message: 'Errore durante la cancellazione del pagamento' }
   }
 }
 

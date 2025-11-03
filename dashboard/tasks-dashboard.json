@@ -1,17 +1,37 @@
 {
   "project": "EventHub Dashboard",
-  "lastUpdated": "2025-11-02",
-  "overallProgress": 52,
+  "lastUpdated": "2025-11-03",
+  "overallProgress": 54,
   "modules": [
     {
       "id": "core",
       "name": "Core Setup & Infrastructure",
       "progress": 100,
       "tasks": [
-        { "id": "core-1", "name": "Next.js 16 project setup", "status": "completed", "complexity": "easy" },
-        { "id": "core-2", "name": "Turso database connection", "status": "completed", "complexity": "easy" },
-        { "id": "core-3", "name": "Drizzle ORM configuration", "status": "completed", "complexity": "easy" },
-        { "id": "core-4", "name": "shadcn/ui installation", "status": "completed", "complexity": "easy" }
+        {
+          "id": "core-1",
+          "name": "Next.js 16 project setup",
+          "status": "completed",
+          "complexity": "easy"
+        },
+        {
+          "id": "core-2",
+          "name": "Turso database connection",
+          "status": "completed",
+          "complexity": "easy"
+        },
+        {
+          "id": "core-3",
+          "name": "Drizzle ORM configuration",
+          "status": "completed",
+          "complexity": "easy"
+        },
+        {
+          "id": "core-4",
+          "name": "shadcn/ui installation",
+          "status": "completed",
+          "complexity": "easy"
+        }
       ]
     },
     {
@@ -19,13 +39,48 @@
       "name": "Database Schema",
       "progress": 88,
       "tasks": [
-        { "id": "db-1", "name": "Events table schema", "status": "completed", "complexity": "medium" },
-        { "id": "db-2", "name": "Participants table schema", "status": "completed", "complexity": "easy" },
-        { "id": "db-3", "name": "Speakers table schema", "status": "completed", "complexity": "easy" },
-        { "id": "db-4", "name": "Sponsors table schema", "status": "completed", "complexity": "easy" },
-        { "id": "db-5", "name": "Budget tables schema", "status": "completed", "complexity": "medium" },
-        { "id": "db-6", "name": "Staff + StaffAssignments tables", "status": "completed", "complexity": "medium" },
-        { "id": "db-7", "name": "Other tables (agenda, services, deadlines, etc.)", "status": "completed", "complexity": "medium" },
+        {
+          "id": "db-1",
+          "name": "Events table schema",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "db-2",
+          "name": "Participants table schema",
+          "status": "completed",
+          "complexity": "easy"
+        },
+        {
+          "id": "db-3",
+          "name": "Speakers table schema",
+          "status": "completed",
+          "complexity": "easy"
+        },
+        {
+          "id": "db-4",
+          "name": "Sponsors table schema",
+          "status": "completed",
+          "complexity": "easy"
+        },
+        {
+          "id": "db-5",
+          "name": "Budget tables schema",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "db-6",
+          "name": "Staff + StaffAssignments tables",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "db-7",
+          "name": "Other tables (agenda, services, deadlines, etc.)",
+          "status": "completed",
+          "complexity": "medium"
+        },
         { "id": "db-8", "name": "Seed data script", "status": "completed", "complexity": "easy" }
       ]
     },
@@ -34,9 +89,24 @@
       "name": "Dashboard Layout",
       "progress": 100,
       "tasks": [
-        { "id": "layout-1", "name": "Sidebar component (Client)", "status": "completed", "complexity": "medium" },
-        { "id": "layout-2", "name": "Header component (Client)", "status": "completed", "complexity": "medium" },
-        { "id": "layout-3", "name": "Dashboard layout wrapper", "status": "completed", "complexity": "easy" }
+        {
+          "id": "layout-1",
+          "name": "Sidebar component (Client)",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "layout-2",
+          "name": "Header component (Client)",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "layout-3",
+          "name": "Dashboard layout wrapper",
+          "status": "completed",
+          "complexity": "easy"
+        }
       ]
     },
     {
@@ -44,10 +114,30 @@
       "name": "Dashboard Home Page",
       "progress": 100,
       "tasks": [
-        { "id": "home-1", "name": "Dashboard page (Server + Suspense)", "status": "completed", "complexity": "medium" },
-        { "id": "home-2", "name": "UrgentDeadlines widget (Server)", "status": "completed", "complexity": "easy" },
-        { "id": "home-3", "name": "StatsOverview cards (Server)", "status": "completed", "complexity": "easy" },
-        { "id": "home-4", "name": "UpcomingEvents list (Server)", "status": "completed", "complexity": "easy" }
+        {
+          "id": "home-1",
+          "name": "Dashboard page (Server + Suspense)",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "home-2",
+          "name": "UrgentDeadlines widget (Server)",
+          "status": "completed",
+          "complexity": "easy"
+        },
+        {
+          "id": "home-3",
+          "name": "StatsOverview cards (Server)",
+          "status": "completed",
+          "complexity": "easy"
+        },
+        {
+          "id": "home-4",
+          "name": "UpcomingEvents list (Server)",
+          "status": "completed",
+          "complexity": "easy"
+        }
       ]
     },
     {
@@ -55,18 +145,80 @@
       "name": "Eventi - CRUD",
       "progress": 90,
       "tasks": [
-        { "id": "events-1", "name": "DAL events.ts (50+ queries)", "status": "completed", "complexity": "hard" },
-        { "id": "events-2", "name": "Validation schema (Zod)", "status": "completed", "complexity": "medium" },
-        { "id": "events-3", "name": "Server Actions (create, update, delete, duplicate)", "status": "completed", "complexity": "medium" },
-        { "id": "events-4", "name": "EventForm component (Client)", "status": "completed", "complexity": "hard" },
-        { "id": "events-5", "name": "Create event page", "status": "completed", "complexity": "easy" },
-        { "id": "events-6", "name": "Edit event page", "status": "completed", "complexity": "easy" },
-        { "id": "events-7", "name": "Events list page (Server)", "status": "completed", "complexity": "medium" },
-        { "id": "events-8", "name": "EventsListClient with filters (Client)", "status": "completed", "complexity": "medium" },
-        { "id": "events-9", "name": "EventCard component (Server)", "status": "completed", "complexity": "easy" },
-        { "id": "events-10", "name": "EventsFilters component (Client)", "status": "completed", "complexity": "medium" },
-        { "id": "events-11", "name": "DuplicateEventButton (Client)", "status": "completed", "complexity": "medium" },
-        { "id": "events-12", "name": "Delete event UI", "status": "pending", "complexity": "easy", "componentType": "Client", "description": "Dialog conferma eliminazione + bottone in EventHeader" }
+        {
+          "id": "events-1",
+          "name": "DAL events.ts (50+ queries)",
+          "status": "completed",
+          "complexity": "hard"
+        },
+        {
+          "id": "events-2",
+          "name": "Validation schema (Zod)",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "events-3",
+          "name": "Server Actions (create, update, delete, duplicate)",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "events-4",
+          "name": "EventForm component (Client)",
+          "status": "completed",
+          "complexity": "hard"
+        },
+        {
+          "id": "events-5",
+          "name": "Create event page",
+          "status": "completed",
+          "complexity": "easy"
+        },
+        {
+          "id": "events-6",
+          "name": "Edit event page",
+          "status": "completed",
+          "complexity": "easy"
+        },
+        {
+          "id": "events-7",
+          "name": "Events list page (Server)",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "events-8",
+          "name": "EventsListClient with filters (Client)",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "events-9",
+          "name": "EventCard component (Server)",
+          "status": "completed",
+          "complexity": "easy"
+        },
+        {
+          "id": "events-10",
+          "name": "EventsFilters component (Client)",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "events-11",
+          "name": "DuplicateEventButton (Client)",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "events-12",
+          "name": "Delete event UI",
+          "status": "pending",
+          "complexity": "easy",
+          "componentType": "Client",
+          "description": "Dialog conferma eliminazione + bottone in EventHeader"
+        }
       ]
     },
     {
@@ -74,45 +226,256 @@
       "name": "Eventi - Dettaglio",
       "progress": 30,
       "tasks": [
-        { "id": "detail-1", "name": "Event detail page (Server)", "status": "completed", "complexity": "medium" },
-        { "id": "detail-2", "name": "EventHeader component (Server)", "status": "completed", "complexity": "medium" },
-        { "id": "detail-3", "name": "EventTabs navigation (Client)", "status": "completed", "complexity": "easy" },
-        { "id": "detail-4", "name": "OverviewTab (Server)", "status": "completed", "complexity": "medium" },
-        { "id": "detail-5", "name": "ParticipantsTab (Server)", "status": "completed", "complexity": "medium" },
-        { "id": "detail-6", "name": "SpeakersTab (Server)", "status": "pending", "complexity": "medium", "componentType": "Server", "description": "Stats speaker + tabella con CRUD inline + DAL speakers necessario" },
-        { "id": "detail-7", "name": "SponsorsTab (Server)", "status": "pending", "complexity": "medium", "componentType": "Server", "description": "Stats sponsor + tabella con livelli + contratti + DAL sponsors" },
-        { "id": "detail-8", "name": "AgendaTab (Server/Client)", "status": "pending", "complexity": "hard", "componentType": "Server + Client", "description": "Timeline view + drag&drop sessions + DAL agenda" },
-        { "id": "detail-9", "name": "ServicesTab (Server)", "status": "pending", "complexity": "medium", "componentType": "Server", "description": "Lista servizi (catering, AV, etc.) + status + DAL services" },
-        { "id": "detail-10", "name": "BudgetTab (Server/Client)", "status": "pending", "complexity": "hard", "componentType": "Server + Client", "description": "Breakdown categorie + items + charts + DAL budget" },
-        { "id": "detail-11", "name": "CommunicationsTab (Server/Client)", "status": "pending", "complexity": "hard", "componentType": "Server + Client", "description": "Email log + composer + templates + stats" },
-        { "id": "detail-12", "name": "SurveysTab (Server/Client)", "status": "pending", "complexity": "hard", "componentType": "Server + Client", "description": "Survey builder + responses + analytics" },
-        { "id": "detail-13", "name": "CheckinTab (Server/Client)", "status": "pending", "complexity": "hard", "componentType": "Server + Client", "description": "QR scanner + check-in list + real-time updates" },
-        { "id": "detail-14", "name": "StaffTab (Server)", "status": "pending", "complexity": "medium", "componentType": "Server", "description": "Lista staff assegnato + pagamenti + quick assign" }
+        {
+          "id": "detail-1",
+          "name": "Event detail page (Server)",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "detail-2",
+          "name": "EventHeader component (Server)",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "detail-3",
+          "name": "EventTabs navigation (Client)",
+          "status": "completed",
+          "complexity": "easy"
+        },
+        {
+          "id": "detail-4",
+          "name": "OverviewTab (Server)",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "detail-5",
+          "name": "ParticipantsTab (Server)",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "detail-6",
+          "name": "SpeakersTab (Server)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server",
+          "description": "Stats speaker + tabella con CRUD inline + DAL speakers necessario"
+        },
+        {
+          "id": "detail-7",
+          "name": "SponsorsTab (Server)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server",
+          "description": "Stats sponsor + tabella con livelli + contratti + DAL sponsors"
+        },
+        {
+          "id": "detail-8",
+          "name": "AgendaTab (Server/Client)",
+          "status": "pending",
+          "complexity": "hard",
+          "componentType": "Server + Client",
+          "description": "Timeline view + drag&drop sessions + DAL agenda"
+        },
+        {
+          "id": "detail-9",
+          "name": "ServicesTab (Server)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server",
+          "description": "Lista servizi (catering, AV, etc.) + status + DAL services"
+        },
+        {
+          "id": "detail-10",
+          "name": "BudgetTab (Server/Client)",
+          "status": "pending",
+          "complexity": "hard",
+          "componentType": "Server + Client",
+          "description": "Breakdown categorie + items + charts + DAL budget"
+        },
+        {
+          "id": "detail-11",
+          "name": "CommunicationsTab (Server/Client)",
+          "status": "pending",
+          "complexity": "hard",
+          "componentType": "Server + Client",
+          "description": "Email log + composer + templates + stats"
+        },
+        {
+          "id": "detail-12",
+          "name": "SurveysTab (Server/Client)",
+          "status": "pending",
+          "complexity": "hard",
+          "componentType": "Server + Client",
+          "description": "Survey builder + responses + analytics"
+        },
+        {
+          "id": "detail-13",
+          "name": "CheckinTab (Server/Client)",
+          "status": "pending",
+          "complexity": "hard",
+          "componentType": "Server + Client",
+          "description": "QR scanner + check-in list + real-time updates"
+        },
+        {
+          "id": "detail-14",
+          "name": "StaffTab (Server)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server",
+          "description": "Lista staff assegnato + pagamenti + quick assign"
+        }
       ]
     },
     {
       "id": "staff",
       "name": "Personale/Staff",
-      "progress": 85,
+      "progress": 90,
       "tasks": [
         { "id": "staff-1", "name": "DAL staff.ts", "status": "completed", "complexity": "medium" },
-        { "id": "staff-2", "name": "DAL staffAssignments.ts", "status": "completed", "complexity": "medium" },
-        { "id": "staff-3", "name": "Payment utilities in utils.ts", "status": "completed", "complexity": "easy" },
-        { "id": "staff-4", "name": "Validation schema staff (Zod)", "status": "completed", "complexity": "easy", "componentType": "Validation", "description": "Schema per staff: nome, email, ruolo, rate, tags" },
-        { "id": "staff-5", "name": "Validation schema staffAssignments (Zod)", "status": "completed", "complexity": "easy", "componentType": "Validation", "description": "Schema per assignments: date, ruolo, pagamento con termini" },
-        { "id": "staff-6", "name": "Server Actions staff.ts", "status": "completed", "complexity": "easy", "componentType": "Server Action", "description": "create, update, delete, toggleActive staff" },
-        { "id": "staff-7", "name": "Server Actions staffAssignments.ts", "status": "completed", "complexity": "medium", "componentType": "Server Action", "description": "create, update, delete, markPaid, postponePayment assignments" },
-        { "id": "staff-8", "name": "Staff list page /personale (Server)", "status": "completed", "complexity": "easy", "componentType": "Server", "description": "Wrapper con Suspense, fetch data, pass to Client" },
-        { "id": "staff-9", "name": "StaffListClient (Client)", "status": "completed", "complexity": "medium", "componentType": "Client", "description": "Grid cards + filtri + search + sorting in-memory" },
-        { "id": "staff-10", "name": "StaffCard component (Server)", "status": "completed", "complexity": "easy", "componentType": "Server", "description": "Card con foto, info, tags, prossimi eventi, quick actions" },
-        { "id": "staff-11", "name": "StaffFilters component (Client)", "status": "completed", "complexity": "easy", "componentType": "Client", "description": "Filtri ruolo, disponibilità, tags" },
-        { "id": "staff-12", "name": "StaffForm component (Client)", "status": "completed", "complexity": "medium", "componentType": "Client", "description": "Form completo staff (create/edit) con upload foto" },
-        { "id": "staff-13", "name": "Create staff page (Server)", "status": "completed", "complexity": "easy", "componentType": "Server", "description": "Wrapper con StaffForm in create mode" },
-        { "id": "staff-14", "name": "Staff detail page (Server)", "status": "completed", "complexity": "medium", "componentType": "Server", "description": "Header + tabs (Info, Assignments, Payments, Documents)" },
-        { "id": "staff-15", "name": "Edit staff page (Server)", "status": "completed", "complexity": "easy", "componentType": "Server", "description": "Wrapper con StaffForm in edit mode" },
-        { "id": "staff-16", "name": "StaffAssignmentModal (Client)", "status": "completed", "complexity": "medium", "componentType": "Client", "description": "Modal per assegnare staff a evento con date e pagamento" },
-        { "id": "staff-17", "name": "PaymentStatusBadge (Server)", "status": "pending", "complexity": "easy", "componentType": "Server", "description": "Badge colorato per status pagamento con scadenza" },
-        { "id": "staff-18", "name": "Payments dashboard widget", "status": "pending", "complexity": "medium", "componentType": "Server", "description": "Widget home con scaduti/in scadenza + CTA" }
+        {
+          "id": "staff-2",
+          "name": "DAL staffAssignments.ts",
+          "status": "completed",
+          "complexity": "medium"
+        },
+        {
+          "id": "staff-3",
+          "name": "Payment utilities in utils.ts",
+          "status": "completed",
+          "complexity": "easy"
+        },
+        {
+          "id": "staff-4",
+          "name": "Validation schema staff (Zod)",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Validation",
+          "description": "Schema per staff: nome, email, ruolo, rate, tags"
+        },
+        {
+          "id": "staff-5",
+          "name": "Validation schema staffAssignments (Zod)",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Validation",
+          "description": "Schema per assignments: date, ruolo, pagamento con termini"
+        },
+        {
+          "id": "staff-6",
+          "name": "Server Actions staff.ts",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Server Action",
+          "description": "create, update, delete, toggleActive staff"
+        },
+        {
+          "id": "staff-7",
+          "name": "Server Actions staffAssignments.ts",
+          "status": "completed",
+          "complexity": "medium",
+          "componentType": "Server Action",
+          "description": "create, update, delete, markPaid, postponePayment assignments"
+        },
+        {
+          "id": "staff-8",
+          "name": "Staff list page /personale (Server)",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Server",
+          "description": "Wrapper con Suspense, fetch data, pass to Client"
+        },
+        {
+          "id": "staff-9",
+          "name": "StaffListClient (Client)",
+          "status": "completed",
+          "complexity": "medium",
+          "componentType": "Client",
+          "description": "Grid cards + filtri + search + sorting in-memory"
+        },
+        {
+          "id": "staff-10",
+          "name": "StaffCard component (Server)",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Server",
+          "description": "Card con foto, info, tags, prossimi eventi, quick actions"
+        },
+        {
+          "id": "staff-11",
+          "name": "StaffFilters component (Client)",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Client",
+          "description": "Filtri ruolo, disponibilità, tags"
+        },
+        {
+          "id": "staff-12",
+          "name": "StaffForm component (Client)",
+          "status": "completed",
+          "complexity": "medium",
+          "componentType": "Client",
+          "description": "Form completo staff (create/edit) con upload foto"
+        },
+        {
+          "id": "staff-13",
+          "name": "Create staff page (Server)",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Server",
+          "description": "Wrapper con StaffForm in create mode"
+        },
+        {
+          "id": "staff-14",
+          "name": "Staff detail page (Server)",
+          "status": "completed",
+          "complexity": "medium",
+          "componentType": "Server",
+          "description": "Header + tabs (Info, Assignments, Payments, Documents)"
+        },
+        {
+          "id": "staff-15",
+          "name": "Edit staff page (Server)",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Server",
+          "description": "Wrapper con StaffForm in edit mode"
+        },
+        {
+          "id": "staff-16",
+          "name": "StaffAssignmentModal (Client)",
+          "status": "completed",
+          "complexity": "medium",
+          "componentType": "Client",
+          "description": "Modal per assegnare staff a evento con date e pagamento"
+        },
+        {
+          "id": "staff-17",
+          "name": "PaymentStatusBadge (Server)",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Server",
+          "description": "Badge colorato per status pagamento con scadenza"
+        },
+        {
+          "id": "staff-18",
+          "name": "Payments dashboard widget",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server",
+          "description": "Widget home con scaduti/in scadenza + CTA"
+        },
+        {
+          "id": "staff-19",
+          "name": "PaymentQuickActions (Client)",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Client",
+          "description": "CTA Segna pagato / Posticipa accanto al badge"
+        }
       ]
     },
     {
@@ -120,12 +483,54 @@
       "name": "Persone - Pagine Globali",
       "progress": 0,
       "tasks": [
-        { "id": "people-1", "name": "DAL speakers.ts", "status": "pending", "complexity": "medium", "componentType": "DAL", "description": "Query speakers: getAll, byEvent, search, stats" },
-        { "id": "people-2", "name": "DAL sponsors.ts", "status": "pending", "complexity": "medium", "componentType": "DAL", "description": "Query sponsors: getAll, byEvent, byLevel, revenue stats" },
-        { "id": "people-3", "name": "/persone/partecipanti page (Server)", "status": "pending", "complexity": "medium", "componentType": "Server + Client", "description": "Tutti i partecipanti di tutti gli eventi + filtri avanzati" },
-        { "id": "people-4", "name": "/persone/relatori page (Server)", "status": "pending", "complexity": "medium", "componentType": "Server + Client", "description": "Tutti i relatori + filtri + assegnazioni" },
-        { "id": "people-5", "name": "/persone/sponsor page (Server)", "status": "pending", "complexity": "medium", "componentType": "Server + Client", "description": "Tutti gli sponsor + filtri + revenue tracking" },
-        { "id": "people-6", "name": "/persone/staff page (Server)", "status": "pending", "complexity": "medium", "componentType": "Server", "description": "Redirect a /personale oppure vista diversa staff" }
+        {
+          "id": "people-1",
+          "name": "DAL speakers.ts",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "DAL",
+          "description": "Query speakers: getAll, byEvent, search, stats"
+        },
+        {
+          "id": "people-2",
+          "name": "DAL sponsors.ts",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "DAL",
+          "description": "Query sponsors: getAll, byEvent, byLevel, revenue stats"
+        },
+        {
+          "id": "people-3",
+          "name": "/persone/partecipanti page (Server)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server + Client",
+          "description": "Tutti i partecipanti di tutti gli eventi + filtri avanzati"
+        },
+        {
+          "id": "people-4",
+          "name": "/persone/relatori page (Server)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server + Client",
+          "description": "Tutti i relatori + filtri + assegnazioni"
+        },
+        {
+          "id": "people-5",
+          "name": "/persone/sponsor page (Server)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server + Client",
+          "description": "Tutti gli sponsor + filtri + revenue tracking"
+        },
+        {
+          "id": "people-6",
+          "name": "/persone/staff page (Server)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server",
+          "description": "Redirect a /personale oppure vista diversa staff"
+        }
       ]
     },
     {
@@ -133,10 +538,38 @@
       "name": "Finance & Reports",
       "progress": 0,
       "tasks": [
-        { "id": "finance-1", "name": "DAL budget.ts", "status": "pending", "complexity": "medium", "componentType": "DAL", "description": "Query budget: categories, items, aggregations, reports" },
-        { "id": "finance-2", "name": "/finance page (Server)", "status": "pending", "complexity": "hard", "componentType": "Server + Client", "description": "Overview finanziaria: revenue, costs, profit per evento" },
-        { "id": "finance-3", "name": "/finance/report page (Server)", "status": "pending", "complexity": "hard", "componentType": "Server + Client", "description": "Report builder: custom date ranges, export Excel/PDF" },
-        { "id": "finance-4", "name": "Budget charts components (Client)", "status": "pending", "complexity": "medium", "componentType": "Client", "description": "Charts con recharts: pie, bar, line per budget" }
+        {
+          "id": "finance-1",
+          "name": "DAL budget.ts",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "DAL",
+          "description": "Query budget: categories, items, aggregations, reports"
+        },
+        {
+          "id": "finance-2",
+          "name": "/finance page (Server)",
+          "status": "pending",
+          "complexity": "hard",
+          "componentType": "Server + Client",
+          "description": "Overview finanziaria: revenue, costs, profit per evento"
+        },
+        {
+          "id": "finance-3",
+          "name": "/finance/report page (Server)",
+          "status": "pending",
+          "complexity": "hard",
+          "componentType": "Server + Client",
+          "description": "Report builder: custom date ranges, export Excel/PDF"
+        },
+        {
+          "id": "finance-4",
+          "name": "Budget charts components (Client)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Client",
+          "description": "Charts con recharts: pie, bar, line per budget"
+        }
       ]
     },
     {
@@ -144,44 +577,158 @@
       "name": "Altri Moduli",
       "progress": 0,
       "tasks": [
-        { "id": "other-1", "name": "DAL deadlines.ts", "status": "pending", "complexity": "easy", "componentType": "DAL", "description": "Query deadlines (simile a events.ts, già parzialmente in events)" },
-        { "id": "other-2", "name": "DAL services.ts", "status": "pending", "complexity": "medium", "componentType": "DAL", "description": "Query servizi: getAll, byEvent, byType, vendors" },
-        { "id": "other-3", "name": "DAL agenda.ts", "status": "pending", "complexity": "medium", "componentType": "DAL", "description": "Query agenda: sessions, timeline, conflicts" },
-        { "id": "other-4", "name": "/impostazioni page (Server)", "status": "pending", "complexity": "medium", "componentType": "Server + Client", "description": "Settings: profilo, notifiche, template email" },
-        { "id": "other-5", "name": "Export Excel/PDF functionality", "status": "pending", "complexity": "hard", "componentType": "Server Action", "description": "Export dati con sheetjs e pdf generation" },
-        { "id": "other-6", "name": "QR Code generation for badges", "status": "pending", "complexity": "medium", "componentType": "Server + Client", "description": "Genera QR per partecipanti + check-in scanner" },
-        { "id": "other-7", "name": "Email notification system", "status": "pending", "complexity": "hard", "componentType": "Server Action + Templates", "description": "Integrazione Resend + templates + bulk sending" },
-        { "id": "other-8", "name": "File upload handler (vercel-blob)", "status": "pending", "complexity": "medium", "componentType": "Server Action", "description": "Upload foto staff, documenti, invoices" }
+        {
+          "id": "other-1",
+          "name": "DAL deadlines.ts",
+          "status": "pending",
+          "complexity": "easy",
+          "componentType": "DAL",
+          "description": "Query deadlines (simile a events.ts, già parzialmente in events)"
+        },
+        {
+          "id": "other-2",
+          "name": "DAL services.ts",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "DAL",
+          "description": "Query servizi: getAll, byEvent, byType, vendors"
+        },
+        {
+          "id": "other-3",
+          "name": "DAL agenda.ts",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "DAL",
+          "description": "Query agenda: sessions, timeline, conflicts"
+        },
+        {
+          "id": "other-4",
+          "name": "/impostazioni page (Server)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server + Client",
+          "description": "Settings: profilo, notifiche, template email"
+        },
+        {
+          "id": "other-5",
+          "name": "Export Excel/PDF functionality",
+          "status": "pending",
+          "complexity": "hard",
+          "componentType": "Server Action",
+          "description": "Export dati con sheetjs e pdf generation"
+        },
+        {
+          "id": "other-6",
+          "name": "QR Code generation for badges",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server + Client",
+          "description": "Genera QR per partecipanti + check-in scanner"
+        },
+        {
+          "id": "other-7",
+          "name": "Email notification system",
+          "status": "pending",
+          "complexity": "hard",
+          "componentType": "Server Action + Templates",
+          "description": "Integrazione Resend + templates + bulk sending"
+        },
+        {
+          "id": "other-8",
+          "name": "File upload handler (vercel-blob)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server Action",
+          "description": "Upload foto staff, documenti, invoices"
+        }
       ]
     }
   ],
   "priorityQueue": [
-    { "priority": 1, "module": "staff", "tasks": ["staff-12", "staff-13", "staff-15"], "rationale": "UI lista staff completa; dipende dal completamento DAL e validation (ora completati)" },
-    { "priority": 2, "module": "staff", "tasks": ["staff-17"], "rationale": "UI lista staff completa; dipende dal completamento DAL e validation" },
-    { "priority": 3, "module": "staff", "tasks": ["staff-17"], "rationale": "CRUD completo staff per gestione autonoma" },
-    { "priority": 4, "module": "staff", "tasks": ["staff-14", "staff-17"], "rationale": "Dettaglio staff + assegnazioni per collegare con eventi" },
-    { "priority": 5, "module": "events-detail", "tasks": ["detail-14"], "rationale": "Tab Staff negli eventi per vedere assegnazioni" },
-    { "priority": 6, "module": "events-detail", "tasks": ["detail-6", "detail-7"], "rationale": "Tab Speaker e Sponsor (più richiesti dopo Partecipanti)" },
-    { "priority": 7, "module": "events-detail", "tasks": ["detail-10"], "rationale": "Budget tab per controllo finanziario eventi" },
-    { "priority": 8, "module": "people-global", "tasks": ["people-1", "people-2", "people-3", "people-4"], "rationale": "Viste globali per gestione cross-event" },
-    { "priority": 9, "module": "other", "tasks": ["other-8", "other-6"], "rationale": "Upload foto staff + QR badges partecipanti" },
-    { "priority": 10, "module": "events-detail", "tasks": ["detail-8", "detail-9"], "rationale": "Agenda e Servizi per pianificazione completa" }
+    {
+      "priority": 1,
+      "module": "staff",
+      "tasks": ["staff-12", "staff-13", "staff-15"],
+      "rationale": "UI lista staff completa; dipende dal completamento DAL e validation (ora completati)"
+    },
+    {
+      "priority": 2,
+      "module": "staff",
+      "tasks": ["staff-17"],
+      "rationale": "UI lista staff completa; dipende dal completamento DAL e validation"
+    },
+    {
+      "priority": 3,
+      "module": "staff",
+      "tasks": ["staff-18"],
+      "rationale": "CRUD completo staff per gestione autonoma"
+    },
+    {
+      "priority": 4,
+      "module": "staff",
+      "tasks": ["staff-14", "staff-18"],
+      "rationale": "Dettaglio staff + assegnazioni per collegare con eventi"
+    },
+    {
+      "priority": 5,
+      "module": "events-detail",
+      "tasks": ["detail-14"],
+      "rationale": "Tab Staff negli eventi per vedere assegnazioni"
+    },
+    {
+      "priority": 6,
+      "module": "events-detail",
+      "tasks": ["detail-6", "detail-7"],
+      "rationale": "Tab Speaker e Sponsor (più richiesti dopo Partecipanti)"
+    },
+    {
+      "priority": 7,
+      "module": "events-detail",
+      "tasks": ["detail-10"],
+      "rationale": "Budget tab per controllo finanziario eventi"
+    },
+    {
+      "priority": 8,
+      "module": "people-global",
+      "tasks": ["people-1", "people-2", "people-3", "people-4"],
+      "rationale": "Viste globali per gestione cross-event"
+    },
+    {
+      "priority": 9,
+      "module": "other",
+      "tasks": ["other-8", "other-6"],
+      "rationale": "Upload foto staff + QR badges partecipanti"
+    },
+    {
+      "priority": 10,
+      "module": "events-detail",
+      "tasks": ["detail-8", "detail-9"],
+      "rationale": "Agenda e Servizi per pianificazione completa"
+    }
   ],
   "statistics": {
-    "totalTasks": 98,
-    "completedTasks": 47,
-    "pendingTasks": 52,
-    "byComplexity": { "easy": 28, "medium": 45, "hard": 25 },
-    "byComponentType": { "Server": 32, "Client": 18, "Server + Client": 14, "Server Action": 12, "DAL": 10, "Validation": 6, "Other": 6 }
+    "totalTasks": 99,
+    "completedTasks": 48,
+    "pendingTasks": 51,
+    "byComplexity": { "easy": 29, "medium": 45, "hard": 25 },
+    "byComponentType": {
+      "Server": 32,
+      "Client": 19,
+      "Server + Client": 14,
+      "Server Action": 12,
+      "DAL": 10,
+      "Validation": 6,
+      "Other": 6
+    }
   },
   "nextSteps": {
     "immediate": [
       "Implementare quick actions staff (toggleActive, assegnazione rapida)",
-      "Aggiungere PaymentStatusBadge e tracking pagamenti"
+      "Integrare quick actions pagamenti (mark paid, postpone) nelle viste evento e staff"
     ],
     "shortTerm": [
       "Completare CRUD staff completo (create, edit)",
-      "Aggiungere PaymentStatusBadge e tracking pagamenti"
+      "Implementare StaffTab evento con lista completa + filtri"
     ],
     "mediumTerm": [
       "Implementare tab Speaker e Sponsor negli eventi",
@@ -197,11 +744,31 @@
     ]
   },
   "technicalDebt": [
-    { "item": "Index.ts exports files", "priority": "low", "description": "Creare index.ts in ogni cartella component per export puliti" },
-    { "item": "Error boundaries", "priority": "medium", "description": "Aggiungere error boundaries per gestione errori UI" },
-    { "item": "Loading states consistency", "priority": "low", "description": "Standardizzare skeleton loaders in tutti i componenti" },
-    { "item": "Toast notifications", "priority": "medium", "description": "Implementare sistema toast globale invece di alert()" },
-    { "item": "Form validation consistency", "priority": "medium", "description": "Assicurare che tutti i form usino stesso pattern error handling" }
+    {
+      "item": "Index.ts exports files",
+      "priority": "low",
+      "description": "Creare index.ts in ogni cartella component per export puliti"
+    },
+    {
+      "item": "Error boundaries",
+      "priority": "medium",
+      "description": "Aggiungere error boundaries per gestione errori UI"
+    },
+    {
+      "item": "Loading states consistency",
+      "priority": "low",
+      "description": "Standardizzare skeleton loaders in tutti i componenti"
+    },
+    {
+      "item": "Toast notifications",
+      "priority": "medium",
+      "description": "Implementare sistema toast globale invece di alert()"
+    },
+    {
+      "item": "Form validation consistency",
+      "priority": "medium",
+      "description": "Assicurare che tutti i form usino stesso pattern error handling"
+    }
   ],
   "dependencies": {
     "installed": [
