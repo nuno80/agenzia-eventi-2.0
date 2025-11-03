@@ -33,6 +33,7 @@ import { CalendarDays, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { EventCard } from '@/components/dashboard/events/EventCard'
+import { DuplicateEventModal } from '@/components/dashboard/events/DuplicateEventModal'
 import { EventsFilters, type FilterState } from '@/components/dashboard/events/EventsFilters'
 import type { Event } from '../../../db/libsql-schemas'
 
@@ -138,14 +139,16 @@ export function EventsListClient({ events }: EventsListClientProps) {
           )}
         </div>
 
-        <Link
-          href="/eventi/nuovo"
-          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
-        >
-          <Plus className="w-5 h-5" />
-          <span className="hidden sm:inline">Nuovo Evento</span>
-          <span className="sm:hidden">Nuovo</span>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/eventi/nuovo"
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
+          >
+            <Plus className="w-5 h-5" />
+            <span>Nuovo Evento</span>
+          </Link>
+          <DuplicateEventModal />
+        </div>
       </div>
 
       {/* Events Grid or Empty State */}

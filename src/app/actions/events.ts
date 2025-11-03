@@ -9,6 +9,7 @@ import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { db, events } from '@/db'
+import { getEventsForDuplicate } from '@/lib/dal/events'
 import { createEventSchema, updateEventSchema } from '@/lib/validations/events'
 
 export type ActionResult = {
@@ -198,6 +199,12 @@ export async function updateEventStatus(
     console.error('Update status error:', error)
     return { success: false, message: "Errore durante l'aggiornamento dello status" }
   }
+}
+
+export async function listEventsForDuplicate(params?: { search?: string; year?: number }) {
+  // Returns minimal DTO for client selector
+  const results = await getEventsForDuplicate(params)
+  return results
 }
 
 /**

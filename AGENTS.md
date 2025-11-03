@@ -330,6 +330,33 @@ async function canEditPost(postId: string, userId: string): Promise<boolean> {
 
 ---
 
+## 🛠️ UI Consistency Rules
+
+### Buttons (Design System)
+- Tutti i pulsanti primari devono usare sfondo blu consistente: `bg-blue-600 hover:bg-blue-700 text-white`.
+- Il cursore deve sempre essere a forma di mano su hover: assicurato globalmente con `cursor-pointer` nel nostro componente `Button`.
+- Usare SEMPRE il componente `Button` di `src/components/ui/button.tsx` per CTA e azioni. Evitare `<button>` raw con classi custom.
+- Varianti consigliate:
+  - Primario (default): blu (come sopra)
+  - Outline/ghost: solo per azioni secondarie. Non usare colori scuri che somigliano al primario.
+- Accessibilità: tutti i Button devono avere `aria-label` quando l’etichetta non è testuale o è solo icona.
+
+Esempio corretto:
+```tsx
+import { Button } from '@/components/ui/button'
+
+<Button className="bg-blue-600 hover:bg-blue-700 text-white">
+  Azione
+</Button>
+```
+
+Esempio scorretto:
+```tsx
+<button className="bg-neutral-900 text-white">Azione</button>
+```
+
+---
+
 ## 🛠️ Code Quality Tools
 
 ### Biome.js Configuration

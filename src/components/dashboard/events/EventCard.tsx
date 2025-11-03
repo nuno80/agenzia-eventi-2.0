@@ -25,7 +25,6 @@
 
 import { ArrowRight, Calendar, Edit, Euro, MapPin, Users } from 'lucide-react'
 import Link from 'next/link'
-import { DuplicateEventButton } from '@/components/dashboard/events/DuplicateEventButton'
 import type { Event } from '@/db'
 import {
   formatCurrency,
@@ -51,8 +50,22 @@ export function EventCard({ event }: EventCardProps) {
     ? Math.round(((event.currentSpent || 0) / event.totalBudget) * 100)
     : 0
 
+  // Compute days until and style label
+  const now = new Date()
+  const start = new Date(event.startDate)
+  const daysUntil = Math.ceil((start.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+  const isPast = daysUntil <= 0
+  const label = isPast ? 'Concluso' : `Tra ${daysUntil} giorni`
+  const color = isPast
+    ? 'text-red-600'
+    : daysUntil <= 7
+      ? 'text-red-600'
+      : daysUntil <= 30
+        ? 'text-orange-600'
+        : 'text-gray-900'
+
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+    <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow h-full flex flex-col">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1 min-w-0">
@@ -83,12 +96,11 @@ export function EventCard({ event }: EventCardProps) {
         </div>
 
         <div className="ml-4 flex-shrink-0 text-right">
-          <div className="text-sm font-semibold text-blue-600 mb-1">
-            {formatDaysUntil(event.startDate)}
+          <div className="text-sm font-semibold mb-1">
+            <span className={color}>{label}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <DuplicateEventButton eventId={event.id} eventTitle={event.title} variant="icon" />
-            <Link
+                        <Link
               href={`/eventi/${event.id}/edit`}
               className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
               title="Modifica"
@@ -174,8 +186,11 @@ export function EventCard({ event }: EventCardProps) {
         </div>
       </div>
 
+      {/* Spacer to push progress to bottom */}
+      <div className="flex-1" />
+
       {/* Progress Bars */}
-      <div className="space-y-2">
+      <div className="space-y-2 mt-2">
         {/* Participants Progress */}
         {event.maxParticipants && (
           <div>

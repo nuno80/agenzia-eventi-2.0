@@ -1,7 +1,7 @@
 {
   "project": "EventHub Dashboard",
   "lastUpdated": "2025-11-03",
-  "overallProgress": 54,
+  "overallProgress": 55,
   "modules": [
     {
       "id": "core",
@@ -106,6 +106,14 @@
           "name": "Dashboard layout wrapper",
           "status": "completed",
           "complexity": "easy"
+        },
+        {
+          "id": "layout-4",
+          "name": "UI Consistency - Buttons",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Other",
+          "description": "Pulsanti primari blu (bg-blue-600/700) + cursore pointer; guideline aggiunta in AGENTS.md"
         }
       ]
     },
@@ -708,7 +716,7 @@
   ],
   "statistics": {
     "totalTasks": 99,
-    "completedTasks": 48,
+    "completedTasks": 49,
     "pendingTasks": 51,
     "byComplexity": { "easy": 29, "medium": 45, "hard": 25 },
     "byComponentType": {

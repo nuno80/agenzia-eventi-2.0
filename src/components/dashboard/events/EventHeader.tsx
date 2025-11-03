@@ -37,7 +37,6 @@ import {
   Users,
 } from 'lucide-react'
 import Link from 'next/link'
-import { DuplicateEventButton } from '@/components/dashboard/events/DuplicateEventButton'
 import type { Event } from '@/db'
 import {
   formatCurrency,
@@ -188,8 +187,6 @@ export function EventHeader({ event }: EventHeaderProps) {
               <span>Modifica</span>
             </Link>
 
-            <DuplicateEventButton eventId={event.id} eventTitle={event.title} variant="icon" />
-
             <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700">
               <Share2 className="w-5 h-5" />
             </button>
@@ -221,8 +218,6 @@ export function EventHeader({ event }: EventHeaderProps) {
           <Edit className="w-4 h-4" />
           <span>Modifica</span>
         </Link>
-
-        <DuplicateEventButton eventId={event.id} eventTitle={event.title} variant="icon" />
 
         <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700">
           <Share2 className="w-5 h-5" />
