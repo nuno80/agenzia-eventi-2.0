@@ -38,8 +38,6 @@ interface StaffListClientProps {
   events: { id: string; title: string; startDate?: Date | string; endDate?: Date | string }[]
 }
 
-import { StaffAssignmentModal } from '@/components/dashboard/staff/StaffAssignmentModal'
-
 export function StaffListClient({ staff, events }: StaffListClientProps) {
   const [filters, setFilters] = useState<StaffFilterState>({
     search: '',

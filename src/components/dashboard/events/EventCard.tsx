@@ -26,13 +26,7 @@
 import { ArrowRight, Calendar, Edit, Euro, MapPin, Users } from 'lucide-react'
 import Link from 'next/link'
 import type { Event } from '@/db'
-import {
-  formatCurrency,
-  formatDate,
-  formatDaysUntil,
-  getPriorityColor,
-  getStatusColor,
-} from '@/lib/utils'
+import { formatCurrency, formatDate, getPriorityColor, getStatusColor } from '@/lib/utils'
 
 interface EventCardProps {
   event: Event
@@ -100,7 +94,7 @@ export function EventCard({ event }: EventCardProps) {
             <span className={color}>{label}</span>
           </div>
           <div className="flex items-center space-x-1">
-                        <Link
+            <Link
               href={`/eventi/${event.id}/edit`}
               className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
               title="Modifica"

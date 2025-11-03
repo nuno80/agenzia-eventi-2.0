@@ -32,8 +32,8 @@
 import { CalendarDays, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import { EventCard } from '@/components/dashboard/events/EventCard'
 import { DuplicateEventModal } from '@/components/dashboard/events/DuplicateEventModal'
+import { EventCard } from '@/components/dashboard/events/EventCard'
 import { EventsFilters, type FilterState } from '@/components/dashboard/events/EventsFilters'
 import type { Event } from '../../../db/libsql-schemas'
 

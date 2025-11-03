@@ -23,11 +23,11 @@
  * <StaffCard staff={member} />
  */
 
-import { CalendarClock, Mail, Phone, Tag } from 'lucide-react'
+import { Mail, Phone, Tag } from 'lucide-react'
 import Link from 'next/link'
+import { StaffAssignmentModal } from '@/components/dashboard/staff/StaffAssignmentModal'
 import type { StaffDTO } from '@/lib/dal/staff'
 import { cn } from '@/lib/utils'
-import { StaffAssignmentModal } from '@/components/dashboard/staff/StaffAssignmentModal'
 
 interface StaffCardProps {
   staff: StaffDTO
@@ -105,7 +105,12 @@ export function StaffCard({ staff, events }: StaffCardProps) {
       <div className={cn('flex items-center justify-between pt-2 border-t border-gray-100')}>
         <div className="text-xs text-gray-500">Tariffa oraria: {staff.hourlyRate ?? '—'}</div>
         <StaffAssignmentModal
-          staff={{ id: staff.id, firstName: staff.firstName, lastName: staff.lastName, role: staff.role }}
+          staff={{
+            id: staff.id,
+            firstName: staff.firstName,
+            lastName: staff.lastName,
+            role: staff.role,
+          }}
           events={events}
           triggerVariant="link"
         />

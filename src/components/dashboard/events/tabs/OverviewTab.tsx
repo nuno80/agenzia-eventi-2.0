@@ -242,7 +242,11 @@ export async function OverviewTab({
                     assignmentStatus={a.assignmentStatus}
                     endTime={a.endTime}
                   />
-                  <PaymentQuickActions assignmentId={a.id} currentDueDate={a.paymentDueDate} isPaid={a.paymentStatus === 'paid'} />
+                  <PaymentQuickActions
+                    assignmentId={a.id}
+                    currentDueDate={a.paymentDueDate}
+                    isPaid={a.paymentStatus === 'paid'}
+                  />
                 </div>
               </div>
             ))}

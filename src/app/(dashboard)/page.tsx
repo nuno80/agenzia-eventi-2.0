@@ -30,6 +30,7 @@
 
 import { Loader2 } from 'lucide-react'
 import { Suspense } from 'react'
+import { PaymentsWidget } from '@/components/dashboard/home/PaymentsWidget'
 import { getAllEvents } from '@/lib/dal/events'
 import { EventsListClient } from './eventi/EventsListClient'
 
@@ -47,6 +48,17 @@ export default function EventsPage() {
           <p className="text-sm text-gray-600 mt-1">Gestisci tutti i tuoi eventi</p>
         </div>
       </div>
+
+      {/* Payments widget */}
+      <Suspense
+        fallback={
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            Caricamento pagamenti…
+          </div>
+        }
+      >
+        <PaymentsWidget />
+      </Suspense>
 
       {/* Content with Suspense */}
       <Suspense fallback={<EventsPageSkeleton />}>

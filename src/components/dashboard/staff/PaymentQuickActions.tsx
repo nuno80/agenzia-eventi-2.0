@@ -25,7 +25,12 @@ interface Props {
   compact?: boolean
 }
 
-export function PaymentQuickActions({ assignmentId, currentDueDate, isPaid = false, compact = true }: Props) {
+export function PaymentQuickActions({
+  assignmentId,
+  currentDueDate,
+  isPaid = false,
+  compact = true,
+}: Props) {
   const [isPending, startTransition] = useTransition()
   const [showPostpone, setShowPostpone] = useState(false)
   const [newDueDate, setNewDueDate] = useState<string>(
@@ -68,7 +73,13 @@ export function PaymentQuickActions({ assignmentId, currentDueDate, isPaid = fal
         </Button>
       ) : (
         <>
-          <Button type="button" variant="ghost" size="sm" onClick={handleMarkPaid} disabled={isPending}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleMarkPaid}
+            disabled={isPending}
+          >
             <CheckCircle2 className="w-4 h-4 mr-1 text-green-600" />
             <span className="sr-only sm:not-sr-only">Segna pagato</span>
           </Button>
@@ -99,7 +110,12 @@ export function PaymentQuickActions({ assignmentId, currentDueDate, isPaid = fal
                 onChange={(e) => setReason(e.target.value)}
                 className="border border-gray-300 rounded px-2 py-1 text-xs"
               />
-              <Button type="button" size="sm" onClick={handlePostpone} disabled={isPending || !newDueDate}>
+              <Button
+                type="button"
+                size="sm"
+                onClick={handlePostpone}
+                disabled={isPending || !newDueDate}
+              >
                 Conferma
               </Button>
             </div>

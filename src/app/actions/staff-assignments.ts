@@ -28,10 +28,10 @@ import { z } from 'zod'
 import { db, staffAssignments } from '@/db'
 import { calculatePaymentDueDate, calculatePaymentStatus } from '@/lib/utils'
 import {
+  cancelPaymentSchema,
   createStaffAssignmentSchema,
   markPaidSchema,
   postponePaymentSchema,
-  cancelPaymentSchema,
   updateStaffAssignmentSchema,
 } from '@/lib/validations/staff-assignments'
 
@@ -395,7 +395,9 @@ export async function postponePayment(
 /**
  * Cancel Payment Action
  */
-export async function cancelPayment(data: FormData | Record<string, unknown>): Promise<ActionResult> {
+export async function cancelPayment(
+  data: FormData | Record<string, unknown>
+): Promise<ActionResult> {
   try {
     const parsed = data instanceof FormData ? Object.fromEntries(data) : data
     const validated = cancelPaymentSchema.parse(parsed)

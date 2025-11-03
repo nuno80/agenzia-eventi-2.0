@@ -10,10 +10,7 @@
 // - Bulk actions (delete, change status)
 // ============================================================================
 
-import { PlusIcon } from 'lucide-react'
-import Link from 'next/link'
 import { Suspense } from 'react'
-import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { getAllEvents } from '@/lib/dal/events'
 import { EventsListClient } from './EventsListClient'
@@ -24,7 +21,6 @@ export default async function EventsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Eventi</h1>
-
       </div>
 
       <Card className="p-6">

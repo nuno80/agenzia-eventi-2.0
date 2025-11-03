@@ -41,50 +41,42 @@ import {
  * - All events (any status), optional filters
  * - Sorted alphabetically by title
  */
-export const getEventsForDuplicate = cache(
-  async (params?: { search?: string; year?: number }) => {
-    const whereClauses = [] as any[]
+export const getEventsForDuplicate = cache(async (params?: { search?: string; year?: number }) => {
+  const whereClauses = [] as any[]
 
-    // Year filter: by startDate year (fallback endDate)
-    if (params?.year) {
-      const startOfYear = new Date(params.year, 0, 1)
-      const endOfYear = new Date(params.year, 11, 31, 23, 59, 59, 999)
-      whereClauses.push(
-        and(
-          gte(events.startDate, startOfYear),
-          lte(events.startDate, endOfYear)
-        )
-      )
-    }
-
-    // Base query
-    const rows = await db.query.events.findMany({
-      where: whereClauses.length ? and(...whereClauses) : undefined,
-      orderBy: [asc(events.title)],
-      columns: {
-        id: true,
-        title: true,
-        startDate: true,
-        endDate: true,
-      },
-    })
-
-    // Search filter on title (case-insensitive) applied post-query to keep it simple
-    const filtered = params?.search
-      ? rows.filter((e) => e.title.toLowerCase().includes(params.search!.toLowerCase()))
-      : rows
-
-    // Map with derived year
-    return filtered.map((e) => ({
-      id: e.id,
-      title: e.title,
-      startDate: e.startDate,
-      endDate: e.endDate,
-      year: new Date(e.startDate ?? e.endDate).getFullYear(),
-    }))
+  // Year filter: by startDate year (fallback endDate)
+  if (params?.year) {
+    const startOfYear = new Date(params.year, 0, 1)
+    const endOfYear = new Date(params.year, 11, 31, 23, 59, 59, 999)
+    whereClauses.push(and(gte(events.startDate, startOfYear), lte(events.startDate, endOfYear)))
   }
-)
 
+  // Base query
+  const rows = await db.query.events.findMany({
+    where: whereClauses.length ? and(...whereClauses) : undefined,
+    orderBy: [asc(events.title)],
+    columns: {
+      id: true,
+      title: true,
+      startDate: true,
+      endDate: true,
+    },
+  })
+
+  // Search filter on title (case-insensitive) applied post-query to keep it simple
+  const filtered = params?.search
+    ? rows.filter((e) => e.title.toLowerCase().includes(params.search!.toLowerCase()))
+    : rows
+
+  // Map with derived year
+  return filtered.map((e) => ({
+    id: e.id,
+    title: e.title,
+    startDate: e.startDate,
+    endDate: e.endDate,
+    year: new Date(e.startDate ?? e.endDate).getFullYear(),
+  }))
+})
 
 /**
  * Get single event by ID

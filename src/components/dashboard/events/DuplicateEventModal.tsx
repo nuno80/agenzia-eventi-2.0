@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useMemo, useState, useTransition } from 'react'
 import { Copy, Loader2, Search } from 'lucide-react'
-import { listEventsForDuplicate, duplicateEvent } from '@/app/actions/events'
+import { useEffect, useMemo, useState, useTransition } from 'react'
+import { duplicateEvent, listEventsForDuplicate } from '@/app/actions/events'
 import { Button } from '@/components/ui/button'
 
 type EventOption = {
@@ -28,7 +28,10 @@ export function DuplicateEventModal() {
     const controller = new AbortController()
     const t = setTimeout(() => {
       startTransition(async () => {
-        const list = await listEventsForDuplicate({ search, year: typeof year === 'number' ? year : undefined })
+        const list = await listEventsForDuplicate({
+          search,
+          year: typeof year === 'number' ? year : undefined,
+        })
         setOptions(list)
       })
     }, 250)
@@ -59,7 +62,12 @@ export function DuplicateEventModal() {
 
   return (
     <>
-      <Button type="button" variant="default" className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setOpen(true)}>
+      <Button
+        type="button"
+        variant="default"
+        className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white"
+        onClick={() => setOpen(true)}
+      >
         <Copy className="w-4 h-4 mr-2" /> Duplica evento
       </Button>
 
@@ -68,7 +76,9 @@ export function DuplicateEventModal() {
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full">
             <div className="p-6 border-b flex items-center justify-between">
               <h3 className="text-lg font-semibold">Duplica evento</h3>
-              <button onClick={() => setOpen(false)} className="text-gray-500 hover:text-gray-700">×</button>
+              <button onClick={() => setOpen(false)} className="text-gray-500 hover:text-gray-700">
+                ×
+              </button>
             </div>
 
             <div className="p-6 space-y-4">
@@ -89,7 +99,9 @@ export function DuplicateEventModal() {
                 >
                   <option value="">Tutti gli anni</option>
                   {years.map((y) => (
-                    <option key={y} value={y}>{y}</option>
+                    <option key={y} value={y}>
+                      {y}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -122,9 +134,18 @@ export function DuplicateEventModal() {
             </div>
 
             <div className="p-6 border-t flex items-center justify-end gap-3">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>Annulla</Button>
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Annulla
+              </Button>
               <Button type="button" onClick={handleDuplicate} disabled={!selectedId || isPending}>
-                {isPending ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Duplico…</>) : 'Duplica'}
+                {isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Duplico…
+                  </>
+                ) : (
+                  'Duplica'
+                )}
               </Button>
             </div>
           </div>
