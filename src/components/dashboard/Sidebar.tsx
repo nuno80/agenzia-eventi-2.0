@@ -58,7 +58,7 @@ interface NavItem {
 const navigation: NavItem[] = [
   {
     label: 'Dashboard',
-    href: '/',
+    href: '/eventi',
     icon: LayoutDashboard,
   },
   {
@@ -180,7 +180,7 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
               const hasChildren = item.children && item.children.length > 0
 
               return (
-                <li key={item.href}>
+                <li key={`${item.label}-${item.href}`}>
                   {hasChildren ? (
                     <>
                       {/* Parent item with children */}

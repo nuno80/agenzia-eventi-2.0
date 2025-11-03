@@ -25,12 +25,6 @@ export default async function EventsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Eventi</h1>
 
-        <Link href="/eventi/nuovo">
-          <Button>
-            <PlusIcon className="h-4 w-4 mr-2" />
-            Nuovo Evento
-          </Button>
-        </Link>
       </div>
 
       <Card className="p-6">

@@ -27,12 +27,14 @@ import { CalendarClock, Mail, Phone, Tag } from 'lucide-react'
 import Link from 'next/link'
 import type { StaffDTO } from '@/lib/dal/staff'
 import { cn } from '@/lib/utils'
+import { StaffAssignmentModal } from '@/components/dashboard/staff/StaffAssignmentModal'
 
 interface StaffCardProps {
   staff: StaffDTO
+  events: { id: string; title: string; startDate?: Date | string; endDate?: Date | string }[]
 }
 
-export function StaffCard({ staff }: StaffCardProps) {
+export function StaffCard({ staff, events }: StaffCardProps) {
   const fullName = `${staff.lastName} ${staff.firstName}`
 
   return (
@@ -102,13 +104,11 @@ export function StaffCard({ staff }: StaffCardProps) {
       {/* Quick actions placeholder */}
       <div className={cn('flex items-center justify-between pt-2 border-t border-gray-100')}>
         <div className="text-xs text-gray-500">Tariffa oraria: {staff.hourlyRate ?? '—'}</div>
-        <Link
-          href="#"
-          className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-2"
-        >
-          <CalendarClock className="w-4 h-4" />
-          <span>Assegna a evento</span>
-        </Link>
+        <StaffAssignmentModal
+          staff={{ id: staff.id, firstName: staff.firstName, lastName: staff.lastName, role: staff.role }}
+          events={events}
+          triggerVariant="link"
+        />
       </div>
     </div>
   )
