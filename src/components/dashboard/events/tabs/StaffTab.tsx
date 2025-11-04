@@ -13,9 +13,21 @@ interface StaffTabProps {
 export async function StaffTab({ eventId, searchParams }: StaffTabProps) {
   const [assignments, staff] = await Promise.all([getAssignmentsByEvent(eventId), getAllStaff()])
 
+  // Apply filters from search params
+  const role = searchParams?.role ?? ''
+  const astatus = searchParams?.astatus ?? ''
+  const pstatus = searchParams?.pstatus ?? ''
+
+  const filtered = assignments.filter((a) => {
+    const byRole = role ? a.staff?.role === role : true
+    const byAStatus = astatus ? a.assignmentStatus === astatus : true
+    const byPStatus = pstatus ? a.paymentStatus === pstatus : true
+    return byRole && byAStatus && byPStatus
+  })
+
   const roles = Array.from(new Set(staff.map((s) => s.role))) as string[]
 
-  const isEmpty = !assignments || assignments.length === 0
+  const isEmpty = !filtered || filtered.length === 0
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -40,13 +52,15 @@ export async function StaffTab({ eventId, searchParams }: StaffTabProps) {
         </div>
       ) : (
         <div className="divide-y">
-          {assignments.map((a) => (
+          {filtered.map((a) => (
             <div key={a.id} className="py-3 flex items-center justify-between gap-4">
               <div className="min-w-0">
                 <div className="text-sm font-medium text-gray-900 truncate">
                   {a.staff ? `${a.staff.lastName} ${a.staff.firstName}` : 'Membro dello staff'}
                   {a.staff?.role ? (
-                    <span className="ml-2 text-xs text-gray-500">({toRoleLabel(a.staff.role)})</span>
+                    <span className="ml-2 text-xs text-gray-500">
+                      ({toRoleLabel(a.staff.role)})
+                    </span>
                   ) : null}
                 </div>
                 <div className="text-xs text-gray-600">

@@ -55,7 +55,13 @@ export default function EventDetailPage({ params, searchParams }: PageProps) {
   )
 }
 
-async function EventDetailContent({ paramsPromise, searchParamsPromise }: { paramsPromise: Promise<PageParams>; searchParamsPromise: Promise<Record<string, string>> }) {
+async function EventDetailContent({
+  paramsPromise,
+  searchParamsPromise,
+}: {
+  paramsPromise: Promise<PageParams>
+  searchParamsPromise: Promise<Record<string, string>>
+}) {
   const { id, tab } = await paramsPromise
 
   if (!VALID_TABS.includes(tab as ValidTab)) {
@@ -76,7 +82,15 @@ async function EventDetailContent({ paramsPromise, searchParamsPromise }: { para
   )
 }
 
-async function TabContent({ eventId, tab, searchParamsPromise }: { eventId: string; tab: ValidTab; searchParamsPromise: Promise<Record<string, string>> }) {
+async function TabContent({
+  eventId,
+  tab,
+  searchParamsPromise,
+}: {
+  eventId: string
+  tab: ValidTab
+  searchParamsPromise: Promise<Record<string, string>>
+}) {
   switch (tab) {
     case 'overview':
       return <OverviewTabContent eventId={eventId} />

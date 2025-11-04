@@ -1,7 +1,7 @@
 {
   "project": "EventHub Dashboard",
   "lastUpdated": "2025-11-03",
-  "overallProgress": 56,
+  "overallProgress": 57,
   "modules": [
     {
       "id": "core",
@@ -130,6 +130,14 @@
           "complexity": "easy",
           "componentType": "Other",
           "description": "Creato helper toRoleLabel() e applicato mapping 'av_tech' → 'Tecnico AV' in tutta la UI"
+        },
+        {
+          "id": "detail-16",
+          "name": "Toast e conferme Tab Staff",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Client",
+          "description": "Toast per azioni pagamenti e conferma per cancellazione nella Tab Staff"
         }
       ]
     },

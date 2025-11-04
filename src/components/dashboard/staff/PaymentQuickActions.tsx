@@ -17,6 +17,7 @@ import { CalendarClock, CheckCircle2, XCircle } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { cancelPayment, markPaid, postponePayment } from '@/app/actions/staff-assignments'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/use-toast'
 
 interface Props {
   assignmentId: string
@@ -40,16 +41,32 @@ export function PaymentQuickActions({
 
   const handleMarkPaid = () => {
     startTransition(async () => {
-      await markPaid({ assignmentId, paymentDate: new Date(), paymentNotes: undefined })
+      const res = await markPaid({ assignmentId, paymentDate: new Date(), paymentNotes: undefined })
+      if (res?.success) toast({ title: 'Pagamento registrato' })
+      else
+        toast({
+          title: 'Errore',
+          description: res?.message || 'Impossibile registrare il pagamento',
+          variant: 'destructive',
+        })
     })
   }
 
   const handlePostpone = () => {
     if (!newDueDate) return
     startTransition(async () => {
-      await postponePayment({ assignmentId, newDueDate: new Date(newDueDate), reason })
-      setShowPostpone(false)
-      setReason('')
+      const res = await postponePayment({ assignmentId, newDueDate: new Date(newDueDate), reason })
+      if (res?.success) {
+        toast({ title: 'Scadenza aggiornata' })
+        setShowPostpone(false)
+        setReason('')
+      } else {
+        toast({
+          title: 'Errore',
+          description: res?.message || 'Aggiornamento scadenza fallito',
+          variant: 'destructive',
+        })
+      }
     })
   }
 
@@ -61,11 +78,19 @@ export function PaymentQuickActions({
           variant="ghost"
           size="sm"
           className="text-red-600 hover:text-red-700"
-          onClick={() =>
+          onClick={() => {
+            if (!window.confirm('Confermi di voler cancellare il pagamento?')) return
             startTransition(async () => {
-              await cancelPayment({ assignmentId, reason: undefined })
+              const res = await cancelPayment({ assignmentId, reason: undefined })
+              if (res?.success) toast({ title: 'Pagamento cancellato' })
+              else
+                toast({
+                  title: 'Errore',
+                  description: res?.message || 'Cancellazione fallita',
+                  variant: 'destructive',
+                })
             })
-          }
+          }}
           disabled={isPending}
         >
           <XCircle className="w-4 h-4 mr-1" />

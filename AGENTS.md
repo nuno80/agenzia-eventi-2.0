@@ -333,6 +333,7 @@ async function canEditPost(postId: string, userId: string): Promise<boolean> {
 ## 🛠️ UI Consistency Rules
 
 ### Buttons (Design System)
+
 - Tutti i pulsanti primari devono usare sfondo blu consistente: `bg-blue-600 hover:bg-blue-700 text-white`.
 - Il cursore deve sempre essere a forma di mano su hover: assicurato globalmente con `cursor-pointer` nel nostro componente `Button`.
 - Usare SEMPRE il componente `Button` di `src/components/ui/button.tsx` per CTA e azioni. Evitare `<button>` raw con classi custom.
@@ -342,6 +343,7 @@ async function canEditPost(postId: string, userId: string): Promise<boolean> {
 - Accessibilità: tutti i Button devono avere `aria-label` quando l’etichetta non è testuale o è solo icona.
 
 Esempio corretto:
+
 ```tsx
 import { Button } from '@/components/ui/button'
 
@@ -351,6 +353,7 @@ import { Button } from '@/components/ui/button'
 ```
 
 Esempio scorretto:
+
 ```tsx
 <button className="bg-neutral-900 text-white">Azione</button>
 ```
