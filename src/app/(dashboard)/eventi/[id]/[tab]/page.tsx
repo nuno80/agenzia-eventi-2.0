@@ -30,6 +30,7 @@ const VALID_TABS = [
   'comunicazioni',
   'sondaggi',
   'checkin',
+  'staff',
 ] as const
 
 type ValidTab = (typeof VALID_TABS)[number]
@@ -41,19 +42,20 @@ interface PageParams {
 
 interface PageProps {
   params: Promise<PageParams>
+  searchParams: Promise<Record<string, string>>
 }
 
 // NOTE: Wrap async content in Suspense to avoid blocking route errors
-export default function EventDetailPage({ params }: PageProps) {
+export default function EventDetailPage({ params, searchParams }: PageProps) {
   return (
     <Suspense fallback={<PageSkeleton />}>
-      {/* Pass the promise down and unwrap inside */}
-      <EventDetailContent paramsPromise={params} />
+      {/* Pass the promises down and unwrap inside */}
+      <EventDetailContent paramsPromise={params} searchParamsPromise={searchParams} />
     </Suspense>
   )
 }
 
-async function EventDetailContent({ paramsPromise }: { paramsPromise: Promise<PageParams> }) {
+async function EventDetailContent({ paramsPromise, searchParamsPromise }: { paramsPromise: Promise<PageParams>; searchParamsPromise: Promise<Record<string, string>> }) {
   const { id, tab } = await paramsPromise
 
   if (!VALID_TABS.includes(tab as ValidTab)) {
@@ -68,13 +70,13 @@ async function EventDetailContent({ paramsPromise }: { paramsPromise: Promise<Pa
       <EventHeader event={event} />
       <EventTabs eventId={id} currentTab={tab} />
       <Suspense fallback={<TabContentSkeleton />}>
-        <TabContent eventId={id} tab={tab as ValidTab} />
+        <TabContent eventId={id} tab={tab as ValidTab} searchParamsPromise={searchParamsPromise} />
       </Suspense>
     </div>
   )
 }
 
-async function TabContent({ eventId, tab }: { eventId: string; tab: ValidTab }) {
+async function TabContent({ eventId, tab, searchParamsPromise }: { eventId: string; tab: ValidTab; searchParamsPromise: Promise<Record<string, string>> }) {
   switch (tab) {
     case 'overview':
       return <OverviewTabContent eventId={eventId} />
@@ -96,6 +98,11 @@ async function TabContent({ eventId, tab }: { eventId: string; tab: ValidTab }) 
       return <PlaceholderTab title="Sondaggi" />
     case 'checkin':
       return <PlaceholderTab title="Check-in" />
+    case 'staff': {
+      const { StaffTab } = await import('@/components/dashboard/events/tabs/StaffTab')
+      const sp = await searchParamsPromise
+      return <StaffTab eventId={eventId} searchParams={sp} />
+    }
     default:
       return <PlaceholderTab title="Tab non implementato" />
   }

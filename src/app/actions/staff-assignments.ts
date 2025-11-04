@@ -15,6 +15,7 @@
  * - postponePayment: Change payment due date
  * - cancelPayment: Remove a mistakenly recorded payment
  * - updateAssignmentStatus: Quick status change
+ * - createAssignmentsBatch: Create multiple assignments at once
  *
  * USAGE:
  * import { createAssignment, markPaid } from '@/app/actions/staffAssignments';
@@ -29,6 +30,7 @@ import { db, staffAssignments } from '@/db'
 import { calculatePaymentDueDate, calculatePaymentStatus } from '@/lib/utils'
 import {
   cancelPaymentSchema,
+  createAssignmentsBatchSchema,
   createStaffAssignmentSchema,
   markPaidSchema,
   postponePaymentSchema,
@@ -450,6 +452,77 @@ export async function cancelPayment(
       }
     }
     return { success: false, message: 'Errore durante la cancellazione del pagamento' }
+  }
+}
+
+/**
+ * Create multiple assignments in batch
+ */
+export async function createAssignmentsBatch(
+  data: FormData | Record<string, unknown>
+): Promise<ActionResult> {
+  try {
+    const raw = data instanceof FormData ? Object.fromEntries(data) : data
+    // staffIds could arrive as comma-separated string from form
+    if (typeof raw.staffIds === 'string') {
+      raw.staffIds = (raw.staffIds as string)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    }
+
+    const validated = createAssignmentsBatchSchema.parse(raw)
+
+    // Derive payment due date if needed
+    let batchDue: Date | null | undefined = validated.paymentDueDate ?? null
+    const terms = validated.paymentTerms ?? 'custom'
+    if (terms !== 'custom' && validated.paymentAmount) {
+      batchDue = calculatePaymentDueDate(
+        validated.endTime,
+        terms as 'immediate' | '30_days' | '60_days' | '90_days'
+      )
+    }
+
+    // Basic guard
+    if (validated.endTime <= validated.startTime) {
+      return {
+        success: false,
+        message: 'La data di fine deve essere successiva alla data di inizio',
+      }
+    }
+
+    const created: string[] = []
+    for (const staffId of validated.staffIds) {
+      const res = await createAssignment({
+        eventId: validated.eventId,
+        staffId,
+        startTime: validated.startTime,
+        endTime: validated.endTime,
+        assignmentStatus: 'requested',
+        paymentTerms: terms,
+        paymentDueDate: batchDue ?? null,
+        paymentAmount: validated.paymentAmount ?? null,
+        paymentNotes: validated.notes ?? null,
+      })
+      if (!res.success) {
+        return { success: false, message: `Errore creazione per staff ${staffId}: ${res.message}` }
+      }
+      if (res.data?.id && typeof res.data.id === 'string') created.push(res.data.id)
+    }
+
+    // Revalidate handled in createAssignment; optionally revalidate once more here
+    // revalidatePath(`/eventi/${validated.eventId}/staff`)
+
+    return { success: true, message: 'Assegnazioni create', data: { ids: created } }
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return {
+        success: false,
+        message: 'Errori di validazione',
+        errors: error.flatten().fieldErrors as Record<string, string[]>,
+      }
+    }
+    return { success: false, message: 'Errore durante la creazione multipla' }
   }
 }
 

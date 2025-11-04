@@ -86,3 +86,17 @@ export type UpdateStaffAssignmentInput = z.infer<typeof updateStaffAssignmentSch
 export type MarkPaidInput = z.infer<typeof markPaidSchema>
 export type PostponePaymentInput = z.infer<typeof postponePaymentSchema>
 export type CancelPaymentInput = z.infer<typeof cancelPaymentSchema>
+
+// Batch create assignments
+export const createAssignmentsBatchSchema = z.object({
+  eventId: cuid,
+  staffIds: z.array(cuid).min(1, 'Seleziona almeno un membro dello staff'),
+  startTime: z.coerce.date(),
+  endTime: z.coerce.date(),
+  notes: z.string().max(500).optional().nullable(),
+  paymentTerms: paymentTermsEnum.default('custom').optional(),
+  paymentDueDate: z.coerce.date().optional().nullable(),
+  paymentAmount: nonNegativeMoney,
+})
+
+export type CreateAssignmentsBatchInput = z.infer<typeof createAssignmentsBatchSchema>

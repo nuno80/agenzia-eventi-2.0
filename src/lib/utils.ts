@@ -78,6 +78,12 @@ export function formatDateTime(date: Date | string): string {
  * @param priority - Priority level
  * @returns Object with bg, text, and border color classes
  */
+export function toRoleLabel(role: string): string {
+  if (!role) return ''
+  if (role === 'av_tech') return 'Tecnico AV'
+  return role.replace('_', ' ')
+}
+
 export function getPriorityColor(priority: string) {
   const colors = {
     low: {

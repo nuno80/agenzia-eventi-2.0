@@ -86,6 +86,11 @@ const tabs: Tab[] = [
     icon: CalendarDays,
   },
   {
+    slug: 'staff',
+    label: 'Staff',
+    icon: Users,
+  },
+  {
     slug: 'servizi',
     label: 'Servizi',
     icon: Wrench,

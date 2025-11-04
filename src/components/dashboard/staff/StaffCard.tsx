@@ -27,7 +27,7 @@ import { Mail, Phone, Tag } from 'lucide-react'
 import Link from 'next/link'
 import { StaffAssignmentModal } from '@/components/dashboard/staff/StaffAssignmentModal'
 import type { StaffDTO } from '@/lib/dal/staff'
-import { cn } from '@/lib/utils'
+import { cn, toRoleLabel } from '@/lib/utils'
 
 interface StaffCardProps {
   staff: StaffDTO
@@ -55,7 +55,7 @@ export function StaffCard({ staff, events }: StaffCardProps) {
               </span>
             )}
           </div>
-          <div className="text-sm text-gray-600 capitalize">{staff.role.replace('_', ' ')}</div>
+          <div className="text-sm text-gray-600 capitalize">{toRoleLabel(staff.role)}</div>
         </div>
       </div>
 

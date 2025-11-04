@@ -159,7 +159,7 @@ export function StaffAssignmentModal({
             <div className="mb-4">
               <h2 className="text-lg font-semibold">Nuova assegnazione</h2>
               <p className="text-sm text-gray-600">
-                {staff.lastName} {staff.firstName} • {staff.role.replace('_', ' ')}
+                {staff.lastName} {staff.firstName} • {toRoleLabel(staff.role)}
               </p>
             </div>
 

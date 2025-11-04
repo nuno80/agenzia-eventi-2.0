@@ -1,4 +1,4 @@
-# GEMINI.MD - Event Manager App (Guida Completa)
+# Event Manager App (Guida Completa)
 
 ## 🚀 INIZIO SESSIONE - PROCEDURA OBBLIGATORIA
 

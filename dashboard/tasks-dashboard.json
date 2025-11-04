@@ -114,6 +114,22 @@
           "complexity": "easy",
           "componentType": "Other",
           "description": "Pulsanti primari blu (bg-blue-600/700) + cursore pointer; guideline aggiunta in AGENTS.md"
+        },
+        {
+          "id": "payments-ux-1",
+          "name": "Payment labels clarity",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Other",
+          "description": "Rinominata label pending in 'Da pagare' e not_due in 'Pagamento da verificare' nel PaymentStatusBadge"
+        },
+        {
+          "id": "roles-ux-1",
+          "name": "Role labels centralization",
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Other",
+          "description": "Creato helper toRoleLabel() e applicato mapping 'av_tech' → 'Tecnico AV' in tutta la UI"
         }
       ]
     },

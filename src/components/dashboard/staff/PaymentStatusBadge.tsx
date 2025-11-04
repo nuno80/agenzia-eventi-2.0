@@ -102,9 +102,9 @@ export function PaymentStatusBadge({
 
   const labelMap: Record<PaymentState, string> = {
     paid: 'Pagato',
-    pending: 'In pagamento',
+    pending: 'Da pagare',
     overdue: 'Scaduto',
-    not_due: 'Non dovuto',
+    not_due: 'Pagamento da verificare',
   }
 
   return (
