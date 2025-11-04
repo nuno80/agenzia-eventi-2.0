@@ -1,9 +1,8 @@
 import { StaffAssignmentModalMulti } from '@/components/dashboard/events/StaffAssignmentModalMulti'
+import { StaffAssignmentsClient } from '@/components/dashboard/events/tabs/StaffAssignmentsClient'
 import { StaffTabFilters } from '@/components/dashboard/events/tabs/StaffTabFilters'
-import { PaymentQuickActions, PaymentStatusBadge } from '@/components/dashboard/staff'
 import { getAllStaff } from '@/lib/dal/staff'
 import { getAssignmentsByEvent } from '@/lib/dal/staff-assignments'
-import { formatDateTime, toRoleLabel } from '@/lib/utils'
 
 interface StaffTabProps {
   eventId: string
@@ -51,39 +50,26 @@ export async function StaffTab({ eventId, searchParams }: StaffTabProps) {
           Nessuna assegnazione staff per questo evento.
         </div>
       ) : (
-        <div className="divide-y">
-          {filtered.map((a) => (
-            <div key={a.id} className="py-3 flex items-center justify-between gap-4">
-              <div className="min-w-0">
-                <div className="text-sm font-medium text-gray-900 truncate">
-                  {a.staff ? `${a.staff.lastName} ${a.staff.firstName}` : 'Membro dello staff'}
-                  {a.staff?.role ? (
-                    <span className="ml-2 text-xs text-gray-500">
-                      ({toRoleLabel(a.staff.role)})
-                    </span>
-                  ) : null}
-                </div>
-                <div className="text-xs text-gray-600">
-                  {formatDateTime(a.startTime)} → {formatDateTime(a.endTime)}
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <PaymentStatusBadge
-                  paymentTerms={a.paymentTerms}
-                  paymentDueDate={a.paymentDueDate}
-                  paymentDate={a.paymentDate}
-                  assignmentStatus={a.assignmentStatus}
-                  endTime={a.endTime}
-                />
-                <PaymentQuickActions
-                  assignmentId={a.id}
-                  currentDueDate={a.paymentDueDate}
-                  isPaid={a.paymentStatus === 'paid'}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
+        <StaffAssignmentsClient
+          items={filtered.map((a) => ({
+            id: a.id,
+            startTime: a.startTime,
+            endTime: a.endTime,
+            assignmentStatus: a.assignmentStatus as string,
+            paymentStatus: a.paymentStatus as any,
+            paymentTerms: a.paymentTerms as any,
+            paymentDueDate: a.paymentDueDate,
+            paymentDate: a.paymentDate,
+            staff: a.staff
+              ? {
+                  id: a.staff.id,
+                  firstName: a.staff.firstName,
+                  lastName: a.staff.lastName,
+                  role: a.staff.role,
+                }
+              : null,
+          }))}
+        />
       )}
     </div>
   )
