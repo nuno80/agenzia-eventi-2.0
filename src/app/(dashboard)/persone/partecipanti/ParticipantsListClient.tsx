@@ -6,6 +6,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { formatDateTime } from '@/lib/utils'
 
 export type ParticipantItem = {
   id: string
@@ -16,6 +17,8 @@ export type ParticipantItem = {
   registrationStatus: 'pending' | 'confirmed' | 'cancelled' | 'waitlist'
   paymentStatus: 'pending' | 'paid' | 'refunded' | 'free'
   checkedIn: boolean
+  registrationDate: Date | string | number | null
+  checkinTime: Date | string | number | null
   ticketPrice: number | null
 }
 
@@ -24,7 +27,7 @@ export default function ParticipantsListClient({
 }: {
   participants: ParticipantItem[]
 }) {
-  const [sortBy, setSortBy] = useState<'name' | 'email' | 'company' | 'price'>('name')
+  const [sortBy, setSortBy] = useState<'name' | 'email' | 'company' | 'price' | 'registered' | 'checkin'>('name')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [onlyCheckedIn, setOnlyCheckedIn] = useState(false)
 
@@ -40,10 +43,18 @@ export default function ParticipantsListClient({
         cmp = a.email.localeCompare(b.email)
       } else if (sortBy === 'company') {
         cmp = (a.company || '').localeCompare(b.company || '')
-      } else {
+      } else if (sortBy === 'price') {
         const ap = a.ticketPrice ?? 0
         const bp = b.ticketPrice ?? 0
         cmp = ap - bp
+      } else if (sortBy === 'registered') {
+        const ar = a.registrationDate ? new Date(a.registrationDate as any).getTime() : 0
+        const br = b.registrationDate ? new Date(b.registrationDate as any).getTime() : 0
+        cmp = ar - br
+      } else if (sortBy === 'checkin') {
+        const ad = a.checkinTime ? new Date(a.checkinTime as any).getTime() : 0
+        const bd = b.checkinTime ? new Date(b.checkinTime as any).getTime() : 0
+        cmp = ad - bd
       }
       return sortDir === 'asc' ? cmp : -cmp
     })
@@ -126,7 +137,8 @@ export default function ParticipantsListClient({
             </th>
             <th className="py-2 px-4">Iscrizione</th>
             <th className="py-2 px-4">Pagamento</th>
-            <th className="py-2 px-4">Check-in</th>
+            <th className="py-2 px-4">{headerButton('Data registrazione', 'registered')}</th>
+            <th className="py-2 px-4">{headerButton('Check-in data', 'checkin')}</th>
             <th
               className="py-2 px-4 text-right"
               aria-sort={
@@ -185,7 +197,13 @@ export default function ParticipantsListClient({
                         : 'Rimborsato'}
                 </span>
               </td>
-              <td className="py-2 px-4">{p.checkedIn ? 'Sì' : 'No'}</td>
+              <td className="py-2 px-4">
+                {p.checkedIn && p.checkinTime
+                  ? formatDateTime(
+                      typeof p.checkinTime === 'number' ? new Date(p.checkinTime) : p.checkinTime
+                    )
+                  : 'No'}
+              </td>
               <td className="py-2 px-4 text-right">
                 {p.ticketPrice != null ? money(p.ticketPrice) : '-'}
               </td>

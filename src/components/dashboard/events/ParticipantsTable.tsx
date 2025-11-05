@@ -31,7 +31,6 @@
 import {
   Building2,
   CheckCircle,
-  Clock,
   Download,
   Mail,
   Phone,
@@ -40,7 +39,7 @@ import {
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import type { Participant } from '@/db'
-import { getPaymentStatusLabel, getRegistrationStatusLabel } from '@/lib/utils'
+import { formatDateTime, getPaymentStatusLabel, getRegistrationStatusLabel } from '@/lib/utils'
 
 interface ParticipantsTableProps {
   participants: Participant[]
@@ -50,7 +49,7 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [paymentFilter, setPaymentFilter] = useState<string>('all')
-  const [sortKey, setSortKey] = useState<'name' | 'company' | 'date'>('name')
+  const [sortKey, setSortKey] = useState<'name' | 'company' | 'registered' | 'date'>('name')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
 
   // Filter and sort participants
@@ -86,16 +85,20 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
         cmp = `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`)
       } else if (sortKey === 'company') {
         cmp = (a.company || '').localeCompare(b.company || '')
+      } else if (sortKey === 'registered') {
+        const ar = a.registrationDate ? new Date(a.registrationDate).getTime() : 0
+        const br = b.registrationDate ? new Date(b.registrationDate).getTime() : 0
+        cmp = ar - br
       } else {
-        const ad = a.registrationDate ? new Date(a.registrationDate).getTime() : 0
-        const bd = b.registrationDate ? new Date(b.registrationDate).getTime() : 0
+        const ad = a.checkinTime ? new Date(a.checkinTime).getTime() : 0
+        const bd = b.checkinTime ? new Date(b.checkinTime).getTime() : 0
         cmp = ad - bd
       }
       return sortDir === 'asc' ? cmp : -cmp
     })
 
     return filtered
-  }, [participants, search, statusFilter, paymentFilter, sortBy])
+  }, [participants, search, statusFilter, paymentFilter, sortKey, sortDir])
 
   const getStatusBadge = (status: string) => {
     const colors = {
@@ -255,6 +258,27 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
                     className="inline-flex items-center gap-1 cursor-pointer"
                     title="Ordina per data registrazione"
                     onClick={() => {
+                      setSortKey('registered')
+                      setSortDir((d) =>
+                        sortKey === 'registered' ? (d === 'asc' ? 'desc' : 'asc') : d
+                      )
+                    }}
+                  >
+                    Data registrazione
+                    <span
+                      aria-hidden
+                      className={sortKey === 'registered' ? 'text-gray-700' : 'text-gray-300'}
+                    >
+                      {sortKey === 'registered' ? (sortDir === 'asc' ? '▲' : '▼') : '•'}
+                    </span>
+                  </button>
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-1 cursor-pointer"
+                    title="Ordina per data registrazione"
+                    onClick={() => {
                       setSortKey('date')
                       setSortDir((d) => (sortKey === 'date' ? (d === 'asc' ? 'desc' : 'asc') : d))
                     }}
@@ -280,7 +304,10 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
                 </tr>
               ) : (
                 filteredParticipants.map((participant) => (
-                  <tr key={participant.id} className="odd:bg-gray-50 even:bg-gray-100 hover:bg-gray-200">
+                  <tr
+                    key={participant.id}
+                    className="odd:bg-gray-50 even:bg-gray-100 hover:bg-gray-200"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-gray-900">
@@ -337,16 +364,21 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {participant.checkedIn ? (
-                        <div className="flex items-center space-x-1 text-green-600">
-                          <CheckCircle className="w-4 h-4" />
-                          <span className="text-xs font-medium">Fatto</span>
+                      {participant.registrationDate ? (
+                        <div className="text-sm text-gray-900">
+                          {formatDateTime(participant.registrationDate as unknown as Date | string)}
                         </div>
                       ) : (
-                        <div className="flex items-center space-x-1 text-gray-400">
-                          <Clock className="w-4 h-4" />
-                          <span className="text-xs">In attesa</span>
+                        <span className="text-xs text-gray-500">—</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {participant.checkedIn ? (
+                        <div className="text-sm text-gray-900">
+                          {formatDateTime(participant.checkinTime as unknown as Date | string)}
                         </div>
+                      ) : (
+                        <span className="text-xs text-gray-500">No</span>
                       )}
                     </td>
                   </tr>

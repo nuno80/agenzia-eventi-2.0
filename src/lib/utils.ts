@@ -84,6 +84,21 @@ export function toRoleLabel(role: string): string {
   return role.replace('_', ' ')
 }
 
+/**
+ * Convert a string to Title Case (words capitalized), preserving separators
+ * Examples: "gold" -> "Gold", "very important" -> "Very Important"
+ */
+export function toTitleCase(input: string): string {
+  if (!input) return ''
+  return input
+    .toLowerCase()
+    .split(/([\s\-_/]+)/) // keep separators
+    .map((chunk) =>
+      /[a-zA-ZÀ-ÖØ-öø-ÿ]/.test(chunk) ? chunk.charAt(0).toUpperCase() + chunk.slice(1) : chunk
+    )
+    .join('')
+}
+
 export function getPriorityColor(priority: string) {
   const colors = {
     low: {
