@@ -60,6 +60,13 @@ export const getSpeakersByEvent = cache(async (eventId: string): Promise<Speaker
   return rows.map(toDTO)
 })
 
+export const getAllSpeakers = cache(async (): Promise<SpeakerDTO[]> => {
+  const rows = await db.query.speakers.findMany({
+    orderBy: [asc(speakers.lastName), asc(speakers.firstName)],
+  })
+  return rows.map(toDTO)
+})
+
 export const getSpeakerStatsByEvent = cache(async (eventId: string) => {
   const all = await db.query.speakers.findMany({ where: eq(speakers.eventId, eventId) })
   const total = all.length

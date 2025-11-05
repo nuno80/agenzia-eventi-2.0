@@ -12,7 +12,7 @@ function FileListSkeleton() {
       <h2 className="text-2xl font-bold mb-4">Uploaded Files</h2>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white rounded-lg overflow-hidden">
-          <thead className="bg-gray-100">
+          <thead className="bg-gray-50">
             <tr>
               <th className="py-2 px-4 text-left">Filename</th>
               <th className="py-2 px-4 text-left">Size</th>

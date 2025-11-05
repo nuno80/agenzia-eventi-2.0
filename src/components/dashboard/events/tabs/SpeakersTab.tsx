@@ -51,7 +51,7 @@ export async function SpeakersTab({ eventId }: { eventId: string }) {
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead>
+          <thead className="bg-gray-50">
             <tr className="text-left text-xs text-gray-500">
               <th className="py-2 pr-4">Nome</th>
               <th className="py-2 pr-4">Azienda/Titolo</th>
@@ -61,7 +61,7 @@ export async function SpeakersTab({ eventId }: { eventId: string }) {
           </thead>
           <tbody className="divide-y">
             {list.map((s) => (
-              <tr key={s.id} className="hover:bg-gray-50">
+              <tr key={s.id} className="odd:bg-gray-50 even:bg-gray-100 hover:bg-gray-200">
                 <td className="py-2 pr-4">
                   <div className="font-medium text-gray-900">
                     {s.lastName} {s.firstName}

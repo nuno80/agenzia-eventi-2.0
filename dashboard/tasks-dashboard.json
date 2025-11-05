@@ -1,7 +1,7 @@
 {
   "project": "EventHub Dashboard",
   "lastUpdated": "2025-11-05",
-  "overallProgress": 59,
+  "overallProgress": 62,
   "modules": [
     {
       "id": "core",
@@ -256,7 +256,7 @@
     {
       "id": "events-detail",
       "name": "Eventi - Dettaglio",
-      "progress": 50,
+      "progress": 60,
       "tasks": [
         {
           "id": "detail-1",
@@ -291,10 +291,10 @@
         {
           "id": "detail-6",
           "name": "SpeakersTab (Server)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server",
-          "description": "Stats speaker + tabella con CRUD inline + DAL speakers necessario"
+          "description": "Stats speaker + tabella read-only + DAL speakers (cache)"
         },
         {
           "id": "detail-7",
@@ -513,7 +513,7 @@
     {
       "id": "people-global",
       "name": "Persone - Pagine Globali",
-      "progress": 0,
+      "progress": 30,
       "tasks": [
         {
           "id": "people-1",
@@ -541,19 +541,19 @@
         },
         {
           "id": "people-4",
-          "name": "/persone/relatori page (Server)",
-          "status": "pending",
+          "name": "/persone/relatori page (Server+Client)",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server + Client",
-          "description": "Tutti i relatori + filtri + assegnazioni"
+          "description": "Tutti i relatori con filtri client e UI tabella uniformata (header bg-gray-50, righe alternate)"
         },
         {
           "id": "people-5",
-          "name": "/persone/sponsor page (Server)",
-          "status": "pending",
+          "name": "/persone/sponsor page (Server+Client)",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server + Client",
-          "description": "Tutti gli sponsor + filtri + revenue tracking"
+          "description": "Tutti gli sponsor con filtri client e UI tabella uniformata (header bg-gray-50, righe alternate)"
         },
         {
           "id": "people-6",
