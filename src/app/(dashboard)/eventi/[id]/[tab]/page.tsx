@@ -96,10 +96,14 @@ async function TabContent({
       return <OverviewTabContent eventId={eventId} />
     case 'partecipanti':
       return <ParticipantsTab eventId={eventId} />
-    case 'relatori':
-      return <PlaceholderTab title="Relatori" />
-    case 'sponsor':
-      return <PlaceholderTab title="Sponsor" />
+    case 'relatori': {
+      const { SpeakersTab } = await import('@/components/dashboard/events/tabs/SpeakersTab')
+      return <SpeakersTab eventId={eventId} />
+    }
+    case 'sponsor': {
+      const { SponsorsTab } = await import('@/components/dashboard/events/tabs/SponsorsTab')
+      return <SponsorsTab eventId={eventId} />
+    }
     case 'agenda':
       return <PlaceholderTab title="Agenda" />
     case 'servizi':

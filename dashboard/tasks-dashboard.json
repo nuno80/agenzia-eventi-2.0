@@ -1,7 +1,7 @@
 {
   "project": "EventHub Dashboard",
   "lastUpdated": "2025-11-05",
-  "overallProgress": 58,
+  "overallProgress": 59,
   "modules": [
     {
       "id": "core",
@@ -256,7 +256,7 @@
     {
       "id": "events-detail",
       "name": "Eventi - Dettaglio",
-      "progress": 40,
+      "progress": 50,
       "tasks": [
         {
           "id": "detail-1",
@@ -299,10 +299,10 @@
         {
           "id": "detail-7",
           "name": "SponsorsTab (Server)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server",
-          "description": "Stats sponsor + tabella con livelli + contratti + DAL sponsors"
+          "description": "Stats sponsor + tabella con livelli + contratti + DAL sponsors (read-only)"
         },
         {
           "id": "detail-8",
