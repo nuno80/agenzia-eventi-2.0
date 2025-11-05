@@ -27,7 +27,9 @@ export default function ParticipantsListClient({
 }: {
   participants: ParticipantItem[]
 }) {
-  const [sortBy, setSortBy] = useState<'name' | 'email' | 'company' | 'price' | 'registered' | 'checkin'>('name')
+  const [sortBy, setSortBy] = useState<
+    'name' | 'email' | 'company' | 'price' | 'registered' | 'checkin'
+  >('name')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [onlyCheckedIn, setOnlyCheckedIn] = useState(false)
 
@@ -137,8 +139,22 @@ export default function ParticipantsListClient({
             </th>
             <th className="py-2 px-4">Iscrizione</th>
             <th className="py-2 px-4">Pagamento</th>
-            <th className="py-2 px-4">{headerButton('Data registrazione', 'registered')}</th>
-            <th className="py-2 px-4">{headerButton('Check-in data', 'checkin')}</th>
+            <th
+              className="py-2 px-4"
+              aria-sort={
+                sortBy === 'registered' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'
+              }
+            >
+              {headerButton('Data registrazione', 'registered')}
+            </th>
+            <th
+              className="py-2 px-4"
+              aria-sort={
+                sortBy === 'checkin' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'
+              }
+            >
+              {headerButton('Check-in data', 'checkin')}
+            </th>
             <th
               className="py-2 px-4 text-right"
               aria-sort={
@@ -196,6 +212,15 @@ export default function ParticipantsListClient({
                         ? 'Gratuito'
                         : 'Rimborsato'}
                 </span>
+              </td>
+              <td className="py-2 px-4">
+                {p.registrationDate
+                  ? formatDateTime(
+                      typeof p.registrationDate === 'number'
+                        ? new Date(p.registrationDate)
+                        : p.registrationDate
+                    )
+                  : '—'}
               </td>
               <td className="py-2 px-4">
                 {p.checkedIn && p.checkinTime
