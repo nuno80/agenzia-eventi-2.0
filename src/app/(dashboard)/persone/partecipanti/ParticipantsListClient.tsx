@@ -1,7 +1,7 @@
 /**
  * FILE: src/app/(dashboard)/persone/partecipanti/ParticipantsListClient.tsx
  * TYPE: Client Component
- * PURPOSE: Client-side filtering and rendering for participants list
+ * PURPOSE: Client-side sorting for participants list with optional "solo check-in" toggle
  */
 'use client'
 
@@ -19,98 +19,80 @@ export type ParticipantItem = {
   ticketPrice: number | null
 }
 
-type Reg = ParticipantItem['registrationStatus'] | 'all'
-type Pay = ParticipantItem['paymentStatus'] | 'all'
-
 export default function ParticipantsListClient({
   participants,
 }: {
   participants: ParticipantItem[]
 }) {
-  const [reg, setReg] = useState<Reg>('all')
-  const [pay, setPay] = useState<Pay>('all')
-  const [checked, setChecked] = useState<'all' | 'in' | 'out'>('all')
-  const [q, setQ] = useState('')
+  const [sortBy, setSortBy] = useState<'name' | 'email' | 'company' | 'price'>('name')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
+  const [onlyCheckedIn, setOnlyCheckedIn] = useState(false)
 
   const items = useMemo(() => {
-    const query = q.trim().toLowerCase()
-    return participants.filter((p) => {
-      if (reg !== 'all' && p.registrationStatus !== reg) return false
-      if (pay !== 'all' && p.paymentStatus !== pay) return false
-      if (checked === 'in' && !p.checkedIn) return false
-      if (checked === 'out' && p.checkedIn) return false
-      if (query) {
-        const hay = `${p.firstName} ${p.lastName} ${p.email} ${p.company ?? ''}`.toLowerCase()
-        if (!hay.includes(query)) return false
+    const filtered = onlyCheckedIn ? participants.filter((p) => p.checkedIn) : participants
+    const sorted = [...filtered].sort((a, b) => {
+      let cmp = 0
+      if (sortBy === 'name') {
+        const an = `${a.lastName} ${a.firstName}`.toLowerCase()
+        const bn = `${b.lastName} ${b.firstName}`.toLowerCase()
+        cmp = an.localeCompare(bn)
+      } else if (sortBy === 'email') {
+        cmp = a.email.localeCompare(b.email)
+      } else if (sortBy === 'company') {
+        cmp = (a.company || '').localeCompare(b.company || '')
+      } else {
+        const ap = a.ticketPrice ?? 0
+        const bp = b.ticketPrice ?? 0
+        cmp = ap - bp
       }
-      return true
+      return sortDir === 'asc' ? cmp : -cmp
     })
-  }, [participants, reg, pay, checked, q])
+    return sorted
+  }, [participants, onlyCheckedIn, sortBy, sortDir])
+
+  const headerButton = (
+    label: string,
+    key: 'name' | 'email' | 'company' | 'price',
+    alignRight = false
+  ) => (
+    <button
+      type="button"
+      className={`inline-flex items-center gap-1 cursor-pointer ${alignRight ? 'justify-end w-full' : ''}`}
+      title={`Ordina per ${label}`}
+      aria-label={`Ordina per ${label} (${sortBy === key ? (sortDir === 'asc' ? 'ascendente' : 'discendente') : 'non attivo'})`}
+      onClick={() => {
+        setSortBy(key)
+        setSortDir((d) => (sortBy === key ? (d === 'asc' ? 'desc' : 'asc') : d))
+      }}
+    >
+      {label}
+      <span aria-hidden className={`${sortBy === key ? 'text-gray-700' : 'text-gray-300'}`}>
+        {sortBy === key ? (sortDir === 'asc' ? '▲' : '▼') : '•'}
+      </span>
+    </button>
+  )
 
   const money = (v: number) =>
     new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(v)
 
   return (
     <div className="bg-white border rounded-lg overflow-hidden">
-      {/* Filters */}
-      <div className="p-4 border-b flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-2 text-sm">
-          <label className="inline-flex items-center gap-2">
-            <span className="text-gray-600">Stato iscrizione</span>
-            <select
-              className="border rounded px-2 py-1"
-              aria-label="Filtra per stato iscrizione"
-              value={reg}
-              onChange={(e) => setReg(e.target.value as Reg)}
-            >
-              <option value="all">Tutti</option>
-              <option value="confirmed">Confermati</option>
-              <option value="pending">In attesa</option>
-              <option value="waitlist">Lista attesa</option>
-              <option value="cancelled">Cancellati</option>
-            </select>
+      {/* Top bar minimal */}
+      <div className="p-4 border-b flex items-center justify-between">
+        <div className="text-sm text-gray-700">Partecipanti</div>
+        <div className="flex items-center gap-3">
+          <label className="inline-flex items-center gap-2 text-xs text-gray-700">
+            <input
+              type="checkbox"
+              checked={onlyCheckedIn}
+              onChange={(e) => setOnlyCheckedIn(e.target.checked)}
+              aria-label="Mostra solo utenti con check-in"
+            />
+            Solo check-in
           </label>
-
-          <label className="inline-flex items-center gap-2">
-            <span className="text-gray-600">Pagamento</span>
-            <select
-              className="border rounded px-2 py-1"
-              aria-label="Filtra per pagamento"
-              value={pay}
-              onChange={(e) => setPay(e.target.value as Pay)}
-            >
-              <option value="all">Tutti</option>
-              <option value="paid">Pagato</option>
-              <option value="pending">Da pagare</option>
-              <option value="free">Gratuito</option>
-              <option value="refunded">Rimborsato</option>
-            </select>
-          </label>
-
-          <label className="inline-flex items-center gap-2">
-            <span className="text-gray-600">Check-in</span>
-            <select
-              className="border rounded px-2 py-1"
-              aria-label="Filtra per check-in"
-              value={checked}
-              onChange={(e) => setChecked(e.target.value as 'all' | 'in' | 'out')}
-            >
-              <option value="all">Tutti</option>
-              <option value="in">Check-in effettuato</option>
-              <option value="out">Non check-in</option>
-            </select>
-          </label>
-
-          <input
-            className="border rounded px-2 py-1"
-            placeholder="Cerca nome/email/azienda..."
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            aria-label="Cerca partecipanti"
-          />
-        </div>
-        <div className="text-xs text-gray-600">
-          Mostrando {items.length} di {participants.length}
+          <div className="text-xs text-gray-600">
+            Mostrando {items.length} di {participants.length}
+          </div>
         </div>
       </div>
 
@@ -118,13 +100,41 @@ export default function ParticipantsListClient({
       <table className="w-full text-sm">
         <thead className="bg-gray-50">
           <tr className="text-left text-xs text-gray-500">
-            <th className="py-2 px-4">Nome</th>
-            <th className="py-2 px-4">Email</th>
-            <th className="py-2 px-4">Azienda</th>
+            <th
+              className="py-2 px-4"
+              aria-sort={
+                sortBy === 'name' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'
+              }
+            >
+              {headerButton('Nome', 'name')}
+            </th>
+            <th
+              className="py-2 px-4"
+              aria-sort={
+                sortBy === 'email' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'
+              }
+            >
+              {headerButton('Email', 'email')}
+            </th>
+            <th
+              className="py-2 px-4"
+              aria-sort={
+                sortBy === 'company' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'
+              }
+            >
+              {headerButton('Azienda', 'company')}
+            </th>
             <th className="py-2 px-4">Iscrizione</th>
             <th className="py-2 px-4">Pagamento</th>
             <th className="py-2 px-4">Check-in</th>
-            <th className="py-2 px-4 text-right">Prezzo</th>
+            <th
+              className="py-2 px-4 text-right"
+              aria-sort={
+                sortBy === 'price' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'
+              }
+            >
+              {headerButton('Prezzo', 'price', true)}
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y">
@@ -184,7 +194,7 @@ export default function ParticipantsListClient({
           {items.length === 0 && (
             <tr>
               <td colSpan={7} className="py-8 text-center text-gray-600">
-                Nessun partecipante corrispondente ai filtri.
+                Nessun partecipante.
               </td>
             </tr>
           )}

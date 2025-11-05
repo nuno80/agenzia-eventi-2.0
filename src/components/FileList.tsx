@@ -15,6 +15,8 @@ export default function FileList() {
   const [files, setFiles] = useState<FileItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [sortBy, setSortBy] = useState<'name' | 'size' | 'type' | 'uploaded'>('name')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
 
   const fetchFiles = useCallback(async () => {
     try {
@@ -78,6 +80,44 @@ export default function FileList() {
 
   if (error) return <p className="text-red-500">Error: {error}</p>
 
+  const sortedFiles = [...files].sort((a, b) => {
+    let cmp = 0
+    switch (sortBy) {
+      case 'name':
+        cmp = a.filename.localeCompare(b.filename)
+        break
+      case 'size':
+        cmp = a.size - b.size
+        break
+      case 'type':
+        cmp = a.contentType.localeCompare(b.contentType)
+        break
+      case 'uploaded':
+        cmp = new Date(a.uploadedAt).getTime() - new Date(b.uploadedAt).getTime()
+        break
+      default:
+        cmp = 0
+    }
+    return sortDir === 'asc' ? cmp : -cmp
+  })
+
+  const headerButton = (label: string, key: 'name' | 'size' | 'type' | 'uploaded') => (
+    <button
+      type="button"
+      className="inline-flex items-center gap-1 cursor-pointer"
+      title={`Ordina per ${label}`}
+      onClick={() => {
+        setSortBy(key)
+        setSortDir((d) => (sortBy === key ? (d === 'asc' ? 'desc' : 'asc') : d))
+      }}
+    >
+      {label}
+      <span aria-hidden className={`${sortBy === key ? 'text-gray-700' : 'text-gray-300'}`}>
+        {sortBy === key ? (sortDir === 'asc' ? '▲' : '▼') : '•'}
+      </span>
+    </button>
+  )
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4">Uploaded Files</h2>
@@ -88,17 +128,17 @@ export default function FileList() {
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white rounded-lg overflow-hidden">
             <thead className="bg-gray-50">
-              <tr>
-                <th className="py-2 px-4 text-left">Filename</th>
-                <th className="py-2 px-4 text-left">Size</th>
-                <th className="py-2 px-4 text-left">Type</th>
-                <th className="py-2 px-4 text-left">Uploaded</th>
-                <th className="py-2 px-4 text-left">Actions</th>
+              <tr className="text-left text-xs text-gray-500">
+                <th className="py-2 px-4">{headerButton('Filename', 'name')}</th>
+                <th className="py-2 px-4">{headerButton('Size', 'size')}</th>
+                <th className="py-2 px-4">{headerButton('Type', 'type')}</th>
+                <th className="py-2 px-4">{headerButton('Uploaded', 'uploaded')}</th>
+                <th className="py-2 px-4">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {files.map((file) => (
-                <tr key={file.id} className="border-b hover:bg-gray-50">
+              {sortedFiles.map((file) => (
+                <tr key={file.id} className="odd:bg-gray-50 even:bg-gray-100 hover:bg-gray-200">
                   <td className="py-2 px-4">
                     <a
                       href={file.blobUrl}

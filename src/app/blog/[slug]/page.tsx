@@ -50,6 +50,7 @@ const blogPosts = [
       <p>Analizziamo i costi reali per un evento da 100 partecipanti a Roma, budget tipico PMI:</p>
       
       <table class="w-full border-collapse my-6">
+  <thead class="bg-gray-50"></thead>
         <thead>
           <tr class="bg-slate-100">
             <th class="border border-slate-200 p-3 text-left">Voce</th>

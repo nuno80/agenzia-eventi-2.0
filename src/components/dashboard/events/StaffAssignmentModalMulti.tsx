@@ -119,7 +119,7 @@ export function StaffAssignmentModalMulti({ eventId, staff }: Props) {
 
               <div className="max-h-64 overflow-auto border rounded">
                 <table className="w-full text-sm">
-                  <thead>
+                  <thead className="bg-gray-50">
                     <tr className="bg-gray-50 text-gray-600">
                       <th className="text-left p-2 w-8"></th>
                       <th className="text-left p-2">Nome</th>

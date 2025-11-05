@@ -40,22 +40,75 @@ type Pay = SponsorItem['paymentStatus'] | 'all'
 type Contract = 'all' | 'signed' | 'unsigned'
 
 export default function SponsorsListClient({ sponsors }: { sponsors: SponsorItem[] }) {
+  const [sortBy, setSortBy] = useState<
+    'company' | 'contact' | 'email' | 'level' | 'contract' | 'payment' | 'amount'
+  >('company')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [level, setLevel] = useState<Level>('all')
   const [contract, setContract] = useState<Contract>('all')
   const [payment, setPayment] = useState<Pay>('all')
 
   const items = useMemo(() => {
-    return sponsors.filter((s) => {
+    const filtered = sponsors.filter((s) => {
       if (level !== 'all' && s.sponsorshipLevel !== level) return false
       if (contract === 'signed' && !s.contractSigned) return false
       if (contract === 'unsigned' && s.contractSigned) return false
       if (payment !== 'all' && s.paymentStatus !== payment) return false
       return true
     })
-  }, [sponsors, level, contract, payment])
+    const sorted = [...filtered].sort((a, b) => {
+      let cmp = 0
+      switch (sortBy) {
+        case 'company':
+          cmp = a.companyName.localeCompare(b.companyName)
+          break
+        case 'contact':
+          cmp = (a.contactPerson || '').localeCompare(b.contactPerson || '')
+          break
+        case 'email':
+          cmp = a.email.localeCompare(b.email)
+          break
+        case 'level':
+          cmp = a.sponsorshipLevel.localeCompare(b.sponsorshipLevel)
+          break
+        case 'contract':
+          cmp = Number(a.contractSigned) - Number(b.contractSigned)
+          break
+        case 'payment': {
+          const ord = { paid: 2, partial: 1, pending: 0 } as const
+          cmp = (ord[a.paymentStatus] ?? 0) - (ord[b.paymentStatus] ?? 0)
+          break
+        }
+        case 'amount':
+          cmp = a.sponsorshipAmount - b.sponsorshipAmount
+          break
+        default:
+          cmp = 0
+      }
+      return sortDir === 'asc' ? cmp : -cmp
+    })
+    return sorted
+  }, [sponsors, level, contract, payment, sortBy, sortDir])
 
   const money = (v: number) =>
     new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(v)
+
+  const headerButton = (label: string, key: typeof sortBy, alignRight = false) => (
+    <button
+      type="button"
+      className={`inline-flex items-center gap-1 cursor-pointer ${alignRight ? 'justify-end w-full' : ''}`}
+      title={`Ordina per ${label}`}
+      onClick={() => {
+        setSortBy(key)
+        setSortDir((d) => (sortBy === key ? (d === 'asc' ? 'desc' : 'asc') : d))
+      }}
+    >
+      {label}
+      <span aria-hidden className={`${sortBy === key ? 'text-gray-700' : 'text-gray-300'}`}>
+        {sortBy === key ? (sortDir === 'asc' ? '▲' : '▼') : '•'}
+      </span>
+    </button>
+  )
 
   return (
     <div className="bg-white border rounded-lg overflow-hidden">
@@ -117,13 +170,13 @@ export default function SponsorsListClient({ sponsors }: { sponsors: SponsorItem
       <table className="w-full text-sm">
         <thead className="bg-gray-50">
           <tr className="text-left text-xs text-gray-500">
-            <th className="py-2 px-4">Azienda</th>
-            <th className="py-2 px-4">Contatto</th>
-            <th className="py-2 px-4">Email</th>
-            <th className="py-2 px-4">Livello</th>
-            <th className="py-2 px-4">Contratto</th>
-            <th className="py-2 px-4">Pagamento</th>
-            <th className="py-2 px-4 text-right">Importo</th>
+            <th className="py-2 px-4">{headerButton('Azienda', 'company')}</th>
+            <th className="py-2 px-4">{headerButton('Contatto', 'contact')}</th>
+            <th className="py-2 px-4">{headerButton('Email', 'email')}</th>
+            <th className="py-2 px-4">{headerButton('Livello', 'level')}</th>
+            <th className="py-2 px-4">{headerButton('Contratto', 'contract')}</th>
+            <th className="py-2 px-4">{headerButton('Pagamento', 'payment')}</th>
+            <th className="py-2 px-4 text-right">{headerButton('Importo', 'amount', true)}</th>
           </tr>
         </thead>
         <tbody className="divide-y">

@@ -50,7 +50,8 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [paymentFilter, setPaymentFilter] = useState<string>('all')
-  const [sortBy, setSortBy] = useState<string>('name-asc')
+  const [sortKey, setSortKey] = useState<'name' | 'company' | 'date'>('name')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
 
   // Filter and sort participants
   const filteredParticipants = useMemo(() => {
@@ -80,28 +81,17 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
 
     // Sorting
     filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'name-asc':
-          return `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`)
-        case 'name-desc':
-          return `${b.lastName} ${b.firstName}`.localeCompare(`${a.lastName} ${a.firstName}`)
-        case 'date-desc':
-          return (
-            (b.registrationDate ? new Date(b.registrationDate).getTime() : 0) -
-            (a.registrationDate ? new Date(a.registrationDate).getTime() : 0)
-          )
-        case 'date-asc':
-          return (
-            (a.registrationDate ? new Date(a.registrationDate).getTime() : 0) -
-            (b.registrationDate ? new Date(b.registrationDate).getTime() : 0)
-          )
-        case 'company-asc':
-          return (a.company || '').localeCompare(b.company || '')
-        case 'company-desc':
-          return (b.company || '').localeCompare(a.company || '')
-        default:
-          return 0
+      let cmp = 0
+      if (sortKey === 'name') {
+        cmp = `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`)
+      } else if (sortKey === 'company') {
+        cmp = (a.company || '').localeCompare(b.company || '')
+      } else {
+        const ad = a.registrationDate ? new Date(a.registrationDate).getTime() : 0
+        const bd = b.registrationDate ? new Date(b.registrationDate).getTime() : 0
+        cmp = ad - bd
       }
+      return sortDir === 'asc' ? cmp : -cmp
     })
 
     return filtered
@@ -179,21 +169,7 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
 
         {/* Sort and Actions Row */}
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200">
-          <div className="flex items-center space-x-3">
-            <label className="text-sm text-gray-600">Ordina:</label>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="name-asc">Nome (A-Z)</option>
-              <option value="name-desc">Nome (Z-A)</option>
-              <option value="date-desc">Data (più recente)</option>
-              <option value="date-asc">Data (meno recente)</option>
-              <option value="company-asc">Azienda (A-Z)</option>
-              <option value="company-desc">Azienda (Z-A)</option>
-            </select>
-          </div>
+          <div className="text-sm text-gray-600">Usa le intestazioni di colonna per ordinare</div>
 
           <button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
             <Download className="w-4 h-4" />
@@ -225,13 +201,47 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Partecipante
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-1 cursor-pointer"
+                    title="Ordina per partecipante"
+                    onClick={() => {
+                      setSortKey('name')
+                      setSortDir((d) => (sortKey === 'name' ? (d === 'asc' ? 'desc' : 'asc') : d))
+                    }}
+                  >
+                    Partecipante
+                    <span
+                      aria-hidden
+                      className={sortKey === 'name' ? 'text-gray-700' : 'text-gray-300'}
+                    >
+                      {sortKey === 'name' ? (sortDir === 'asc' ? '▲' : '▼') : '•'}
+                    </span>
+                  </button>
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Contatti
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Azienda
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-1 cursor-pointer"
+                    title="Ordina per azienda"
+                    onClick={() => {
+                      setSortKey('company')
+                      setSortDir((d) =>
+                        sortKey === 'company' ? (d === 'asc' ? 'desc' : 'asc') : d
+                      )
+                    }}
+                  >
+                    Azienda
+                    <span
+                      aria-hidden
+                      className={sortKey === 'company' ? 'text-gray-700' : 'text-gray-300'}
+                    >
+                      {sortKey === 'company' ? (sortDir === 'asc' ? '▲' : '▼') : '•'}
+                    </span>
+                  </button>
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Stato
@@ -240,7 +250,23 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
                   Pagamento
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Check-in
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-1 cursor-pointer"
+                    title="Ordina per data registrazione"
+                    onClick={() => {
+                      setSortKey('date')
+                      setSortDir((d) => (sortKey === 'date' ? (d === 'asc' ? 'desc' : 'asc') : d))
+                    }}
+                  >
+                    Check-in data
+                    <span
+                      aria-hidden
+                      className={sortKey === 'date' ? 'text-gray-700' : 'text-gray-300'}
+                    >
+                      {sortKey === 'date' ? (sortDir === 'asc' ? '▲' : '▼') : '•'}
+                    </span>
+                  </button>
                 </th>
               </tr>
             </thead>
@@ -254,7 +280,7 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
                 </tr>
               ) : (
                 filteredParticipants.map((participant) => (
-                  <tr key={participant.id} className="hover:bg-gray-50">
+                  <tr key={participant.id} className="odd:bg-gray-50 even:bg-gray-100 hover:bg-gray-200">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-gray-900">

@@ -334,6 +334,63 @@ async function canEditPost(postId: string, userId: string): Promise<boolean> {
 
 ### Buttons (Design System)
 
+### Tables (Sorting UX Pattern)
+
+- Goal: sorting by clicking on table headers with clear visual and accessible indicators. Avoid top-bar sorting controls unless strictly necessary.
+- Indicators:
+  - Inactive (sortable but not active): use a neutral • dot next to the column label
+  - Active: show ▲ for ascending and ▼ for descending next to the column label
+- Interaction:
+  - Clicking the column header toggles ascending/descending for that key
+  - Use cursor-pointer and a title attribute (e.g., "Ordina per Nome") for discoverability
+  - Add aria-sort on the th of the active column and aria-label on the button
+- Accessibility:
+  - th should include aria-sort: none | ascending | descending
+  - Header controls must be reachable by keyboard (use a button inside th)
+- Visual consistency:
+  - thead uses bg-gray-50
+  - Rows use alternating backgrounds: odd:bg-gray-50, even:bg-gray-100, and hover:bg-gray-200
+- Implementation notes:
+  - Prefer a small reusable headerButton(label, key) helper per table
+  - Keep sorting state local to the client component: sortBy: 'name' | 'email' | 'company' | 'price' | ... and sortDir: 'asc' | 'desc'
+  - For Server Components, wrap the table body with a small Client Component to hold sorting state
+  - Keep TypeScript strict (no any) and add aria-labels for screen readers
+- Optional toggles:
+  - Allow a single lightweight toggle in the top bar only when needed (e.g., "Solo check-in"), but default to header-based sorting
+
+Example (client-side header helper):
+
+```tsx
+function HeaderButton({
+  label,
+  active,
+  dir,
+  onClick,
+  alignRight,
+}: {
+  label: string
+  active: boolean
+  dir: 'asc' | 'desc'
+  onClick: () => void
+  alignRight?: boolean
+}) {
+  return (
+    <button
+      type="button"
+      className={`inline-flex items-center gap-1 cursor-pointer ${alignRight ? 'justify-end w-full' : ''}`}
+      title={`Ordina per ${label}`}
+      onClick={onClick}
+    >
+      {label}
+      <span aria-hidden className={active ? 'text-gray-700' : 'text-gray-300'}>
+        {active ? (dir === 'asc' ? '▲' : '▼') : '•'}
+      </span>
+    </button>
+  )
+}
+```
+
+
 - Tutti i pulsanti primari devono usare sfondo blu consistente: `bg-blue-600 hover:bg-blue-700 text-white`.
 - Il cursore deve sempre essere a forma di mano su hover: assicurato globalmente con `cursor-pointer` nel nostro componente `Button`.
 - Usare SEMPRE il componente `Button` di `src/components/ui/button.tsx` per CTA e azioni. Evitare `<button>` raw con classi custom.
