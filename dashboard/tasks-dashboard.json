@@ -1,6 +1,6 @@
 {
   "project": "EventHub Dashboard",
-  "lastUpdated": "2025-11-03",
+  "lastUpdated": "2025-11-05",
   "overallProgress": 58,
   "modules": [
     {
@@ -256,7 +256,7 @@
     {
       "id": "events-detail",
       "name": "Eventi - Dettaglio",
-      "progress": 30,
+      "progress": 40,
       "tasks": [
         {
           "id": "detail-1",
@@ -358,7 +358,7 @@
           "status": "completed",
           "complexity": "medium",
           "componentType": "Server",
-          "description": "Lista staff assegnato + pagamenti + quick assign"
+          "description": "Lista staff assegnato + pagamenti + quick assign + UX: sorting header click, filtro pagamenti critici, badge ruolo"
         }
       ]
     },

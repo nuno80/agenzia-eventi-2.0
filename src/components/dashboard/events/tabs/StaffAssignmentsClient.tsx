@@ -21,8 +21,9 @@ export type AssignmentLite = {
 }
 
 export function StaffAssignmentsClient({ items }: { items: AssignmentLite[] }) {
-  const [sortBy, setSortBy] = useState<'name' | 'date'>('name')
-  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
+  const [sortBy, _setSortBy] = useState<'name' | 'date'>('name')
+  const [sortDir, _setSortDir] = useState<'asc' | 'desc'>('asc')
+  const [criticalOnly, setCriticalOnly] = useState(false)
   const [selected, setSelected] = useState<string[]>([])
   const [openBatch, setOpenBatch] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -102,26 +103,15 @@ export function StaffAssignmentsClient({ items }: { items: AssignmentLite[] }) {
           Selezionati: {selected.length} / Totale: {items.length}
         </div>
         <div className="flex items-center gap-2">
-          <div className="hidden sm:flex items-center gap-1 text-xs text-gray-600">
-            <span>Ordina per:</span>
-            <select
-              className="border rounded px-2 py-1"
-              aria-label="Ordina per"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'name' | 'date')}
-            >
-              <option value="name">Nome</option>
-              <option value="date">Data</option>
-            </select>
-            <button
-              type="button"
-              className="border rounded px-2 py-1"
-              aria-label="Inverti direzione ordinamento"
-              onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
-            >
-              {sortDir === 'asc' ? 'Asc' : 'Desc'}
-            </button>
-          </div>
+          <label className="hidden sm:inline-flex items-center gap-1 text-xs text-gray-600">
+            <input
+              type="checkbox"
+              className="mr-1"
+              checked={criticalOnly}
+              onChange={(e) => setCriticalOnly(e.target.checked)}
+            />
+            Pagamenti critici
+          </label>
           <Button
             size="sm"
             variant="outline"
@@ -145,15 +135,56 @@ export function StaffAssignmentsClient({ items }: { items: AssignmentLite[] }) {
             onChange={toggleAll}
             aria-label="Seleziona tutte le assegnazioni"
           />
-          <div className="text-xs font-medium text-gray-500 w-1/3">Staff</div>
-          <div className="text-xs font-medium text-gray-500 w-1/3">Periodo</div>
+          <button
+            type="button"
+            className="text-left text-xs font-medium text-gray-500 w-1/3 inline-flex items-center gap-1 focus:outline-none"
+            onClick={() => {
+              setSortBy('name')
+              setSortDir((d) => (sortBy === 'name' ? (d === 'asc' ? 'desc' : 'asc') : d))
+            }}
+            aria-label={`Ordina per nome (${sortBy === 'name' ? (sortDir === 'asc' ? 'ascendente' : 'discendente') : 'non attivo'})`}
+          >
+            Staff
+            {sortBy === 'name' ? (
+              <span aria-hidden className="inline-block">
+                {sortDir === 'asc' ? '▲' : '▼'}
+              </span>
+            ) : null}
+          </button>
+          <button
+            type="button"
+            className="text-left text-xs font-medium text-gray-500 w-1/3 inline-flex items-center gap-1 focus:outline-none"
+            onClick={() => {
+              setSortBy('date')
+              setSortDir((d) => (sortBy === 'date' ? (d === 'asc' ? 'desc' : 'asc') : d))
+            }}
+            aria-label={`Ordina per periodo (${sortBy === 'date' ? (sortDir === 'asc' ? 'ascendente' : 'discendente') : 'non attivo'})`}
+          >
+            Periodo
+            {sortBy === 'date' ? (
+              <span aria-hidden className="inline-block">
+                {sortDir === 'asc' ? '▲' : '▼'}
+              </span>
+            ) : null}
+          </button>
           <div className="text-xs font-medium text-gray-500 flex-1">Pagamento</div>
         </div>
-        {[...items]
+        {[
+          ...(criticalOnly
+            ? items.filter((i) => i.paymentStatus === 'pending' || i.paymentStatus === 'overdue')
+            : items),
+        ]
           .sort((a, b) => {
-            const aLast = a.staff?.lastName?.toLowerCase() || ''
-            const bLast = b.staff?.lastName?.toLowerCase() || ''
-            return aLast.localeCompare(bLast)
+            if (sortBy === 'name') {
+              const aLast = a.staff?.lastName?.toLowerCase() || ''
+              const bLast = b.staff?.lastName?.toLowerCase() || ''
+              const cmp = aLast.localeCompare(bLast)
+              return sortDir === 'asc' ? cmp : -cmp
+            }
+            const aDate = new Date(a.startTime).getTime()
+            const bDate = new Date(b.startTime).getTime()
+            const cmp = aDate - bDate
+            return sortDir === 'asc' ? cmp : -cmp
           })
           .map((a) => (
             <div key={a.id} className="py-3 flex items-center gap-4">
@@ -166,12 +197,14 @@ export function StaffAssignmentsClient({ items }: { items: AssignmentLite[] }) {
               <div className="w-1/3 min-w-0">
                 <div className="text-sm font-medium text-gray-900 truncate">
                   {a.staff ? `${a.staff.lastName} ${a.staff.firstName}` : 'Membro dello staff'}
-                  {a.staff?.role ? (
-                    <span className="ml-2 text-xs text-gray-500">
-                      ({toRoleLabel(a.staff.role)})
-                    </span>
-                  ) : null}
                 </div>
+                {a.staff?.role ? (
+                  <div className="mt-0.5">
+                    <span className="inline-flex items-center rounded-full bg-gray-100 text-gray-700 px-2 py-0.5 text-[10px] font-medium">
+                      {toRoleLabel(a.staff.role)}
+                    </span>
+                  </div>
+                ) : null}
               </div>
               <div className="w-1/3 text-xs text-gray-600">
                 {formatDateTime(a.startTime)} → {formatDateTime(a.endTime)}
