@@ -21,6 +21,8 @@ export type AssignmentLite = {
 }
 
 export function StaffAssignmentsClient({ items }: { items: AssignmentLite[] }) {
+  const [sortBy, setSortBy] = useState<'name' | 'date'>('name')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [selected, setSelected] = useState<string[]>([])
   const [openBatch, setOpenBatch] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -96,8 +98,30 @@ export function StaffAssignmentsClient({ items }: { items: AssignmentLite[] }) {
     <div className="space-y-3">
       {/* Mass actions bar */}
       <div className="flex items-center justify-between">
-        <div className="text-sm text-gray-600">Selezionati: {selected.length}</div>
+        <div className="text-sm text-gray-600">
+          Selezionati: {selected.length} / Totale: {items.length}
+        </div>
         <div className="flex items-center gap-2">
+          <div className="hidden sm:flex items-center gap-1 text-xs text-gray-600">
+            <span>Ordina per:</span>
+            <select
+              className="border rounded px-2 py-1"
+              aria-label="Ordina per"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as 'name' | 'date')}
+            >
+              <option value="name">Nome</option>
+              <option value="date">Data</option>
+            </select>
+            <button
+              type="button"
+              className="border rounded px-2 py-1"
+              aria-label="Inverti direzione ordinamento"
+              onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
+            >
+              {sortDir === 'asc' ? 'Asc' : 'Desc'}
+            </button>
+          </div>
           <Button
             size="sm"
             variant="outline"
@@ -115,45 +139,59 @@ export function StaffAssignmentsClient({ items }: { items: AssignmentLite[] }) {
       {/* Table */}
       <div className="divide-y">
         <div className="py-2 flex items-center gap-4">
-          <input type="checkbox" checked={allSelected} onChange={toggleAll} />
+          <input
+            type="checkbox"
+            checked={allSelected}
+            onChange={toggleAll}
+            aria-label="Seleziona tutte le assegnazioni"
+          />
           <div className="text-xs font-medium text-gray-500 w-1/3">Staff</div>
           <div className="text-xs font-medium text-gray-500 w-1/3">Periodo</div>
           <div className="text-xs font-medium text-gray-500 flex-1">Pagamento</div>
         </div>
-        {items.map((a) => (
-          <div key={a.id} className="py-3 flex items-center gap-4">
-            <input
-              type="checkbox"
-              checked={selected.includes(a.id)}
-              onChange={() => toggleOne(a.id)}
-            />
-            <div className="w-1/3 min-w-0">
-              <div className="text-sm font-medium text-gray-900 truncate">
-                {a.staff ? `${a.staff.lastName} ${a.staff.firstName}` : 'Membro dello staff'}
-                {a.staff?.role ? (
-                  <span className="ml-2 text-xs text-gray-500">({toRoleLabel(a.staff.role)})</span>
-                ) : null}
+        {[...items]
+          .sort((a, b) => {
+            const aLast = a.staff?.lastName?.toLowerCase() || ''
+            const bLast = b.staff?.lastName?.toLowerCase() || ''
+            return aLast.localeCompare(bLast)
+          })
+          .map((a) => (
+            <div key={a.id} className="py-3 flex items-center gap-4">
+              <input
+                type="checkbox"
+                checked={selected.includes(a.id)}
+                onChange={() => toggleOne(a.id)}
+                aria-label={`Seleziona assegnazione per ${a.staff ? `${a.staff.lastName} ${a.staff.firstName}` : 'membro dello staff'}`}
+              />
+              <div className="w-1/3 min-w-0">
+                <div className="text-sm font-medium text-gray-900 truncate">
+                  {a.staff ? `${a.staff.lastName} ${a.staff.firstName}` : 'Membro dello staff'}
+                  {a.staff?.role ? (
+                    <span className="ml-2 text-xs text-gray-500">
+                      ({toRoleLabel(a.staff.role)})
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+              <div className="w-1/3 text-xs text-gray-600">
+                {formatDateTime(a.startTime)} → {formatDateTime(a.endTime)}
+              </div>
+              <div className="flex-1 flex items-center gap-2">
+                <PaymentStatusBadge
+                  paymentTerms={a.paymentTerms}
+                  paymentDueDate={a.paymentDueDate}
+                  paymentDate={a.paymentDate}
+                  assignmentStatus={a.assignmentStatus}
+                  endTime={a.endTime}
+                />
+                <PaymentQuickActions
+                  assignmentId={a.id}
+                  currentDueDate={a.paymentDueDate}
+                  isPaid={a.paymentStatus === 'paid'}
+                />
               </div>
             </div>
-            <div className="w-1/3 text-xs text-gray-600">
-              {formatDateTime(a.startTime)} → {formatDateTime(a.endTime)}
-            </div>
-            <div className="flex-1 flex items-center gap-2">
-              <PaymentStatusBadge
-                paymentTerms={a.paymentTerms}
-                paymentDueDate={a.paymentDueDate}
-                paymentDate={a.paymentDate}
-                assignmentStatus={a.assignmentStatus}
-                endTime={a.endTime}
-              />
-              <PaymentQuickActions
-                assignmentId={a.id}
-                currentDueDate={a.paymentDueDate}
-                isPaid={a.paymentStatus === 'paid'}
-              />
-            </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       {/* Batch modal */}

@@ -46,8 +46,19 @@ export async function StaffTab({ eventId, searchParams }: StaffTabProps) {
       </div>
 
       {isEmpty ? (
-        <div className="text-center text-sm text-gray-600">
-          Nessuna assegnazione staff per questo evento.
+        <div className="text-center text-sm text-gray-600 py-12">
+          <p className="mb-4">Nessuna assegnazione staff per questo evento.</p>
+          <div className="flex items-center justify-center">
+            <StaffAssignmentModalMulti
+              eventId={eventId}
+              staff={staff.map((s) => ({
+                id: s.id,
+                firstName: s.firstName,
+                lastName: s.lastName,
+                role: s.role,
+              }))}
+            />
+          </div>
         </div>
       ) : (
         <StaffAssignmentsClient
@@ -56,8 +67,8 @@ export async function StaffTab({ eventId, searchParams }: StaffTabProps) {
             startTime: a.startTime,
             endTime: a.endTime,
             assignmentStatus: a.assignmentStatus as string,
-            paymentStatus: a.paymentStatus as any,
-            paymentTerms: a.paymentTerms as any,
+            paymentStatus: a.paymentStatus,
+            paymentTerms: a.paymentTerms,
             paymentDueDate: a.paymentDueDate,
             paymentDate: a.paymentDate,
             staff: a.staff

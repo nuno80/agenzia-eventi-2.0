@@ -1,3 +1,4 @@
+export * from './DeleteEventButton'
 export * from './DuplicateEventButton'
 export * from './EventCard'
 export * from './EventForm'

@@ -1,7 +1,7 @@
 {
   "project": "EventHub Dashboard",
   "lastUpdated": "2025-11-03",
-  "overallProgress": 57,
+  "overallProgress": 58,
   "modules": [
     {
       "id": "core",
@@ -175,7 +175,7 @@
     {
       "id": "events-crud",
       "name": "Eventi - CRUD",
-      "progress": 90,
+      "progress": 100,
       "tasks": [
         {
           "id": "events-1",
@@ -246,10 +246,10 @@
         {
           "id": "events-12",
           "name": "Delete event UI",
-          "status": "pending",
+          "status": "completed",
           "complexity": "easy",
           "componentType": "Client",
-          "description": "Dialog conferma eliminazione + bottone in EventHeader"
+          "description": "Dialog conferma eliminazione + bottone in EventHeader (double confirm: input ELIMINA)"
         }
       ]
     },
@@ -355,7 +355,7 @@
         {
           "id": "detail-14",
           "name": "StaffTab (Server)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server",
           "description": "Lista staff assegnato + pagamenti + quick assign"

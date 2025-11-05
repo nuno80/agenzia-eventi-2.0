@@ -37,6 +37,7 @@ import {
   Users,
 } from 'lucide-react'
 import Link from 'next/link'
+import { DeleteEventButton } from '@/components/dashboard/events/DeleteEventButton'
 import type { Event } from '@/db'
 import {
   formatCurrency,
@@ -187,11 +188,17 @@ export function EventHeader({ event }: EventHeaderProps) {
               <span>Modifica</span>
             </Link>
 
-            <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700">
+            <button
+              className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700"
+              aria-label="Condividi evento"
+            >
               <Share2 className="w-5 h-5" />
             </button>
 
-            <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700">
+            <button
+              className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700"
+              aria-label="Esporta"
+            >
               <Download className="w-5 h-5" />
             </button>
 
@@ -201,10 +208,18 @@ export function EventHeader({ event }: EventHeaderProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700"
+                aria-label="Apri sito evento"
               >
                 <ExternalLink className="w-5 h-5" />
               </a>
             )}
+
+            {/* Delete Button (Desktop) */}
+            <DeleteEventButton
+              eventId={String(event.id)}
+              eventTitle={event.title || ''}
+              variant="button"
+            />
           </div>
         </div>
       </div>
@@ -219,13 +234,26 @@ export function EventHeader({ event }: EventHeaderProps) {
           <span>Modifica</span>
         </Link>
 
-        <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700">
+        <button
+          className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700"
+          aria-label="Condividi evento"
+        >
           <Share2 className="w-5 h-5" />
         </button>
 
-        <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700">
+        <button
+          className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700"
+          aria-label="Esporta"
+        >
           <Download className="w-5 h-5" />
         </button>
+
+        {/* Delete Button (Mobile icon) */}
+        <DeleteEventButton
+          eventId={String(event.id)}
+          eventTitle={event.title || ''}
+          variant="icon"
+        />
       </div>
 
       {/* Progress Bars */}
