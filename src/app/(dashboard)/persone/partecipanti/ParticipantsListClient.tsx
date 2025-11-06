@@ -6,7 +6,8 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { formatDateTime } from '@/lib/utils'
+import { formatDateTimeShort } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 export type ParticipantItem = {
   id: string
@@ -50,12 +51,16 @@ export default function ParticipantsListClient({
         const bp = b.ticketPrice ?? 0
         cmp = ap - bp
       } else if (sortBy === 'registered') {
-        const ar = a.registrationDate ? new Date(a.registrationDate as any).getTime() : 0
-        const br = b.registrationDate ? new Date(b.registrationDate as any).getTime() : 0
+        const toTs = (v: Date | string | number | null) =>
+          v instanceof Date ? v.getTime() : typeof v === 'string' || typeof v === 'number' ? new Date(v).getTime() : 0
+        const ar = toTs(a.registrationDate)
+        const br = toTs(b.registrationDate)
         cmp = ar - br
       } else if (sortBy === 'checkin') {
-        const ad = a.checkinTime ? new Date(a.checkinTime as any).getTime() : 0
-        const bd = b.checkinTime ? new Date(b.checkinTime as any).getTime() : 0
+        const toTs = (v: Date | string | number | null) =>
+          v instanceof Date ? v.getTime() : typeof v === 'string' || typeof v === 'number' ? new Date(v).getTime() : 0
+        const ad = toTs(a.checkinTime)
+        const bd = toTs(b.checkinTime)
         cmp = ad - bd
       }
       return sortDir === 'asc' ? cmp : -cmp
@@ -65,7 +70,7 @@ export default function ParticipantsListClient({
 
   const headerButton = (
     label: string,
-    key: 'name' | 'email' | 'company' | 'price',
+    key: 'name' | 'email' | 'company' | 'price' | 'registered' | 'checkin',
     alignRight = false
   ) => (
     <button
@@ -94,6 +99,49 @@ export default function ParticipantsListClient({
       <div className="p-4 border-b flex items-center justify-between">
         <div className="text-sm text-gray-700">Partecipanti</div>
         <div className="flex items-center gap-3">
+          <Button
+            type="button"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+            aria-label="Esporta CSV"
+            onClick={() => {
+              const rows = items.map((p) => ({
+                id: p.id,
+                name: `${p.lastName} ${p.firstName}`,
+                email: p.email,
+                company: p.company ?? '',
+                registrationStatus: p.registrationStatus,
+                paymentStatus: p.paymentStatus,
+                checkedIn: p.checkedIn,
+                registrationDate: p.registrationDate
+                  ? p.registrationDate instanceof Date
+                    ? p.registrationDate.toISOString()
+                    : String(p.registrationDate)
+                  : '',
+                checkinTime: p.checkinTime
+                  ? p.checkinTime instanceof Date
+                    ? p.checkinTime.toISOString()
+                    : String(p.checkinTime)
+                  : '',
+                ticketPrice: p.ticketPrice ?? ''
+              }))
+              if (rows.length === 0) return
+              const headers = Object.keys(rows[0])
+              const esc = (v: unknown) =>
+                typeof v === 'string' ? `"${v.replaceAll('"', '""')}"` : String(v ?? '')
+              const csv = [headers.join(','), ...rows.map(r => headers.map(h => esc((r as Record<string, unknown>)[h])).join(','))].join('\n')
+              const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+              const url = URL.createObjectURL(blob)
+              const a = document.createElement('a')
+              a.href = url
+              a.download = 'participants.csv'
+              document.body.appendChild(a)
+              a.click()
+              document.body.removeChild(a)
+              URL.revokeObjectURL(url)
+            }}
+          >
+            Esporta CSV
+          </Button>
           <label className="inline-flex items-center gap-2 text-xs text-gray-700">
             <input
               type="checkbox"
@@ -215,7 +263,7 @@ export default function ParticipantsListClient({
               </td>
               <td className="py-2 px-4">
                 {p.registrationDate
-                  ? formatDateTime(
+                  ? formatDateTimeShort(
                       typeof p.registrationDate === 'number'
                         ? new Date(p.registrationDate)
                         : p.registrationDate
@@ -224,7 +272,7 @@ export default function ParticipantsListClient({
               </td>
               <td className="py-2 px-4">
                 {p.checkedIn && p.checkinTime
-                  ? formatDateTime(
+                  ? formatDateTimeShort(
                       typeof p.checkinTime === 'number' ? new Date(p.checkinTime) : p.checkinTime
                     )
                   : 'No'}
@@ -236,7 +284,7 @@ export default function ParticipantsListClient({
           ))}
           {items.length === 0 && (
             <tr>
-              <td colSpan={7} className="py-8 text-center text-gray-600">
+              <td colSpan={8} className="py-8 text-center text-gray-600">
                 Nessun partecipante.
               </td>
             </tr>

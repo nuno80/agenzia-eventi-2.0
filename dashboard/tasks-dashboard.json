@@ -1,6 +1,6 @@
 {
   "project": "EventHub Dashboard",
-  "lastUpdated": "2025-11-05",
+  "lastUpdated": "2025-11-06",
   "overallProgress": 62,
   "modules": [
     {
@@ -534,7 +534,7 @@
         {
           "id": "people-3",
           "name": "/persone/partecipanti page (Server)",
-          "status": "pending",
+          "status": "in-progress",
           "complexity": "medium",
           "componentType": "Server + Client",
           "description": "Tutti i partecipanti di tutti gli eventi + filtri avanzati"

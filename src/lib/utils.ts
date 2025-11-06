@@ -74,6 +74,22 @@ export function formatDateTime(date: Date | string): string {
 }
 
 /**
+ * Format date and time in short compact style for Italian locale
+ * Example: "02 nov. 2025 | 15:18"
+ */
+export function formatDateTimeShort(date: Date | string | number): string {
+  const d = typeof date === 'string' || typeof date === 'number' ? new Date(date) : date
+  const day = new Intl.DateTimeFormat('it-IT', { day: '2-digit' }).format(d)
+  let month = new Intl.DateTimeFormat('it-IT', { month: 'short' }).format(d)
+  // Ensure lower-case and trailing dot as per design (nov.)
+  month = month.toLowerCase()
+  if (!month.endsWith('.')) month = `${month}.`
+  const year = new Intl.DateTimeFormat('it-IT', { year: 'numeric' }).format(d)
+  const time = new Intl.DateTimeFormat('it-IT', { hour: '2-digit', minute: '2-digit', hour12: false }).format(d)
+  return `${day} ${month} ${year} | ${time}`
+}
+
+/**
  * Get Tailwind color classes for priority levels
  * @param priority - Priority level
  * @returns Object with bg, text, and border color classes
