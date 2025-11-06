@@ -1,6 +1,14 @@
 {
   "project": "EventHub Dashboard",
   "lastUpdated": "2025-11-06",
+  "changelog": [
+    {
+      "date": "2025-11-06",
+      "items": [
+        "people-3 completato: hardening type-safety, export CSV client-side, formato data breve nelle tabelle partecipanti"
+      ]
+    }
+  ],
   "overallProgress": 62,
   "modules": [
     {
@@ -513,7 +521,7 @@
     {
       "id": "people-global",
       "name": "Persone - Pagine Globali",
-      "progress": 30,
+      "progress": 50,
       "tasks": [
         {
           "id": "people-1",
@@ -534,7 +542,7 @@
         {
           "id": "people-3",
           "name": "/persone/partecipanti page (Server)",
-          "status": "in-progress",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server + Client",
           "description": "Tutti i partecipanti di tutti gli eventi + filtri avanzati"
