@@ -9,10 +9,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
 import type { AgendaSessionDTO } from '@/lib/dal/agenda'
@@ -44,7 +44,7 @@ const typeLabels: Record<string, string> = {
 }
 
 export function SessionCard({ session, onEdit }: SessionCardProps) {
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [_isDeleting, setIsDeleting] = useState(false)
   const { toast } = useToast()
 
   const handleDelete = async () => {
@@ -55,20 +55,20 @@ export function SessionCard({ session, onEdit }: SessionCardProps) {
       const result = await deleteSession(session.id, session.eventId)
       if (result.error) {
         toast({
-          variant: "destructive",
-          title: "Errore",
+          variant: 'destructive',
+          title: 'Errore',
           description: result.error,
         })
       } else {
         toast({
-          title: "Successo",
-          description: "Sessione eliminata",
+          title: 'Successo',
+          description: 'Sessione eliminata',
         })
       }
-    } catch (error) {
+    } catch (_error) {
       toast({
-        variant: "destructive",
-        title: "Errore",
+        variant: 'destructive',
+        title: 'Errore',
         description: "Errore durante l'eliminazione",
       })
     } finally {
@@ -83,9 +83,7 @@ export function SessionCard({ session, onEdit }: SessionCardProps) {
         <div className="text-lg font-bold text-gray-900">
           {format(new Date(session.startTime), 'HH:mm')}
         </div>
-        <div className="text-xs text-gray-500">
-          {format(new Date(session.endTime), 'HH:mm')}
-        </div>
+        <div className="text-xs text-gray-500">{format(new Date(session.endTime), 'HH:mm')}</div>
         <div className="mt-2 flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-600">
           <Clock className="h-3 w-3" />
           {session.duration}m
@@ -107,15 +105,17 @@ export function SessionCard({ session, onEdit }: SessionCardProps) {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 opacity-0 group-hover:opacity-100"
+              >
                 <MoreVertical className="h-4 w-4" />
                 <span className="sr-only">Menu</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onEdit(session)}>
-                Modifica
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onEdit(session)}>Modifica</DropdownMenuItem>
               <DropdownMenuItem onClick={handleDelete} className="text-red-600 focus:text-red-600">
                 <Trash2 className="mr-2 h-4 w-4" />
                 Elimina

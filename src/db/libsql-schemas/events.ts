@@ -216,6 +216,9 @@ export const speakers = sqliteTable('speakers', {
   // Notes
   notes: text('notes'),
 
+  // Budget Integration
+  budgetItemId: text('budget_item_id').references(() => budgetItems.id, { onDelete: 'set null' }),
+
   ...timestamp,
 })
 
@@ -382,6 +385,9 @@ export const services = sqliteTable('services', {
   // Details
   description: text('description'),
   requirements: text('requirements'),
+
+  // Budget Integration
+  budgetItemId: text('budget_item_id').references(() => budgetItems.id, { onDelete: 'set null' }),
 
   // Notes
   notes: text('notes'),

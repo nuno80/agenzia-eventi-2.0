@@ -1,6 +1,6 @@
-import { db } from '@/db'
 import { revalidatePath } from 'next/cache'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { db } from '@/db'
 import { createSession, deleteSession, updateSession } from './agenda'
 
 // Mock next/cache
@@ -114,9 +114,9 @@ describe('Agenda Server Actions', () => {
     })
 
     it('should fail if id is missing', async () => {
-        const result = await deleteSession('', 'event-123')
-        expect(result).toHaveProperty('error', 'Session ID is required')
-        expect(db.delete).not.toHaveBeenCalled()
+      const result = await deleteSession('', 'event-123')
+      expect(result).toHaveProperty('error', 'Session ID is required')
+      expect(db.delete).not.toHaveBeenCalled()
     })
   })
 })

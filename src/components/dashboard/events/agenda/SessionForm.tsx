@@ -11,33 +11,29 @@ import { createSession, updateSession } from '@/actions/agenda'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog'
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
@@ -51,15 +47,7 @@ const formSchema = z.object({
   date: z.date(),
   startTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Formato ora non valido'),
   endTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Formato ora non valido'),
-  sessionType: z.enum([
-    'keynote',
-    'talk',
-    'workshop',
-    'panel',
-    'break',
-    'networking',
-    'other',
-  ]),
+  sessionType: z.enum(['keynote', 'talk', 'workshop', 'panel', 'break', 'networking', 'other']),
   room: z.string().optional(),
   location: z.string().optional(),
   speakerId: z.string().optional(),
@@ -122,10 +110,11 @@ export function SessionForm({
       formData.append('sessionType', values.sessionType)
       if (values.room) formData.append('room', values.room)
       if (values.location) formData.append('location', values.location)
-      if (values.speakerId && values.speakerId !== 'none') formData.append('speakerId', values.speakerId)
+      if (values.speakerId && values.speakerId !== 'none')
+        formData.append('speakerId', values.speakerId)
       if (values.maxAttendees) formData.append('maxAttendees', values.maxAttendees)
 
-      let result
+      let result: { error?: string; details?: any; success?: boolean }
       if (sessionToEdit) {
         formData.append('id', sessionToEdit.id)
         formData.append('status', sessionToEdit.status)
@@ -136,8 +125,8 @@ export function SessionForm({
 
       if (result.error) {
         toast({
-          variant: "destructive",
-          title: "Errore",
+          variant: 'destructive',
+          title: 'Errore',
           description: result.error,
         })
         if (result.details) {
@@ -145,7 +134,7 @@ export function SessionForm({
         }
       } else {
         toast({
-          title: "Successo",
+          title: 'Successo',
           description: sessionToEdit ? 'Sessione aggiornata' : 'Sessione creata',
         })
         onOpenChange(false)
@@ -154,9 +143,9 @@ export function SessionForm({
     } catch (error) {
       console.error('Error submitting form:', error)
       toast({
-        variant: "destructive",
-        title: "Errore",
-        description: "Si è verificato un errore imprevisto",
+        variant: 'destructive',
+        title: 'Errore',
+        description: 'Si è verificato un errore imprevisto',
       })
     }
   }
@@ -166,9 +155,7 @@ export function SessionForm({
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>{sessionToEdit ? 'Modifica Sessione' : 'Nuova Sessione'}</DialogTitle>
-          <DialogDescription>
-            Inserisci i dettagli della sessione dell'evento.
-          </DialogDescription>
+          <DialogDescription>Inserisci i dettagli della sessione dell'evento.</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -253,14 +240,14 @@ export function SessionForm({
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
-                            variant={"outline"}
+                            variant={'outline'}
                             className={cn(
-                              "pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
+                              'pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground'
                             )}
                           >
                             {field.value ? (
-                              format(field.value, "PPP", { locale: it })
+                              format(field.value, 'PPP', { locale: it })
                             ) : (
                               <span>Seleziona data</span>
                             )}

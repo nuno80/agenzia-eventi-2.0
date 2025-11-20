@@ -7,9 +7,9 @@
  * - Provide type-safe data fetching
  */
 
-import { agenda, db } from '@/db'
 import { asc, eq } from 'drizzle-orm'
 import { cache } from 'react'
+import { agenda, db } from '@/db'
 
 // ============================================================================
 // DTO TYPES

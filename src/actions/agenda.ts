@@ -1,9 +1,9 @@
 'use server'
 
-import { agenda, db } from '@/db'
 import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { agenda, db } from '@/db'
 
 // ============================================================================
 // VALIDATION SCHEMAS
@@ -15,15 +15,7 @@ const sessionSchema = z.object({
   description: z.string().optional(),
   startTime: z.string().transform((str) => new Date(str)),
   endTime: z.string().transform((str) => new Date(str)),
-  sessionType: z.enum([
-    'keynote',
-    'talk',
-    'workshop',
-    'panel',
-    'break',
-    'networking',
-    'other',
-  ]),
+  sessionType: z.enum(['keynote', 'talk', 'workshop', 'panel', 'break', 'networking', 'other']),
   room: z.string().optional(),
   location: z.string().optional(),
   speakerId: z.string().optional().nullable(),
@@ -37,7 +29,7 @@ export type SessionFormData = z.infer<typeof sessionSchema>
 // ACTIONS
 // ============================================================================
 
-export async function createSession(prevState: any, formData: FormData) {
+export async function createSession(_prevState: any, formData: FormData) {
   // Extract data from FormData
   const rawData: Record<string, any> = {
     eventId: formData.get('eventId'),
@@ -81,7 +73,7 @@ export async function createSession(prevState: any, formData: FormData) {
   }
 }
 
-export async function updateSession(prevState: any, formData: FormData) {
+export async function updateSession(_prevState: any, formData: FormData) {
   const id = formData.get('id') as string
   console.log('Updating session ID:', id)
   if (!id) return { error: 'Session ID is required' }

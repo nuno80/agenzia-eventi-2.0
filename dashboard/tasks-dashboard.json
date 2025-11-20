@@ -330,7 +330,7 @@
         {
           "id": "detail-9",
           "name": "ServicesTab (Server)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server",
           "description": "Lista servizi (catering, AV, etc.) + status + DAL services"
@@ -635,7 +635,7 @@
         {
           "id": "other-2",
           "name": "DAL services.ts",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "DAL",
           "description": "Query servizi: getAll, byEvent, byType, vendors"
@@ -689,6 +689,53 @@
           "description": "Upload foto staff, documenti, invoices"
         }
       ]
+    },
+    {
+      "id": "integrations",
+      "name": "Intelligent Integrations",
+      "progress": 0,
+      "tasks": [
+        {
+          "id": "integration-1",
+          "name": "Relatori ↔ Budget (Spese)",
+          "status": "completed",
+          "complexity": "medium",
+          "componentType": "Server Action",
+          "description": "Auto-create budget item for speaker fees/expenses. Files: src/actions/speakers.ts, src/components/dashboard/events/speakers/SpeakerForm.tsx"
+        },
+        {
+          "id": "integration-2",
+          "name": "Staff ↔ Budget (Spese)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server Action",
+          "description": "Link staff assignments cost to budget. Files: src/actions/staffAssignments.ts, src/components/dashboard/events/staff/StaffAssignmentModal.tsx"
+        },
+        {
+          "id": "integration-3",
+          "name": "Sponsor ↔ Budget (Entrate)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server Action",
+          "description": "Link sponsorship amount to budget revenue. Files: src/actions/sponsors.ts, src/components/dashboard/events/sponsors/SponsorForm.tsx"
+        },
+        {
+          "id": "integration-4",
+          "name": "Agenda ↔ Servizi (Logistica)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server Action",
+          "description": "Link agenda sessions to required services. Files: src/actions/agenda.ts, src/components/dashboard/events/agenda/SessionForm.tsx"
+        },
+        {
+          "id": "integration-5",
+          "name": "Agenda ↔ Staff (Operativo)",
+          "status": "pending",
+          "complexity": "medium",
+          "componentType": "Server Action",
+          "description": "Assign staff to specific agenda sessions. Files: src/actions/agenda.ts, src/db/libsql-schemas/agenda.ts"
+        }
+      ]
     }
   ],
   "priorityQueue": [
@@ -715,12 +762,18 @@
       "module": "finance",
       "tasks": ["finance-2", "finance-3"],
       "rationale": "Dashboard finanziaria globale"
+    },
+    {
+      "priority": 1,
+      "module": "integrations",
+      "tasks": ["integration-1", "integration-3"],
+      "rationale": "Connessioni intelligenti: Relatori/Sponsor -> Budget per continuità e valore business"
     }
   ],
   "statistics": {
     "totalTasks": 86,
-    "completedTasks": 69,
-    "pendingTasks": 17,
+    "completedTasks": 70,
+    "pendingTasks": 16,
     "byComplexity": { "easy": 29, "medium": 45, "hard": 25 },
     "byComponentType": {
       "Server": 32,
@@ -733,9 +786,7 @@
     }
   },
   "nextSteps": {
-    "immediate": [
-      "Implementare tab Servizi (detail-9)"
-    ],
+    "immediate": ["Implementare tab Servizi (detail-9)"],
     "shortTerm": [
       "Completare DAL per speakers e sponsors (globali)",
       "Implementare upload file (vercel-blob)"

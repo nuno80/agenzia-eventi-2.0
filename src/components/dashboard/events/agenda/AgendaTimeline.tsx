@@ -1,20 +1,20 @@
 'use client'
 
 import {
-    DndContext,
-    DragOverlay,
-    KeyboardSensor,
-    PointerSensor,
-    closestCenter,
-    useSensor,
-    useSensors,
+  closestCenter,
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
 } from '@dnd-kit/core'
 import {
-    SortableContext,
-    arrayMove,
-    sortableKeyboardCoordinates,
-    useSortable,
-    verticalListSortingStrategy
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { format } from 'date-fns'
@@ -158,11 +158,7 @@ export function AgendaTimeline({ eventId, sessions, speakers }: AgendaTimelinePr
               >
                 <div className="space-y-4">
                   {sessionsByDate[date].map((session) => (
-                    <SortableSessionItem
-                      key={session.id}
-                      session={session}
-                      onEdit={handleEdit}
-                    />
+                    <SortableSessionItem key={session.id} session={session} onEdit={handleEdit} />
                   ))}
                 </div>
               </SortableContext>
@@ -171,10 +167,7 @@ export function AgendaTimeline({ eventId, sessions, speakers }: AgendaTimelinePr
 
           <DragOverlay>
             {activeId ? (
-              <SessionCard
-                session={sessions.find((s) => s.id === activeId)!}
-                onEdit={() => {}}
-              />
+              <SessionCard session={sessions.find((s) => s.id === activeId)!} onEdit={() => {}} />
             ) : null}
           </DragOverlay>
         </DndContext>

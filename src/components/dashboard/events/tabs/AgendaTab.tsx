@@ -26,11 +26,7 @@ export async function AgendaTab({ eventId }: AgendaTabProps) {
         </p>
       </div>
 
-      <AgendaTimeline
-        eventId={eventId}
-        sessions={sessions}
-        speakers={speakersList}
-      />
+      <AgendaTimeline eventId={eventId} sessions={sessions} speakers={speakersList} />
     </div>
   )
 }

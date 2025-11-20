@@ -5,19 +5,19 @@
  * TYPE: Server Component (Async content wrapped in Suspense)
  */
 
+import { Loader2 } from 'lucide-react'
+import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import { EventHeader } from '@/components/dashboard/events/EventHeader'
 import { EventTabs } from '@/components/dashboard/events/EventTabs'
 import { OverviewTab } from '@/components/dashboard/events/tabs/OverviewTab'
 import { ParticipantsTab } from '@/components/dashboard/events/tabs/ParticipantsTab'
 import {
-    getEventById,
-    getEventWithParticipants,
-    getEventWithSpeakers,
-    getEventWithSponsors,
+  getEventById,
+  getEventWithParticipants,
+  getEventWithSpeakers,
+  getEventWithSponsors,
 } from '@/lib/dal/events'
-import { Loader2 } from 'lucide-react'
-import { notFound } from 'next/navigation'
-import { Suspense } from 'react'
 
 const VALID_TABS = [
   'overview',
@@ -108,8 +108,10 @@ async function TabContent({
       const { AgendaTab } = await import('@/components/dashboard/events/tabs/AgendaTab')
       return <AgendaTab eventId={eventId} />
     }
-    case 'servizi':
-      return <PlaceholderTab title="Servizi" />
+    case 'servizi': {
+      const { ServicesTab } = await import('@/components/dashboard/events/services/ServicesTab')
+      return <ServicesTab eventId={eventId} />
+    }
     case 'budget': {
       const { BudgetTab } = await import('@/components/dashboard/events/tabs/BudgetTab')
       return <BudgetTab eventId={eventId} />

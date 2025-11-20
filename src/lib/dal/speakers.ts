@@ -27,6 +27,10 @@ export type SpeakerDTO = {
   sessionDate: Date | null
   sessionDuration: number | null
   confirmationStatus: 'invited' | 'confirmed' | 'declined' | 'tentative'
+  travelRequired: boolean
+  accommodationRequired: boolean
+  fee: number
+  budgetItemId: string | null
 }
 
 function toDTO(row: typeof speakers.$inferSelect): SpeakerDTO {
@@ -49,6 +53,10 @@ function toDTO(row: typeof speakers.$inferSelect): SpeakerDTO {
     sessionDate: row.sessionDate ?? null,
     sessionDuration: row.sessionDuration ?? null,
     confirmationStatus: row.confirmationStatus as SpeakerDTO['confirmationStatus'],
+    travelRequired: row.travelRequired ?? false,
+    accommodationRequired: row.accommodationRequired ?? false,
+    fee: row.fee ?? 0,
+    budgetItemId: row.budgetItemId ?? null,
   }
 }
 
