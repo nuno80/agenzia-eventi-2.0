@@ -1,7 +1,13 @@
 {
   "project": "EventHub Dashboard",
-  "lastUpdated": "2025-11-06",
+  "lastUpdated": "2025-11-20",
   "changelog": [
+    {
+      "date": "2025-11-20",
+      "items": [
+        "detail-10, finance-1, finance-4 completati: Implementazione modulo Budget (DAL, Server Actions, UI, Charts) e fix configurazione Turso DB"
+      ]
+    },
     {
       "date": "2025-11-06",
       "items": [
@@ -9,7 +15,7 @@
       ]
     }
   ],
-  "overallProgress": 62,
+  "overallProgress": 79,
   "modules": [
     {
       "id": "core",
@@ -45,7 +51,7 @@
     {
       "id": "database",
       "name": "Database Schema",
-      "progress": 88,
+      "progress": 100,
       "tasks": [
         {
           "id": "db-1",
@@ -264,7 +270,7 @@
     {
       "id": "events-detail",
       "name": "Eventi - Dettaglio",
-      "progress": 60,
+      "progress": 64,
       "tasks": [
         {
           "id": "detail-1",
@@ -331,7 +337,7 @@
         {
           "id": "detail-10",
           "name": "BudgetTab (Server/Client)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "hard",
           "componentType": "Server + Client",
           "description": "Breakdown categorie + items + charts + DAL budget"
@@ -373,7 +379,7 @@
     {
       "id": "staff",
       "name": "Personale/Staff",
-      "progress": 90,
+      "progress": 100,
       "tasks": [
         { "id": "staff-1", "name": "DAL staff.ts", "status": "completed", "complexity": "medium" },
         {
@@ -576,12 +582,12 @@
     {
       "id": "finance",
       "name": "Finance & Reports",
-      "progress": 0,
+      "progress": 50,
       "tasks": [
         {
           "id": "finance-1",
           "name": "DAL budget.ts",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "DAL",
           "description": "Query budget: categories, items, aggregations, reports"
@@ -605,7 +611,7 @@
         {
           "id": "finance-4",
           "name": "Budget charts components (Client)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Client",
           "description": "Charts con recharts: pie, bar, line per budget"
@@ -687,101 +693,55 @@
   "priorityQueue": [
     {
       "priority": 1,
-      "module": "staff",
-      "tasks": ["staff-12", "staff-13", "staff-15"],
-      "rationale": "UI lista staff completa; dipende dal completamento DAL e validation (ora completati)"
+      "module": "events-detail",
+      "tasks": ["detail-8", "detail-9"],
+      "rationale": "Agenda e Servizi per pianificazione completa"
     },
     {
       "priority": 2,
-      "module": "staff",
-      "tasks": ["staff-17"],
-      "rationale": "UI lista staff completa; dipende dal completamento DAL e validation"
-    },
-    {
-      "priority": 3,
-      "module": "events-detail",
-      "tasks": ["detail-14"],
-      "rationale": "Tab Staff negli eventi per vedere assegnazioni"
-    },
-    {
-      "priority": 4,
-      "module": "staff",
-      "tasks": ["staff-14"],
-      "rationale": "Dettaglio staff + assegnazioni per collegare con eventi"
-    },
-    {
-      "priority": 5,
-      "module": "events-detail",
-      "tasks": ["detail-14"],
-      "rationale": "Tab Staff negli eventi per vedere assegnazioni"
-    },
-    {
-      "priority": 6,
-      "module": "events-detail",
-      "tasks": ["detail-6", "detail-7"],
-      "rationale": "Tab Speaker e Sponsor (più richiesti dopo Partecipanti)"
-    },
-    {
-      "priority": 7,
-      "module": "events-detail",
-      "tasks": ["detail-10"],
-      "rationale": "Budget tab per controllo finanziario eventi"
-    },
-    {
-      "priority": 8,
       "module": "people-global",
-      "tasks": ["people-1", "people-2", "people-3", "people-4"],
+      "tasks": ["people-1", "people-2"],
       "rationale": "Viste globali per gestione cross-event"
     },
     {
-      "priority": 9,
+      "priority": 3,
       "module": "other",
       "tasks": ["other-8", "other-6"],
       "rationale": "Upload foto staff + QR badges partecipanti"
     },
     {
-      "priority": 10,
-      "module": "events-detail",
-      "tasks": ["detail-8", "detail-9"],
-      "rationale": "Agenda e Servizi per pianificazione completa"
+      "priority": 4,
+      "module": "finance",
+      "tasks": ["finance-2", "finance-3"],
+      "rationale": "Dashboard finanziaria globale"
     }
   ],
   "statistics": {
-    "totalTasks": 99,
-    "completedTasks": 50,
-    "pendingTasks": 50,
+    "totalTasks": 86,
+    "completedTasks": 68,
+    "pendingTasks": 18,
     "byComplexity": { "easy": 29, "medium": 45, "hard": 25 },
     "byComponentType": {
       "Server": 32,
-      "Client": 19,
+      "Client": 20,
       "Server + Client": 14,
       "Server Action": 12,
-      "DAL": 10,
+      "DAL": 11,
       "Validation": 6,
       "Other": 6
     }
   },
   "nextSteps": {
     "immediate": [
-      "Implementare quick actions staff (toggleActive, assegnazione rapida)",
-      "Integrare quick actions pagamenti (mark paid, postpone) nelle viste evento e staff"
+      "Implementare tab Agenda (detail-8) con drag&drop",
+      "Implementare tab Servizi (detail-9)"
     ],
     "shortTerm": [
-      "Completare CRUD staff completo (create, edit)",
-      "Implementare StaffTab evento con lista completa + filtri"
+      "Completare DAL per speakers e sponsors (globali)",
+      "Implementare upload file (vercel-blob)"
     ],
-    "mediumTerm": [
-      "Implementare tab Speaker e Sponsor negli eventi",
-      "Creare DAL per speakers, sponsors, services",
-      "Implementare tab Budget con charts"
-    ],
-    "longTerm": [
-      "Pagine persone globali (tutti i partecipanti, relatori, sponsor)",
-      "Sistema completo comunicazioni email",
-      "QR Code + Check-in system",
-      "Export Excel/PDF reports",
-      "Finance dashboard completa"
-    ]
+    "mediumTerm": ["Dashboard finanziaria globale (/finance)", "Sistema notifiche email"],
+    "longTerm": ["QR Code + Check-in system", "Export Excel/PDF reports"]
   },
   "technicalDebt": [
     {

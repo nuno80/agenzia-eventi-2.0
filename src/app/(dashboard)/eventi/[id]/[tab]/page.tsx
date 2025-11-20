@@ -108,8 +108,10 @@ async function TabContent({
       return <PlaceholderTab title="Agenda" />
     case 'servizi':
       return <PlaceholderTab title="Servizi" />
-    case 'budget':
-      return <PlaceholderTab title="Budget" />
+    case 'budget': {
+      const { BudgetTab } = await import('@/components/dashboard/events/tabs/BudgetTab')
+      return <BudgetTab eventId={eventId} />
+    }
     case 'comunicazioni':
       return <PlaceholderTab title="Comunicazioni" />
     case 'sondaggi':

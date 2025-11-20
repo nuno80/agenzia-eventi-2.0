@@ -8,8 +8,7 @@
  * - Generate deadlines, budget items, and agenda
  *
  * USAGE:
- * Run with: npx tsx src/lib/db/seed.ts
- * Or add to package.json: "db:seed": "tsx src/lib/db/seed.ts"
+ * Run with: pnpm db:seed (loads .env.local automatically)
  *
  * DATA CREATED:
  * - 4 Events (different statuses: draft, planning, open, ongoing)

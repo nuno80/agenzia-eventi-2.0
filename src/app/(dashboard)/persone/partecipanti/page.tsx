@@ -6,7 +6,6 @@
 
 import { getAllParticipants } from '@/lib/dal/participants'
 import ParticipantsListClient from './ParticipantsListClient'
-import { exportParticipantsCSV } from './export'
 
 export default async function AllParticipantsPage() {
   const list = await getAllParticipants()
@@ -26,7 +25,7 @@ export default async function AllParticipantsPage() {
           email: p.email,
           company: p.company ?? null,
           registrationStatus: p.registrationStatus,
-          paymentStatus: p.paymentStatus,
+          paymentStatus: p.paymentStatus ?? 'pending',
           checkedIn: Boolean(p.checkedIn),
           registrationDate: p.registrationDate ?? null,
           checkinTime: p.checkinTime ?? null,

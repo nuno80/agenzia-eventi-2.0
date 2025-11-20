@@ -1,4 +1,0 @@
-- [x] Verificato lo stato attuale del file EventForm.tsx
-- [x] Confermato che la correzione del tipo ActionResult è presente
-- [x] Testato con successo la correzione finale con pnpm check:fix:unsafe
-- [x] Errore di linting completamente risolto

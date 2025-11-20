@@ -85,7 +85,11 @@ export function formatDateTimeShort(date: Date | string | number): string {
   month = month.toLowerCase()
   if (!month.endsWith('.')) month = `${month}.`
   const year = new Intl.DateTimeFormat('it-IT', { year: 'numeric' }).format(d)
-  const time = new Intl.DateTimeFormat('it-IT', { hour: '2-digit', minute: '2-digit', hour12: false }).format(d)
+  const time = new Intl.DateTimeFormat('it-IT', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(d)
   return `${day} ${month} ${year} | ${time}`
 }
 

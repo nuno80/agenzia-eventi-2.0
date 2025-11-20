@@ -15,8 +15,12 @@ import { Card } from '@/components/ui/card'
 import { getAllEvents } from '@/lib/dal/events'
 import { EventsListClient } from './EventsListClient'
 
-export default async function EventsPage() {
+async function EventsList() {
   const events = await getAllEvents()
+  return <EventsListClient events={events} />
+}
+
+export default function EventsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -25,7 +29,7 @@ export default async function EventsPage() {
 
       <Card className="p-6">
         <Suspense fallback={<div>Caricamento eventi...</div>}>
-          <EventsListClient events={events} />
+          <EventsList />
         </Suspense>
       </Card>
     </div>

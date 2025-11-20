@@ -2,6 +2,28 @@
 
 This is a modern Next.js 16 application for an event management company, implementing best practices from the Next.js 15+ architecture guide. The application features a landing page for event services along with a complete file management system using Vercel Blob storage.
 
+## ⚡ Quick Start
+
+```bash
+# 1. Install dependencies
+pnpm install
+
+# 2. Set up environment variables (see Environment Variables section)
+cp .env.example .env.local
+# Edit .env.local with your TURSO_CONNECTION_URL and TURSO_AUTH_TOKEN
+
+# 3. Push database schema to Turso
+pnpm db:push
+
+# 4. Seed database with sample data
+pnpm db:seed
+
+# 5. Start development server
+pnpm dev
+```
+
+> **⚠️ Common Issue**: If you see "no such table" errors, make sure you've run `pnpm db:push` and restarted the dev server.
+
 ## 🚀 Key Features
 
 ### Modern Next.js Architecture
@@ -24,11 +46,11 @@ This is a modern Next.js 16 application for an event management company, impleme
 
 - **Framework**: Next.js 16 with App Router
 - **Styling**: Tailwind CSS v4
-- **Database**: SQLite with Drizzle ORM
+- **Database**: Turso (LibSQL) with Drizzle ORM
 - **File Storage**: Vercel Blob
 - **Authentication**: Placeholder system ready for Clerk integration
 - **Deployment**: Vercel-ready configuration
-- **PNPM**: USA SOLO PNPM PER LE INSTALLAZIONI
+- **Package Manager**: pnpm (REQUIRED - do not use npm or yarn)
 
 ## 📁 Project Structure
 
@@ -71,27 +93,129 @@ cp .env.example .env.local
 Create a `.env.local` file with:
 
 ```env
+# Turso Database (REQUIRED)
+TURSO_CONNECTION_URL=libsql://your-database-name.turso.io
+TURSO_AUTH_TOKEN=your-auth-token-here
+
 # Vercel Blob (required for file uploads)
 BLOB_READ_WRITE_TOKEN=your_actual_vercel_blob_token_here
-
-# Turso Database (optional, for production)
-# TURSO_DATABASE_URL=libsql://your-database.turso.io
-# TURSO_AUTH_TOKEN=your-auth-token
 ```
+
+> **Important**: Make sure to use `TURSO_CONNECTION_URL` (not `TURSO_DATABASE_URL`)
 
 ### Database Setup
 
+This project uses **Turso** (LibSQL) as the primary database. Follow these steps carefully to avoid common configuration issues.
+
+#### 1. Environment Variables
+
+Create a `.env.local` file with your Turso credentials:
+
+```env
+# Turso Database (REQUIRED)
+TURSO_CONNECTION_URL=libsql://your-database-name.turso.io
+TURSO_AUTH_TOKEN=your-auth-token-here
+
+# Vercel Blob (required for file uploads)
+BLOB_READ_WRITE_TOKEN=your_actual_vercel_blob_token_here
+```
+
+> **⚠️ IMPORTANT**: The environment variable must be named `TURSO_CONNECTION_URL` (not `TURSO_DATABASE_URL`). This matches the configuration in `src/db/libsql.ts` and `drizzle.config.ts`.
+
+#### 2. Push Schema to Turso
+
+After setting up your environment variables, push the database schema to Turso:
+
 ```bash
-# Create database tables
-pnpm db:create
+# This will create all tables in your Turso database
+pnpm db:push
+```
 
-# Or generate and apply migrations
-pnpm db:generate
-pnpm db:migrate
+**What this does:**
+- Reads your schema from `src/db/libsql-schemas/*.ts`
+- Connects to Turso using credentials from `.env.local`
+- Creates all tables (events, participants, speakers, sponsors, budget, etc.)
 
-# View database in Drizzle Studio
+#### 3. Seed the Database
+
+Populate your database with sample data:
+
+```bash
+# This will create sample events, participants, budget data, etc.
+pnpm db:seed
+```
+
+**Sample data includes:**
+- 4 Events (different statuses: draft, planning, open, ongoing)
+- 10 Participants
+- 4 Speakers
+- 2 Sponsors
+- 8 Deadlines
+- 3 Budget Categories with 3 Budget Items
+- 8 Staff members
+- 2 Services
+
+#### 4. View Database (Optional)
+
+Open Drizzle Studio to view and manage your database:
+
+```bash
 pnpm db:studio
 ```
+
+This will open a web interface at `http://localhost:4983` where you can browse tables and data.
+
+### Troubleshooting Database Issues
+
+#### Error: "no such table: events"
+
+**Cause**: The application is connecting to a local SQLite file instead of Turso, or the schema hasn't been pushed to Turso.
+
+**Solution**:
+1. Verify `.env.local` has `TURSO_CONNECTION_URL` and `TURSO_AUTH_TOKEN`
+2. Restart the dev server to pick up environment variables
+3. Run `pnpm db:push` to ensure schema is in Turso
+4. Run `pnpm db:seed` to populate data
+
+#### Error: "TURSO_DATABASE_URL is not defined"
+
+**Cause**: Incorrect environment variable name.
+
+**Solution**: Use `TURSO_CONNECTION_URL` (not `TURSO_DATABASE_URL`) in `.env.local`
+
+#### Error: "Uncached data was accessed outside of <Suspense>"
+
+**Cause**: Data fetching happening outside Suspense boundaries in Next.js 16.
+
+**Solution**: This has been fixed in the codebase. If you see this error in new pages, ensure async data fetching happens inside a component wrapped in `<Suspense>`.
+
+### Making Schema Changes
+
+When you modify the database schema:
+
+1. **Update schema files** in `src/db/libsql-schemas/*.ts`
+2. **Push changes to Turso**:
+   ```bash
+   pnpm db:push
+   ```
+3. **Restart dev server** to pick up changes:
+   ```bash
+   # Stop current server (Ctrl+C), then:
+   pnpm dev
+   ```
+
+> **Note**: `db:push` is recommended for development. For production, use migrations with `pnpm db:generate` and `pnpm db:migrate`.
+
+### Database Scripts Reference
+
+| Command | Description |
+|---------|-------------|
+| `pnpm db:push` | Push schema changes to Turso (development) |
+| `pnpm db:seed` | Populate database with sample data |
+| `pnpm db:studio` | Open Drizzle Studio to view database |
+| `pnpm db:generate` | Generate migration files from schema |
+| `pnpm db:migrate` | Apply migrations to database |
+
 
 ### Development
 

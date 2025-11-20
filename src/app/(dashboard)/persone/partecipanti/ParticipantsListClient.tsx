@@ -6,8 +6,8 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { formatDateTimeShort } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { formatDateTimeShort } from '@/lib/utils'
 
 export type ParticipantItem = {
   id: string
@@ -52,13 +52,21 @@ export default function ParticipantsListClient({
         cmp = ap - bp
       } else if (sortBy === 'registered') {
         const toTs = (v: Date | string | number | null) =>
-          v instanceof Date ? v.getTime() : typeof v === 'string' || typeof v === 'number' ? new Date(v).getTime() : 0
+          v instanceof Date
+            ? v.getTime()
+            : typeof v === 'string' || typeof v === 'number'
+              ? new Date(v).getTime()
+              : 0
         const ar = toTs(a.registrationDate)
         const br = toTs(b.registrationDate)
         cmp = ar - br
       } else if (sortBy === 'checkin') {
         const toTs = (v: Date | string | number | null) =>
-          v instanceof Date ? v.getTime() : typeof v === 'string' || typeof v === 'number' ? new Date(v).getTime() : 0
+          v instanceof Date
+            ? v.getTime()
+            : typeof v === 'string' || typeof v === 'number'
+              ? new Date(v).getTime()
+              : 0
         const ad = toTs(a.checkinTime)
         const bd = toTs(b.checkinTime)
         cmp = ad - bd
@@ -122,13 +130,18 @@ export default function ParticipantsListClient({
                     ? p.checkinTime.toISOString()
                     : String(p.checkinTime)
                   : '',
-                ticketPrice: p.ticketPrice ?? ''
+                ticketPrice: p.ticketPrice ?? '',
               }))
               if (rows.length === 0) return
               const headers = Object.keys(rows[0])
               const esc = (v: unknown) =>
                 typeof v === 'string' ? `"${v.replaceAll('"', '""')}"` : String(v ?? '')
-              const csv = [headers.join(','), ...rows.map(r => headers.map(h => esc((r as Record<string, unknown>)[h])).join(','))].join('\n')
+              const csv = [
+                headers.join(','),
+                ...rows.map((r) =>
+                  headers.map((h) => esc((r as Record<string, unknown>)[h])).join(',')
+                ),
+              ].join('\n')
               const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
               const url = URL.createObjectURL(blob)
               const a = document.createElement('a')
