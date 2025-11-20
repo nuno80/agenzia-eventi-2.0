@@ -1,29 +1,29 @@
 'use client'
 
-import { AlertCircle, Loader2 } from 'lucide-react'
-import { useState } from 'react'
-import { toast } from 'sonner'
 import { createService, updateService } from '@/actions/services'
 import { Button } from '@/components/ui/button'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import type { BudgetCategory, Service } from '@/db/libsql-schemas/events'
+import { AlertCircle, Loader2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 interface ServiceFormProps {
   eventId: string
@@ -46,6 +46,12 @@ export function ServiceForm({
   const isEditing = !!service
   const [selectedBudgetCategory, setSelectedBudgetCategory] = useState<string>('')
 
+  // Debug: Log budget categories
+  useEffect(() => {
+    console.log('ServiceForm - Budget Categories:', budgetCategories)
+    console.log('ServiceForm - Budget Categories length:', budgetCategories.length)
+  }, [budgetCategories])
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
@@ -58,7 +64,6 @@ export function ServiceForm({
 
     try {
       const action = isEditing ? updateService : createService
-      // @ts-expect-error - prevState not used
       const result = await action(null, formData)
 
       if (result.success) {
@@ -281,32 +286,42 @@ export function ServiceForm({
           {/* Budget Integration */}
           <div className="space-y-2 pt-4 border-t">
             <Label htmlFor="budgetCategoryId">Collega al Budget (Opzionale)</Label>
-            <Select
-              name="budgetCategoryId"
-              onValueChange={setSelectedBudgetCategory}
-              disabled={isEditing && !!service?.budgetItemId} // Disable if already linked (simplification)
-            >
-              <SelectTrigger>
-                <SelectValue
-                  placeholder={
-                    service?.budgetItemId ? 'Già collegato al budget' : 'Seleziona categoria budget'
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {budgetCategories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>
-                    {cat.name} (Rimanente: €{' '}
-                    {((cat.allocatedAmount || 0) - (cat.spentAmount || 0)).toLocaleString()})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {selectedBudgetCategory && (
-              <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 p-2 rounded">
+            {budgetCategories.length === 0 ? (
+              <div className="flex items-center gap-2 text-sm text-amber-600 bg-amber-50 p-3 rounded border border-amber-200">
                 <AlertCircle className="h-4 w-4" />
-                <span>Verrà creata automaticamente una voce di budget in questa categoria.</span>
+                <span>Nessuna categoria di budget disponibile. Crea prima le categorie nella tab Budget.</span>
               </div>
+            ) : (
+              <>
+                <Select
+                  name="budgetCategoryId"
+                  defaultValue={service?.budgetItemId ? 'linked' : undefined}
+                  onValueChange={setSelectedBudgetCategory}
+                  disabled={isEditing && !!service?.budgetItemId}
+                >
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={
+                        service?.budgetItemId ? 'Già collegato al budget' : 'Seleziona categoria budget'
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {budgetCategories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.name} (Rimanente: €{' '}
+                        {((cat.allocatedAmount || 0) - (cat.spentAmount || 0)).toLocaleString()})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {selectedBudgetCategory && (
+                  <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 p-2 rounded">
+                    <AlertCircle className="h-4 w-4" />
+                    <span>Verrà creata automaticamente una voce di budget in questa categoria.</span>
+                  </div>
+                )}
+              </>
             )}
             {service?.budgetItemId && (
               <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 p-2 rounded">
