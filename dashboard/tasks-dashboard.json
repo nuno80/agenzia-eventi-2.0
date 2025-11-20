@@ -5,6 +5,7 @@
     {
       "date": "2025-11-20",
       "items": [
+        "detail-8 completato: Implementazione AgendaTab (Timeline, Drag&Drop, DAL, Server Actions, Unit Tests)",
         "detail-10, finance-1, finance-4 completati: Implementazione modulo Budget (DAL, Server Actions, UI, Charts) e fix configurazione Turso DB"
       ]
     },
@@ -15,7 +16,7 @@
       ]
     }
   ],
-  "overallProgress": 79,
+  "overallProgress": 80,
   "modules": [
     {
       "id": "core",
@@ -270,7 +271,7 @@
     {
       "id": "events-detail",
       "name": "Eventi - Dettaglio",
-      "progress": 64,
+      "progress": 71,
       "tasks": [
         {
           "id": "detail-1",
@@ -321,7 +322,7 @@
         {
           "id": "detail-8",
           "name": "AgendaTab (Server/Client)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "hard",
           "componentType": "Server + Client",
           "description": "Timeline view + drag&drop sessions + DAL agenda"
@@ -642,7 +643,7 @@
         {
           "id": "other-3",
           "name": "DAL agenda.ts",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "DAL",
           "description": "Query agenda: sessions, timeline, conflicts"
@@ -694,8 +695,8 @@
     {
       "priority": 1,
       "module": "events-detail",
-      "tasks": ["detail-8", "detail-9"],
-      "rationale": "Agenda e Servizi per pianificazione completa"
+      "tasks": ["detail-9"],
+      "rationale": "Servizi per pianificazione completa"
     },
     {
       "priority": 2,
@@ -718,8 +719,8 @@
   ],
   "statistics": {
     "totalTasks": 86,
-    "completedTasks": 68,
-    "pendingTasks": 18,
+    "completedTasks": 69,
+    "pendingTasks": 17,
     "byComplexity": { "easy": 29, "medium": 45, "hard": 25 },
     "byComponentType": {
       "Server": 32,
@@ -733,7 +734,6 @@
   },
   "nextSteps": {
     "immediate": [
-      "Implementare tab Agenda (detail-8) con drag&drop",
       "Implementare tab Servizi (detail-9)"
     ],
     "shortTerm": [
