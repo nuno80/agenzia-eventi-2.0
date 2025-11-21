@@ -6,7 +6,10 @@
       "date": "2025-11-21",
       "items": [
         "detail-9 completato: Implementazione ServicesTab (ServiceCard, ServiceForm, ServiceList, ServiceStats, DAL services)",
-        "integration-2 completato: Integrazione Staff ↔ Budget (backend complete: schema DB, validations, server actions, unit tests)"
+        "integration-2 completato: Integrazione Staff ↔ Budget (backend complete: schema DB, validations, server actions, unit tests)",
+        "people-6 completato: Refactoring /persone/staff con Suspense per fix Blocking Route",
+        "Fix idratazione: Standardizzazione formatCurrency e suppressHydrationWarning",
+        "Fix critico integrazione Staff-Budget: Aggiunta selettore UI e fix validazione backend"
       ]
     },
     {
@@ -580,10 +583,10 @@
         {
           "id": "people-6",
           "name": "/persone/staff page (Server)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server",
-          "description": "Redirect a /personale oppure vista diversa staff"
+          "description": "Refactoring con Suspense per fix Blocking Route, redirect a /personale oppure vista diversa staff"
         }
       ]
     },
@@ -716,7 +719,7 @@
           "status": "completed",
           "complexity": "medium",
           "componentType": "Server Action",
-          "description": "Link staff assignments cost to budget. Files: src/app/actions/staff-assignments.ts, src/db/libsql-schemas/staff.ts, src/lib/validations/staff-assignments.ts. Backend complete, UI deferred."
+          "description": "Link staff assignments cost to budget. Files: src/app/actions/staff-assignments.ts, src/db/libsql-schemas/staff.ts, src/lib/validations/staff-assignments.ts. Complete (Backend + UI)."
         },
         {
           "id": "integration-3",
@@ -773,8 +776,8 @@
   ],
   "statistics": {
     "totalTasks": 86,
-    "completedTasks": 72,
-    "pendingTasks": 14,
+    "completedTasks": 73,
+    "pendingTasks": 13,
     "byComplexity": { "easy": 29, "medium": 45, "hard": 25 },
     "byComponentType": {
       "Server": 32,
@@ -790,8 +793,7 @@
     "immediate": ["Implementare integrazione Sponsor → Budget (integration-3)"],
     "shortTerm": [
       "Completare DAL per speakers e sponsors (globali)",
-      "Implementare upload file (vercel-blob)",
-      "Aggiungere UI per selezione categoria budget in StaffAssignmentModal"
+      "Implementare upload file (vercel-blob)"
     ],
     "mediumTerm": ["Dashboard finanziaria globale (/finance)", "Sistema notifiche email"],
     "longTerm": ["QR Code + Check-in system", "Export Excel/PDF reports"]
