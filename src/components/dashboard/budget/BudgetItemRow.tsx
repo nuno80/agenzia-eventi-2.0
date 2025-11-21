@@ -23,6 +23,7 @@ import { useTransition } from 'react'
 import { deleteBudgetItem, updateBudgetItemStatus } from '@/app/actions/budget'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/use-toast'
+import { formatCurrency } from '@/lib/utils'
 
 interface BudgetItem {
   id: string
@@ -43,14 +44,6 @@ interface BudgetItemRowProps {
 
 export function BudgetItemRow({ item }: BudgetItemRowProps) {
   const [isPending, startTransition] = useTransition()
-
-  // Format currency
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('it-IT', {
-      style: 'currency',
-      currency: 'EUR',
-    }).format(amount)
-  }
 
   // Status badge colors
   const getStatusBadge = (status: string) => {
@@ -136,10 +129,12 @@ export function BudgetItemRow({ item }: BudgetItemRowProps) {
       </td>
       <td className="px-3 py-3 text-sm text-gray-700">{item.vendor || '-'}</td>
       <td className="px-3 py-3 text-sm text-gray-900 text-right font-medium">
-        {formatCurrency(item.estimatedCost)}
+        <span suppressHydrationWarning>{formatCurrency(item.estimatedCost)}</span>
       </td>
       <td className="px-3 py-3 text-sm text-gray-900 text-right font-medium">
-        {item.actualCost ? formatCurrency(item.actualCost) : '-'}
+        <span suppressHydrationWarning>
+          {item.actualCost ? formatCurrency(item.actualCost) : '-'}
+        </span>
       </td>
       <td className="px-3 py-3 text-center">
         <select

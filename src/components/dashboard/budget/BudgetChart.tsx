@@ -18,6 +18,7 @@
 'use client'
 
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
+import { formatCurrency } from '@/lib/utils'
 
 interface CategoryBreakdown {
   id: string
@@ -41,14 +42,6 @@ export function BudgetChart({ categoryBreakdown }: BudgetChartProps) {
     value: cat.spentAmount,
     color: cat.color,
   }))
-
-  // Format currency for tooltips
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('it-IT', {
-      style: 'currency',
-      currency: 'EUR',
-    }).format(value)
-  }
 
   // Custom tooltip
   const CustomTooltip = ({

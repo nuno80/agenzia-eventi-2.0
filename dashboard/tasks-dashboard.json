@@ -1,7 +1,14 @@
 {
   "project": "EventHub Dashboard",
-  "lastUpdated": "2025-11-20",
+  "lastUpdated": "2025-11-21",
   "changelog": [
+    {
+      "date": "2025-11-21",
+      "items": [
+        "detail-9 completato: Implementazione ServicesTab (ServiceCard, ServiceForm, ServiceList, ServiceStats, DAL services)",
+        "integration-2 completato: Integrazione Staff ↔ Budget (backend complete: schema DB, validations, server actions, unit tests)"
+      ]
+    },
     {
       "date": "2025-11-20",
       "items": [
@@ -271,7 +278,7 @@
     {
       "id": "events-detail",
       "name": "Eventi - Dettaglio",
-      "progress": 71,
+      "progress": 78,
       "tasks": [
         {
           "id": "detail-1",
@@ -706,10 +713,10 @@
         {
           "id": "integration-2",
           "name": "Staff ↔ Budget (Spese)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server Action",
-          "description": "Link staff assignments cost to budget. Files: src/actions/staffAssignments.ts, src/components/dashboard/events/staff/StaffAssignmentModal.tsx"
+          "description": "Link staff assignments cost to budget. Files: src/app/actions/staff-assignments.ts, src/db/libsql-schemas/staff.ts, src/lib/validations/staff-assignments.ts. Backend complete, UI deferred."
         },
         {
           "id": "integration-3",
@@ -741,9 +748,9 @@
   "priorityQueue": [
     {
       "priority": 1,
-      "module": "events-detail",
-      "tasks": ["detail-9"],
-      "rationale": "Servizi per pianificazione completa"
+      "module": "integrations",
+      "tasks": ["integration-3"],
+      "rationale": "Completare integrazione Sponsor → Budget per continuità e valore business"
     },
     {
       "priority": 2,
@@ -762,18 +769,12 @@
       "module": "finance",
       "tasks": ["finance-2", "finance-3"],
       "rationale": "Dashboard finanziaria globale"
-    },
-    {
-      "priority": 1,
-      "module": "integrations",
-      "tasks": ["integration-1", "integration-3"],
-      "rationale": "Connessioni intelligenti: Relatori/Sponsor -> Budget per continuità e valore business"
     }
   ],
   "statistics": {
     "totalTasks": 86,
-    "completedTasks": 70,
-    "pendingTasks": 16,
+    "completedTasks": 72,
+    "pendingTasks": 14,
     "byComplexity": { "easy": 29, "medium": 45, "hard": 25 },
     "byComponentType": {
       "Server": 32,
@@ -786,10 +787,11 @@
     }
   },
   "nextSteps": {
-    "immediate": ["Implementare tab Servizi (detail-9)"],
+    "immediate": ["Implementare integrazione Sponsor → Budget (integration-3)"],
     "shortTerm": [
       "Completare DAL per speakers e sponsors (globali)",
-      "Implementare upload file (vercel-blob)"
+      "Implementare upload file (vercel-blob)",
+      "Aggiungere UI per selezione categoria budget in StaffAssignmentModal"
     ],
     "mediumTerm": ["Dashboard finanziaria globale (/finance)", "Sistema notifiche email"],
     "longTerm": ["QR Code + Check-in system", "Export Excel/PDF reports"]

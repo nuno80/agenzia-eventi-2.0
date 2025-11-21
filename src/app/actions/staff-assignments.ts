@@ -36,6 +36,7 @@ import {
   postponePaymentSchema,
   updateStaffAssignmentSchema,
 } from '@/lib/validations/staff-assignments'
+import { createBudgetItem, deleteBudgetItem, updateBudgetItem } from './budget'
 
 type ActionResult = {
   success: boolean
@@ -82,6 +83,41 @@ export async function createAssignment(
       validated.assignmentStatus
     )
 
+    let budgetItemId: string | null = null
+
+    // Budget Integration: Create budget item if category selected and payment exists
+    if (validated.budgetCategoryId && validated.paymentAmount) {
+      try {
+        // Fetch staff info for budget description
+        const staffMember = await db.query.staff.findFirst({
+          where: (staff, { eq }) => eq(staff.id, validated.staffId),
+        })
+
+        if (staffMember) {
+          const budgetResult = await createBudgetItem(
+            validated.budgetCategoryId,
+            validated.eventId,
+            {
+              description: `Pagamento Staff: ${staffMember.lastName} ${staffMember.firstName}`,
+              estimatedCost: validated.paymentAmount,
+              actualCost: validated.paymentAmount,
+              vendor: `${staffMember.firstName} ${staffMember.lastName}`,
+              notes: 'Generato automaticamente dal modulo Staff',
+              type: 'expense',
+              status: paymentStatus === 'paid' ? 'paid' : 'approved',
+            }
+          )
+
+          if (budgetResult.success && budgetResult.data?.id) {
+            budgetItemId = budgetResult.data.id as string
+          }
+        }
+      } catch (error) {
+        console.error('Failed to create budget item for staff assignment:', error)
+        // Continue creating assignment even if budget fails
+      }
+    }
+
     // Insert
     const [newAssignment] = await db
       .insert(staffAssignments)
@@ -89,6 +125,7 @@ export async function createAssignment(
         ...validated,
         paymentDueDate,
         paymentStatus,
+        budgetItemId,
       })
       .returning()
 
@@ -96,6 +133,7 @@ export async function createAssignment(
     revalidatePath('/persone/staff')
     revalidatePath(`/persone/staff/${validated.staffId}`)
     revalidatePath(`/eventi/${validated.eventId}/staff`)
+    revalidatePath(`/eventi/${validated.eventId}/budget`)
 
     return {
       success: true,
@@ -166,12 +204,61 @@ export async function updateAssignment(
       )
     }
 
+    let budgetItemId = current.budgetItemId
+
+    // Budget Integration
+    const paymentAmount = validated.paymentAmount ?? current.paymentAmount
+
+    if (budgetItemId && paymentAmount) {
+      // Update existing budget item
+      try {
+        const staffMember = await db.query.staff.findFirst({
+          where: (staff, { eq }) => eq(staff.id, current.staffId),
+        })
+
+        if (staffMember) {
+          await updateBudgetItem(budgetItemId, {
+            description: `Pagamento Staff: ${staffMember.lastName} ${staffMember.firstName}`,
+            estimatedCost: paymentAmount,
+            actualCost: paymentAmount,
+            vendor: `${staffMember.firstName} ${staffMember.lastName}`,
+          })
+        }
+      } catch (error) {
+        console.error('Failed to update budget item:', error)
+      }
+    } else if (validated.budgetCategoryId && paymentAmount && !budgetItemId) {
+      // Create new budget item if category selected and none exists
+      try {
+        const staffMember = await db.query.staff.findFirst({
+          where: (staff, { eq }) => eq(staff.id, current.staffId),
+        })
+
+        if (staffMember) {
+          const budgetResult = await createBudgetItem(validated.budgetCategoryId, current.eventId, {
+            description: `Pagamento Staff: ${staffMember.lastName} ${staffMember.firstName}`,
+            estimatedCost: paymentAmount,
+            actualCost: paymentAmount,
+            vendor: `${staffMember.firstName} ${staffMember.lastName}`,
+            notes: 'Generato automaticamente dal modulo Staff',
+          })
+
+          if (budgetResult.success && budgetResult.data?.id) {
+            budgetItemId = budgetResult.data.id as string
+          }
+        }
+      } catch (error) {
+        console.error('Failed to create budget item for staff assignment:', error)
+      }
+    }
+
     // Update
     await db
       .update(staffAssignments)
       .set({
         ...validated,
         paymentStatus,
+        budgetItemId,
         updatedAt: new Date(),
       })
       .where(eq(staffAssignments.id, assignmentId))
@@ -180,6 +267,7 @@ export async function updateAssignment(
     revalidatePath('/persone/staff')
     revalidatePath(`/persone/staff/${current.staffId}`)
     revalidatePath(`/eventi/${current.eventId}/staff`)
+    revalidatePath(`/eventi/${current.eventId}/budget`)
 
     return {
       success: true,
@@ -221,6 +309,16 @@ export async function deleteAssignment(assignmentId: string): Promise<ActionResu
       }
     }
 
+    // Budget Integration: Delete linked budget item if exists
+    if (assignment.budgetItemId) {
+      try {
+        await deleteBudgetItem(assignment.budgetItemId)
+      } catch (error) {
+        console.error('Failed to delete linked budget item:', error)
+        // Continue with assignment deletion even if budget deletion fails
+      }
+    }
+
     // Delete
     await db.delete(staffAssignments).where(eq(staffAssignments.id, assignmentId))
 
@@ -228,6 +326,7 @@ export async function deleteAssignment(assignmentId: string): Promise<ActionResu
     revalidatePath('/persone/staff')
     revalidatePath(`/persone/staff/${assignment.staffId}`)
     revalidatePath(`/eventi/${assignment.eventId}/staff`)
+    revalidatePath(`/eventi/${assignment.eventId}/budget`)
 
     return {
       success: true,
@@ -503,6 +602,7 @@ export async function createAssignmentsBatch(
         paymentDueDate: batchDue ?? null,
         paymentAmount: validated.paymentAmount ?? null,
         paymentNotes: validated.notes ?? null,
+        budgetCategoryId: validated.budgetCategoryId,
       })
       if (!res.success) {
         return { success: false, message: `Errore creazione per staff ${staffId}: ${res.message}` }

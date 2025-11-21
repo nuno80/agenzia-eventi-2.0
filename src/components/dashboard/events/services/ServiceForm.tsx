@@ -1,29 +1,29 @@
 'use client'
 
+import { AlertCircle, Loader2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { createService, updateService } from '@/actions/services'
 import { Button } from '@/components/ui/button'
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import type { BudgetCategory, Service } from '@/db/libsql-schemas/events'
-import { AlertCircle, Loader2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
 
 interface ServiceFormProps {
   eventId: string
@@ -289,7 +289,9 @@ export function ServiceForm({
             {budgetCategories.length === 0 ? (
               <div className="flex items-center gap-2 text-sm text-amber-600 bg-amber-50 p-3 rounded border border-amber-200">
                 <AlertCircle className="h-4 w-4" />
-                <span>Nessuna categoria di budget disponibile. Crea prima le categorie nella tab Budget.</span>
+                <span>
+                  Nessuna categoria di budget disponibile. Crea prima le categorie nella tab Budget.
+                </span>
               </div>
             ) : (
               <>
@@ -302,7 +304,9 @@ export function ServiceForm({
                   <SelectTrigger>
                     <SelectValue
                       placeholder={
-                        service?.budgetItemId ? 'Già collegato al budget' : 'Seleziona categoria budget'
+                        service?.budgetItemId
+                          ? 'Già collegato al budget'
+                          : 'Seleziona categoria budget'
                       }
                     />
                   </SelectTrigger>
@@ -318,7 +322,9 @@ export function ServiceForm({
                 {selectedBudgetCategory && (
                   <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 p-2 rounded">
                     <AlertCircle className="h-4 w-4" />
-                    <span>Verrà creata automaticamente una voce di budget in questa categoria.</span>
+                    <span>
+                      Verrà creata automaticamente una voce di budget in questa categoria.
+                    </span>
                   </div>
                 )}
               </>

@@ -7,13 +7,15 @@ import { Button } from '@/components/ui/button'
 import { toRoleLabel } from '@/lib/utils'
 
 type StaffLite = { id: string; firstName: string; lastName: string; role: string }
+type BudgetCategoryLite = { id: string; name: string }
 
 interface Props {
   eventId: string
   staff: StaffLite[]
+  budgetCategories?: BudgetCategoryLite[]
 }
 
-export function StaffAssignmentModalMulti({ eventId, staff }: Props) {
+export function StaffAssignmentModalMulti({ eventId, staff, budgetCategories = [] }: Props) {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
 
@@ -28,6 +30,7 @@ export function StaffAssignmentModalMulti({ eventId, staff }: Props) {
   >('custom')
   const [paymentDueDate, setPaymentDueDate] = useState('')
   const [paymentAmount, setPaymentAmount] = useState<string>('')
+  const [budgetCategoryId, setBudgetCategoryId] = useState<string>('')
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -54,6 +57,7 @@ export function StaffAssignmentModalMulti({ eventId, staff }: Props) {
         paymentTerms,
         paymentDueDate: paymentDueDate ? new Date(paymentDueDate) : null,
         paymentAmount: paymentAmount ? Number(paymentAmount) : null,
+        budgetCategoryId: budgetCategoryId || undefined,
       })
       if (res.success) {
         setOpen(false)
@@ -66,6 +70,7 @@ export function StaffAssignmentModalMulti({ eventId, staff }: Props) {
         setPaymentTerms('custom')
         setPaymentDueDate('')
         setPaymentAmount('')
+        setBudgetCategoryId('')
       } else {
         alert(res.message)
       }
@@ -213,6 +218,32 @@ export function StaffAssignmentModalMulti({ eventId, staff }: Props) {
                   />
                 </div>
               </div>
+
+              {/* Budget Category Selection */}
+              {paymentAmount && Number(paymentAmount) > 0 && budgetCategories.length > 0 && (
+                <div className="border-t pt-4">
+                  <label className="block text-xs text-gray-500 mb-1">
+                    Categoria Budget (opzionale)
+                  </label>
+                  <select
+                    className="border rounded px-3 py-2 text-sm w-full"
+                    value={budgetCategoryId}
+                    onChange={(e) => setBudgetCategoryId(e.target.value)}
+                  >
+                    <option value="">Nessuna categoria</option>
+                    {budgetCategories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+                  {budgetCategoryId && (
+                    <p className="text-xs text-blue-600 mt-1">
+                      ✓ Verrà creata automaticamente una voce di budget
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="p-4 border-t flex items-center justify-end gap-2">

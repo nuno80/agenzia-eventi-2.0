@@ -25,6 +25,29 @@ export type ActionResult = {
 }
 
 // ============================================================================
+// DATA FETCHING ACTIONS
+// ============================================================================
+
+/**
+ * Fetch budget categories for an event
+ * Used by client components that need to load categories dynamically
+ */
+export async function getBudgetCategories(eventId: string) {
+  try {
+    const categories = await db
+      .select()
+      .from(budgetCategories)
+      .where(eq(budgetCategories.eventId, eventId))
+      .orderBy(budgetCategories.name)
+
+    return { success: true, data: categories }
+  } catch (error) {
+    console.error('Error fetching budget categories:', error)
+    return { success: false, data: [] }
+  }
+}
+
+// ============================================================================
 // BUDGET CATEGORY ACTIONS
 // ============================================================================
 

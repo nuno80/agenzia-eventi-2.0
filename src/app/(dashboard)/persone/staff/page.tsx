@@ -1,23 +1,10 @@
-// =============================================================================
-// STAFF LIST PAGE
-// =============================================================================
-// FILE: src/app/(dashboard)/persone/staff/page.tsx
-// PURPOSE: Pagina server che mostra la lista dello staff con filtri client-side
-// PATTERN: Server Page -> fetch DAL -> pass props a Client component
-// =============================================================================
-
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { getAllEvents } from '@/lib/dal/events'
-import { getAllStaff } from '@/lib/dal/staff'
-import { StaffListClient } from './StaffListClient'
+import { StaffListFetcher } from './StaffListFetcher'
 
-export default async function StaffPage() {
-  const staff = await getAllStaff()
-  const events = await getAllEvents()
-
+export default function StaffPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -29,7 +16,7 @@ export default async function StaffPage() {
 
       <Card className="p-6">
         <Suspense fallback={<div>Caricamento staff...</div>}>
-          <StaffListClient staff={staff} events={events} />
+          <StaffListFetcher />
         </Suspense>
       </Card>
     </div>

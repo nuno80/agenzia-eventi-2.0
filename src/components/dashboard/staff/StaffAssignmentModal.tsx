@@ -2,15 +2,16 @@
 
 /**
  * FILE: src/components/dashboard/staff/StaffAssignmentModal.tsx
- * VERSION: 1.3
+ * VERSION: 1.4
  * COMPONENT: StaffAssignmentModal (Client)
  */
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CalendarClock, Loader2 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { getBudgetCategories } from '@/app/actions/budget'
 import { createAssignment } from '@/app/actions/staff-assignments'
 import { Button } from '@/components/ui/button'
 import {
@@ -30,6 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { toast } from '@/components/ui/use-toast'
+import { toRoleLabel } from '@/lib/utils'
 import { assignmentStatusEnum, paymentTermsEnum } from '@/lib/validations/staff-assignments'
 
 const uiSchema = z
@@ -45,6 +47,7 @@ const uiSchema = z
     paymentNotes: z.string().nullable().optional(),
     invoiceNumber: z.string().nullable().optional(),
     invoiceUrl: z.string().nullable().optional(),
+    budgetCategoryId: z.string().optional(),
   })
   .refine((d) => new Date(d.endTime).getTime() >= new Date(d.startTime).getTime(), {
     message: 'La data di fine deve essere successiva alla data di inizio',
@@ -68,6 +71,7 @@ export function StaffAssignmentModal({
 }: StaffAssignmentModalProps) {
   const [open, setOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [budgetCategories, setBudgetCategories] = useState<{ id: string; name: string }[]>([])
 
   const eventOptions = useMemo(() => events.map((e) => ({ id: e.id, label: e.title })), [events])
 
@@ -85,9 +89,28 @@ export function StaffAssignmentModal({
       paymentNotes: null,
       invoiceNumber: null,
       invoiceUrl: null,
+      budgetCategoryId: '',
     },
     mode: 'onBlur',
   })
+
+  const selectedEventId = form.watch('eventId')
+  const paymentAmount = form.watch('paymentAmount')
+
+  // Fetch budget categories when event changes
+  useEffect(() => {
+    if (selectedEventId) {
+      getBudgetCategories(selectedEventId).then((res) => {
+        if (res.success && res.data) {
+          setBudgetCategories(res.data)
+        } else {
+          setBudgetCategories([])
+        }
+      })
+    } else {
+      setBudgetCategories([])
+    }
+  }, [selectedEventId])
 
   async function onSubmit(values: FormValues) {
     try {
@@ -112,6 +135,8 @@ export function StaffAssignmentModal({
         paymentNotes: values.paymentNotes ?? null,
         invoiceNumber: values.invoiceNumber ?? null,
         invoiceUrl: values.invoiceUrl ?? null,
+        budgetCategoryId:
+          values.budgetCategoryId === 'none' ? undefined : values.budgetCategoryId || undefined,
       }
 
       const res = await createAssignment(payload)
@@ -119,6 +144,7 @@ export function StaffAssignmentModal({
         toast({ title: 'Assegnazione creata', description: res.message })
         setOpen(false)
         form.reset()
+        setBudgetCategories([])
       } else {
         toast({ title: 'Errore', description: res.message })
         if (res.errors) {
@@ -155,7 +181,7 @@ export function StaffAssignmentModal({
             className="absolute inset-0 bg-black/40"
             onClick={() => setOpen(false)}
           />
-          <div className="relative z-10 w-full max-w-xl rounded-lg bg-white p-6 shadow-lg">
+          <div className="relative z-10 w-full max-w-xl rounded-lg bg-white p-6 shadow-lg max-h-[90vh] overflow-y-auto">
             <div className="mb-4">
               <h2 className="text-lg font-semibold">Nuova assegnazione</h2>
               <p className="text-sm text-gray-600">
@@ -290,6 +316,43 @@ export function StaffAssignmentModal({
                     )}
                   />
                 </div>
+
+                {/* Budget Category Selection */}
+                {paymentAmount &&
+                  paymentAmount !== '' &&
+                  Number(paymentAmount) > 0 &&
+                  budgetCategories.length > 0 && (
+                    <FormField
+                      control={form.control}
+                      name="budgetCategoryId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Categoria Budget (opzionale)</FormLabel>
+                          <FormControl>
+                            <Select value={field.value} onValueChange={field.onChange}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Seleziona categoria" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">Nessuna categoria</SelectItem>
+                                {budgetCategories.map((cat) => (
+                                  <SelectItem key={cat.id} value={cat.id}>
+                                    {cat.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          {field.value && field.value !== 'none' && (
+                            <p className="text-xs text-blue-600 mt-1">
+                              ✓ Verrà creata automaticamente una voce di budget
+                            </p>
+                          )}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
 
                 {form.watch('paymentTerms') === 'custom' && (
                   <FormField

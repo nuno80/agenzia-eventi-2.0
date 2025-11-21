@@ -1,6 +1,7 @@
 import { StaffAssignmentModalMulti } from '@/components/dashboard/events/StaffAssignmentModalMulti'
 import { StaffAssignmentsClient } from '@/components/dashboard/events/tabs/StaffAssignmentsClient'
 import { StaffTabFilters } from '@/components/dashboard/events/tabs/StaffTabFilters'
+import { getBudgetCategoriesByEvent } from '@/lib/dal/budget'
 import { getAllStaff } from '@/lib/dal/staff'
 import { getAssignmentsByEvent } from '@/lib/dal/staff-assignments'
 
@@ -10,7 +11,11 @@ interface StaffTabProps {
 }
 
 export async function StaffTab({ eventId, searchParams }: StaffTabProps) {
-  const [assignments, staff] = await Promise.all([getAssignmentsByEvent(eventId), getAllStaff()])
+  const [assignments, staff, budgetCategories] = await Promise.all([
+    getAssignmentsByEvent(eventId),
+    getAllStaff(),
+    getBudgetCategoriesByEvent(eventId),
+  ])
 
   // Apply filters from search params
   const role = searchParams?.role ?? ''
@@ -42,6 +47,7 @@ export async function StaffTab({ eventId, searchParams }: StaffTabProps) {
             lastName: s.lastName,
             role: s.role,
           }))}
+          budgetCategories={budgetCategories.map((c) => ({ id: c.id, name: c.name }))}
         />
       </div>
 
@@ -57,6 +63,7 @@ export async function StaffTab({ eventId, searchParams }: StaffTabProps) {
                 lastName: s.lastName,
                 role: s.role,
               }))}
+              budgetCategories={budgetCategories.map((c) => ({ id: c.id, name: c.name }))}
             />
           </div>
         </div>

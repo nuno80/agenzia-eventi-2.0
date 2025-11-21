@@ -32,6 +32,7 @@ import { BudgetCategoryCard } from '@/components/dashboard/budget/BudgetCategory
 import { BudgetChart } from '@/components/dashboard/budget/BudgetChart'
 import { Button } from '@/components/ui/button'
 import type { Event } from '@/db'
+import { formatCurrency } from '@/lib/utils'
 
 interface BudgetCategory {
   id: string
@@ -95,14 +96,6 @@ interface BudgetTabClientProps {
 export function BudgetTabClient({ event, budgetData, summary }: BudgetTabClientProps) {
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false)
 
-  // Format currency
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('it-IT', {
-      style: 'currency',
-      currency: 'EUR',
-    }).format(amount)
-  }
-
   // Calculate if over budget
   const isOverBudget = summary.remaining < 0
 
@@ -118,7 +111,7 @@ export function BudgetTabClient({ event, budgetData, summary }: BudgetTabClientP
             </div>
             <div>
               <div className="text-2xl font-bold text-gray-900">
-                {formatCurrency(summary.totalAllocated)}
+                <span suppressHydrationWarning>{formatCurrency(summary.totalAllocated)}</span>
               </div>
               <div className="text-sm text-gray-600">Budget Allocato</div>
             </div>
@@ -135,7 +128,7 @@ export function BudgetTabClient({ event, budgetData, summary }: BudgetTabClientP
             </div>
             <div>
               <div className="text-2xl font-bold text-gray-900">
-                {formatCurrency(summary.totalSpent)}
+                <span suppressHydrationWarning>{formatCurrency(summary.totalSpent)}</span>
               </div>
               <div className="text-sm text-gray-600">Speso</div>
             </div>
@@ -154,7 +147,7 @@ export function BudgetTabClient({ event, budgetData, summary }: BudgetTabClientP
               <div
                 className={`text-2xl font-bold ${isOverBudget ? 'text-red-600' : 'text-gray-900'}`}
               >
-                {formatCurrency(summary.remaining)}
+                <span suppressHydrationWarning>{formatCurrency(summary.remaining)}</span>
               </div>
               <div className="text-sm text-gray-600">
                 {isOverBudget ? 'Sforamento' : 'Rimanente'}

@@ -23,6 +23,7 @@ import { useState, useTransition } from 'react'
 import { deleteBudgetCategory } from '@/app/actions/budget'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/use-toast'
+import { formatCurrency } from '@/lib/utils'
 import { AddItemDialog } from './AddItemDialog'
 import { BudgetItemRow } from './BudgetItemRow'
 
@@ -61,14 +62,6 @@ export function BudgetCategoryCard({ category, eventId }: BudgetCategoryCardProp
   const [isExpanded, setIsExpanded] = useState(false)
   const [isAddItemOpen, setIsAddItemOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
-
-  // Format currency
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('it-IT', {
-      style: 'currency',
-      currency: 'EUR',
-    }).format(amount)
-  }
 
   // Calculate percentage
   const percentage =
@@ -124,11 +117,12 @@ export function BudgetCategoryCard({ category, eventId }: BudgetCategoryCardProp
             {/* Amounts */}
             <div className="text-right">
               <div className="text-sm font-medium text-gray-900">
-                {formatCurrency(category.spentAmount)} / {formatCurrency(category.allocatedAmount)}
+                <span suppressHydrationWarning>{formatCurrency(category.spentAmount)}</span> /{' '}
+                <span suppressHydrationWarning>{formatCurrency(category.allocatedAmount)}</span>
               </div>
               <div className={`text-xs ${isOverBudget ? 'text-red-600' : 'text-gray-600'}`}>
                 {isOverBudget ? 'Sforamento: ' : 'Rimanente: '}
-                {formatCurrency(Math.abs(remaining))}
+                <span suppressHydrationWarning>{formatCurrency(Math.abs(remaining))}</span>
               </div>
             </div>
 

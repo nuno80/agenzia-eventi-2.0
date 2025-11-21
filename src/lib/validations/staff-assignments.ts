@@ -48,6 +48,9 @@ const staffAssignmentBase = z.object({
 
   invoiceNumber: z.string().max(100).optional().nullable(),
   invoiceUrl: optionalUrl,
+
+  // Budget Integration
+  budgetCategoryId: z.string().optional(),
 })
 
 // Create: aggiunge la validazione endTime >= startTime
@@ -97,6 +100,7 @@ export const createAssignmentsBatchSchema = z.object({
   paymentTerms: paymentTermsEnum.default('custom').optional(),
   paymentDueDate: z.coerce.date().optional().nullable(),
   paymentAmount: nonNegativeMoney,
+  budgetCategoryId: z.string().optional(),
 })
 
 export type CreateAssignmentsBatchInput = z.infer<typeof createAssignmentsBatchSchema>

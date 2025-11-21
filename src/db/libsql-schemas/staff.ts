@@ -113,6 +113,9 @@ export const staffAssignments = sqliteTable('staff_assignments', {
   invoiceNumber: text('invoice_number'),
   invoiceUrl: text('invoice_url'),
 
+  // Budget Integration
+  budgetItemId: text('budget_item_id'), // Link to auto-created budget item
+
   ...timestamp,
 })
 
