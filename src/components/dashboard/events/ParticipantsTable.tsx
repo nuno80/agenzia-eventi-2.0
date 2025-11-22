@@ -38,6 +38,7 @@ import {
   Users as UsersIcon,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { ParticipantActions } from '@/components/dashboard/events/participants/ParticipantActions'
 import type { Participant } from '@/db'
 import { formatDateTime, getPaymentStatusLabel, getRegistrationStatusLabel } from '@/lib/utils'
 
@@ -292,12 +293,15 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
                     </span>
                   </button>
                 </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredParticipants.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center">
+                  <td colSpan={7} className="px-6 py-12 text-center">
                     <UsersIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                     <p className="text-sm text-gray-500">Nessun partecipante trovato</p>
                   </td>
@@ -380,6 +384,9 @@ export function ParticipantsTable({ participants }: ParticipantsTableProps) {
                       ) : (
                         <span className="text-xs text-gray-500">No</span>
                       )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <ParticipantActions participant={participant} />
                     </td>
                   </tr>
                 ))

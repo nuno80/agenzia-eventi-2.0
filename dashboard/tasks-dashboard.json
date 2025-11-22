@@ -5,6 +5,13 @@
     {
       "date": "2025-11-22",
       "items": [
+        "detail-12 completato: Sistema CRUD Partecipanti completo (create, edit, delete con form completo)",
+        "Implementati 4 nuovi componenti: ParticipantForm, AddParticipantDialog, ParticipantActions, ViewBadgeDialog",
+        "Aggiunta visualizzazione badge con QR code nella tabella partecipanti",
+        "Migliorata UX scanner: messaggio italiano user-friendly quando webcam non disponibile",
+        "other-6, detail-13 completati: Sistema QR Code completo (generazione badge, scanner check-in, statistiche)",
+        "Implementati 15 nuovi file: utilities QR, server actions, componenti badge e check-in",
+        "Aggiunte dipendenze: qrcode, html5-qrcode per generazione e scansione QR",
         "finance-2, finance-3 completati: Dashboard finanziaria globale (/finance) con overview, charts e tabella eventi",
         "Bug fix: Correzione calcolo entrate (identificazione per nome categoria invece di costo negativo)",
         "other-8 completato: Migrazione pagina Files nella dashboard e integrazione FileManager esistente"
@@ -36,7 +43,7 @@
       ]
     }
   ],
-  "overallProgress": 82,
+  "overallProgress": 87,
   "modules": [
     {
       "id": "core",
@@ -373,19 +380,27 @@
         },
         {
           "id": "detail-12",
-          "name": "SurveysTab (Server/Client)",
-          "status": "pending",
-          "complexity": "hard",
+          "name": "ParticipantsTab (Server/Client)",
+          "status": "completed",
+          "complexity": "medium",
           "componentType": "Server + Client",
-          "description": "Survey builder + responses + analytics"
+          "description": "Tabella partecipanti + filtri + CRUD completo (create, edit, delete) + visualizzazione badge QR"
         },
         {
           "id": "detail-13",
           "name": "CheckinTab (Server/Client)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "hard",
           "componentType": "Server + Client",
-          "description": "QR scanner + check-in list + real-time updates"
+          "description": "QR scanner + check-in list + statistiche + manual check-in + pending table"
+        },
+        {
+          "id": "detail-13",
+          "name": "CheckinTab (Server/Client)",
+          "status": "completed",
+          "complexity": "hard",
+          "componentType": "Server + Client",
+          "description": "QR scanner + check-in list + statistiche + manual check-in + pending table"
         },
         {
           "id": "detail-14",
@@ -687,10 +702,10 @@
         {
           "id": "other-6",
           "name": "QR Code generation for badges",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server + Client",
-          "description": "Genera QR per partecipanti + check-in scanner"
+          "description": "Sistema completo: QR utilities, server actions, badge UI, scanner camera, check-in management"
         },
         {
           "id": "other-7",
@@ -801,10 +816,7 @@
   },
   "nextSteps": {
     "immediate": ["Completare /finance/report con filtri e export"],
-    "shortTerm": [
-      "Sistema notifiche email",
-      "Tab Communications (email log + composer)"
-    ],
+    "shortTerm": ["Sistema notifiche email", "Tab Communications (email log + composer)"],
     "mediumTerm": ["Tab Surveys (builder + analytics)", "Tab Checkin (QR scanner)"],
     "longTerm": ["Export Excel/PDF reports avanzati", "Trend analysis e forecasting"]
   },

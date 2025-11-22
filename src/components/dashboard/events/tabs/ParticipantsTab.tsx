@@ -32,7 +32,9 @@ import {
   Users,
   UserX,
 } from 'lucide-react'
+import { BadgeGenerationButtons } from '@/components/dashboard/events/badges/BadgeGenerationButtons'
 import { ParticipantsTable } from '@/components/dashboard/events/ParticipantsTable'
+import { AddParticipantDialog } from '@/components/dashboard/events/participants/AddParticipantDialog'
 import { getParticipantStats, getParticipantsByEvent } from '@/lib/dal/participants'
 import { formatCurrency } from '@/lib/utils'
 
@@ -195,7 +197,13 @@ export async function ParticipantsTab({ eventId }: ParticipantsTabProps) {
 
       {/* Participants Table */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Lista Partecipanti</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Lista Partecipanti</h3>
+          <div className="flex gap-2">
+            <AddParticipantDialog eventId={eventId} />
+            <BadgeGenerationButtons eventId={eventId} participantsCount={stats.total} />
+          </div>
+        </div>
         <ParticipantsTable participants={participants} />
       </div>
     </div>
