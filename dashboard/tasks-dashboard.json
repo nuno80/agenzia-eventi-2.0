@@ -14,7 +14,10 @@
         "Aggiunte dipendenze: qrcode, html5-qrcode per generazione e scansione QR",
         "finance-2, finance-3 completati: Dashboard finanziaria globale (/finance) con overview, charts e tabella eventi",
         "Bug fix: Correzione calcolo entrate (identificazione per nome categoria invece di costo negativo)",
-        "other-8 completato: Migrazione pagina Files nella dashboard e integrazione FileManager esistente"
+        "other-8 completato: Migrazione pagina Files nella dashboard e integrazione FileManager esistente",
+        "detail-11, other-7 completati: Sistema Comunicazioni completo con integrazione Resend",
+        "Implementati: EmailComposer, TemplateManager, EmailLog, CommunicationActions (View/Clone/Delete)",
+        "Integrazione Resend: invio reale email, gestione errori 403/429, fallback mock, delay anti-rate-limit"
       ]
     },
     {
@@ -373,10 +376,10 @@
         {
           "id": "detail-11",
           "name": "CommunicationsTab (Server/Client)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "hard",
           "componentType": "Server + Client",
-          "description": "Email log + composer + templates + stats"
+          "description": "Email log + composer + templates + stats + Resend integration + View/Clone actions"
         },
         {
           "id": "detail-12",
@@ -710,10 +713,10 @@
         {
           "id": "other-7",
           "name": "Email notification system",
-          "status": "pending",
+          "status": "completed",
           "complexity": "hard",
           "componentType": "Server Action + Templates",
-          "description": "Integrazione Resend + templates + bulk sending"
+          "description": "Integrazione Resend + templates + bulk sending + details view + clone draft"
         },
         {
           "id": "other-8",
