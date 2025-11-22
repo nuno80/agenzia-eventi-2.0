@@ -200,8 +200,13 @@ export async function createBudgetItem(
     }
 
     // Revalidate paths
-    revalidatePath(`/eventi/${eventId}/budget`)
-    revalidatePath(`/eventi/${eventId}`)
+    try {
+      revalidatePath(`/eventi/${eventId}/budget`)
+      revalidatePath(`/eventi/${eventId}`)
+    } catch (e) {
+      // Ignore revalidatePath errors in scripts/tests
+      console.warn('revalidatePath failed (expected in scripts):', e)
+    }
 
     return {
       success: true,

@@ -140,14 +140,14 @@ src/
 ```typescript
    import { cache } from 'react';
    import { db } from '@/lib/db';
-   
+
    export const getEntityById = cache(async (id: string) => {
      const entity = await db.query.entities.findFirst({
        where: eq(entities.id, id)
      });
      return entity || null;
    });
-   
+
    // Altri metodi...
 ```
 
@@ -163,7 +163,7 @@ src/
 ```typescript
    "use server";
    import { revalidatePath } from 'next/cache';
-   
+
    export async function createEntity(formData: FormData) {
      // 1. Validate with Zod
      // 2. Insert into DB
@@ -196,15 +196,15 @@ src/
      import { useState } from 'react';
      import Sidebar from '@/components/dashboard/layout/Sidebar';
      import Header from '@/components/dashboard/layout/Header';
-     
+
      export default function DashboardLayout({ children }) {
        const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-       
+
        return (
          <div className="min-h-screen bg-gray-50">
-           <Sidebar 
-             isMobileOpen={isMobileMenuOpen} 
-             onMobileClose={() => setIsMobileMenuOpen(false)} 
+           <Sidebar
+             isMobileOpen={isMobileMenuOpen}
+             onMobileClose={() => setIsMobileMenuOpen(false)}
            />
            <div className="lg:pl-64">
              <Header onMobileMenuToggle={() => setIsMobileMenuOpen(true)} />
@@ -221,14 +221,14 @@ src/
    import { Suspense } from 'react';
    import { getUpcomingEvents, getEventStats } from '@/lib/dal/events';
    import { getUrgentDeadlines } from '@/lib/dal/deadlines';
-   
+
    async function DashboardContent() {
      const [stats, events, deadlines] = await Promise.all([
        getEventStats(),
        getUpcomingEvents(),
        getUrgentDeadlines(),
      ]);
-     
+
      return (
        <div className="space-y-8">
          <UrgentDeadlines deadlines={deadlines} />
@@ -237,7 +237,7 @@ src/
        </div>
      );
    }
-   
+
    export default function DashboardPage() {
      return (
        <Suspense fallback={<div>Loading...</div>}>
@@ -257,9 +257,9 @@ src/
     export default async function EventDetailPage({ params }) {
       const { id, tab } = await params;
       const event = await getEventById(id);
-      
+
       if (!event) notFound();
-      
+
       return (
         <div className="space-y-6">
           <EventHeader event={event} />
@@ -289,11 +289,11 @@ src/
     export function getPriorityColor(priority: string) {
       // Da event-mgmt-dashboard.tsx
     }
-    
+
     export function getDaysUntil(date: Date | string) {
       // Da event-mgmt-dashboard.tsx
     }
-    
+
     export function formatCurrency(amount: number) {
       return new Intl.NumberFormat('it-IT', {
         style: 'currency',
@@ -305,7 +305,7 @@ src/
 14. **Validation Schemas** - `src/lib/validations/events.ts`:
 ```typescript
     import { z } from 'zod';
-    
+
     export const createEventSchema = z.object({
       // Copia da drizzle-schema-events.ts
     });

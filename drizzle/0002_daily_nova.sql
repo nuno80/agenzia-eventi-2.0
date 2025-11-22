@@ -1,0 +1,1 @@
+ALTER TABLE `sponsors` ADD `budget_item_id` text REFERENCES budget_items(id);

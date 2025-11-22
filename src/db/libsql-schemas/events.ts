@@ -273,6 +273,9 @@ export const sponsors = sqliteTable('sponsors', {
   // Notes
   notes: text('notes'),
 
+  // Budget Integration
+  budgetItemId: text('budget_item_id').references(() => budgetItems.id, { onDelete: 'set null' }),
+
   ...timestamp,
 })
 

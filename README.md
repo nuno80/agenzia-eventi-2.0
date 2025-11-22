@@ -242,6 +242,7 @@ Questo progetto usa [Biome](https://biomejs.dev/) per linting e formatting.
 - `pnpm run check:fix` - Corregge automaticamente
 - `pnpm run format` - Formatta tutto
 - `pnpm run clean:imports` - Rimuove import inutilizzati
+- `pnpm check:fix:unsafe` - Fix unsafe rules. USA PRIMA QUESTO!!!
 
 **Pre-commit hook:**
 Il codice viene automaticamente formattato prima di ogni commit tramite Husky + lint-staged.

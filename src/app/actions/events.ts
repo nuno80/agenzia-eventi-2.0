@@ -8,7 +8,7 @@
 import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { db, events } from '@/db'
+import { budgetCategories, db, events } from '@/db'
 import { getEventsForDuplicate } from '@/lib/dal/events'
 import { createEventSchema, updateEventSchema } from '@/lib/validations/events'
 
@@ -97,6 +97,50 @@ export async function createEvent(formData: FormData | Record<string, any>): Pro
         currentSpent: 0,
       })
       .returning()
+
+    // Seed default budget categories
+    const defaultCategories = [
+      {
+        name: 'Entrate',
+        description: 'Sponsorizzazioni e vendita biglietti',
+        color: '#10B981',
+        icon: 'wallet',
+      }, // Emerald
+      {
+        name: 'Personale',
+        description: 'Staff tecnico e supporto',
+        color: '#3B82F6',
+        icon: 'users',
+      }, // Blue
+      {
+        name: 'Servizi',
+        description: 'Catering, AV, Trasporti',
+        color: '#8B5CF6',
+        icon: 'briefcase',
+      }, // Violet
+      {
+        name: 'Location',
+        description: 'Affitto spazi e allestimenti',
+        color: '#F59E0B',
+        icon: 'map-pin',
+      }, // Amber
+      {
+        name: 'Marketing',
+        description: 'Pubblicità e promozione',
+        color: '#EC4899',
+        icon: 'megaphone',
+      }, // Pink
+      { name: 'Varie', description: 'Spese impreviste e varie', color: '#6B7280', icon: 'box' }, // Gray
+    ]
+
+    await db.insert(budgetCategories).values(
+      defaultCategories.map((cat) => ({
+        eventId: newEvent.id,
+        ...cat,
+        allocatedAmount: 0,
+        spentAmount: 0,
+      }))
+    )
 
     revalidatePath('/eventi')
     revalidatePath('/')

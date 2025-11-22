@@ -8,46 +8,10 @@ import { asc, eq } from 'drizzle-orm'
 import { cache } from 'react'
 import { db, sponsors } from '@/db'
 
-export type SponsorDTO = {
-  id: string
-  eventId: string
-  companyName: string
-  contactPerson: string | null
-  email: string
-  phone: string | null
-  sponsorshipLevel: 'platinum' | 'gold' | 'silver' | 'bronze' | 'partner'
-  sponsorshipAmount: number
-  contractSigned: boolean
-  contractDate: Date | null
-  contractUrl: string | null
-  paymentStatus: 'pending' | 'partial' | 'paid'
-  paymentDate: Date | null
-  logoUrl: string | null
-  websiteUrl: string | null
-  description: string | null
-  freeTickets: number
-}
+export type SponsorDTO = typeof sponsors.$inferSelect
 
 function toDTO(row: typeof sponsors.$inferSelect): SponsorDTO {
-  return {
-    id: row.id,
-    eventId: row.eventId,
-    companyName: row.companyName,
-    contactPerson: row.contactPerson ?? null,
-    email: row.email,
-    phone: row.phone ?? null,
-    sponsorshipLevel: row.sponsorshipLevel as SponsorDTO['sponsorshipLevel'],
-    sponsorshipAmount: row.sponsorshipAmount,
-    contractSigned: Boolean(row.contractSigned),
-    contractDate: row.contractDate ?? null,
-    contractUrl: row.contractUrl ?? null,
-    paymentStatus: row.paymentStatus as SponsorDTO['paymentStatus'],
-    paymentDate: row.paymentDate ?? null,
-    logoUrl: row.logoUrl ?? null,
-    websiteUrl: row.websiteUrl ?? null,
-    description: row.description ?? null,
-    freeTickets: row.freeTickets ?? 0,
-  }
+  return row
 }
 
 export const getSponsorsByEvent = cache(async (eventId: string): Promise<SponsorDTO[]> => {
