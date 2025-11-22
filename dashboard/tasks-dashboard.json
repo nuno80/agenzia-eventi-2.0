@@ -9,7 +9,9 @@
         "integration-2 completato: Integrazione Staff ↔ Budget (backend complete: schema DB, validations, server actions, unit tests)",
         "people-6 completato: Refactoring /persone/staff con Suspense per fix Blocking Route",
         "Fix idratazione: Standardizzazione formatCurrency e suppressHydrationWarning",
-        "Fix critico integrazione Staff-Budget: Aggiunta selettore UI e fix validazione backend"
+        "Fix critico integrazione Staff-Budget: Aggiunta selettore UI e fix validazione backend",
+        "integration-3 completato: Integrazione Sponsor ↔ Budget (Entrate)",
+        "people-1, people-2 completati: DAL per Speakers e Sponsors (Globali)"
       ]
     },
     {
@@ -543,7 +545,7 @@
         {
           "id": "people-1",
           "name": "DAL speakers.ts",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "DAL",
           "description": "Query speakers: getAll, byEvent, search, stats"
@@ -551,7 +553,7 @@
         {
           "id": "people-2",
           "name": "DAL sponsors.ts",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "DAL",
           "description": "Query sponsors: getAll, byEvent, byLevel, revenue stats"
@@ -724,7 +726,7 @@
         {
           "id": "integration-3",
           "name": "Sponsor ↔ Budget (Entrate)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server Action",
           "description": "Link sponsorship amount to budget revenue. Files: src/actions/sponsors.ts, src/components/dashboard/events/sponsors/SponsorForm.tsx"
@@ -776,8 +778,8 @@
   ],
   "statistics": {
     "totalTasks": 86,
-    "completedTasks": 73,
-    "pendingTasks": 13,
+    "completedTasks": 76,
+    "pendingTasks": 10,
     "byComplexity": { "easy": 29, "medium": 45, "hard": 25 },
     "byComponentType": {
       "Server": 32,
@@ -790,9 +792,8 @@
     }
   },
   "nextSteps": {
-    "immediate": ["Implementare integrazione Sponsor → Budget (integration-3)"],
+    "immediate": ["Implementare upload file (vercel-blob)"],
     "shortTerm": [
-      "Completare DAL per speakers e sponsors (globali)",
       "Implementare upload file (vercel-blob)"
     ],
     "mediumTerm": ["Dashboard finanziaria globale (/finance)", "Sistema notifiche email"],
