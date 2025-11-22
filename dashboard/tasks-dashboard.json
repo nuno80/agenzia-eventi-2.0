@@ -1,7 +1,13 @@
 {
   "project": "EventHub Dashboard",
-  "lastUpdated": "2025-11-21",
+  "lastUpdated": "2025-11-22",
   "changelog": [
+    {
+      "date": "2025-11-22",
+      "items": [
+        "other-8 completato: Migrazione pagina Files nella dashboard e integrazione FileManager esistente"
+      ]
+    },
     {
       "date": "2025-11-21",
       "items": [
@@ -695,7 +701,7 @@
         {
           "id": "other-8",
           "name": "File upload handler (vercel-blob)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server Action",
           "description": "Upload foto staff, documenti, invoices"
@@ -778,8 +784,8 @@
   ],
   "statistics": {
     "totalTasks": 86,
-    "completedTasks": 76,
-    "pendingTasks": 10,
+    "completedTasks": 77,
+    "pendingTasks": 9,
     "byComplexity": { "easy": 29, "medium": 45, "hard": 25 },
     "byComponentType": {
       "Server": 32,
@@ -792,9 +798,9 @@
     }
   },
   "nextSteps": {
-    "immediate": ["Implementare upload file (vercel-blob)"],
+    "immediate": ["Dashboard finanziaria globale (/finance)"],
     "shortTerm": [
-      "Implementare upload file (vercel-blob)"
+      "Dashboard finanziaria globale (/finance)"
     ],
     "mediumTerm": ["Dashboard finanziaria globale (/finance)", "Sistema notifiche email"],
     "longTerm": ["QR Code + Check-in system", "Export Excel/PDF reports"]

@@ -30,6 +30,7 @@ import {
   ChevronDown,
   Euro,
   FileText,
+  FolderOpen,
   LayoutDashboard,
   Mic,
   Settings,
@@ -102,6 +103,11 @@ const navigation: NavItem[] = [
     label: 'Report',
     href: '/report',
     icon: FileText,
+  },
+  {
+    label: 'Files',
+    href: '/files',
+    icon: FolderOpen,
   },
   {
     label: 'Impostazioni',
