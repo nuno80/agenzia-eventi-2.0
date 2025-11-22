@@ -5,6 +5,8 @@
     {
       "date": "2025-11-22",
       "items": [
+        "finance-2, finance-3 completati: Dashboard finanziaria globale (/finance) con overview, charts e tabella eventi",
+        "Bug fix: Correzione calcolo entrate (identificazione per nome categoria invece di costo negativo)",
         "other-8 completato: Migrazione pagina Files nella dashboard e integrazione FileManager esistente"
       ]
     },
@@ -34,7 +36,7 @@
       ]
     }
   ],
-  "overallProgress": 80,
+  "overallProgress": 82,
   "modules": [
     {
       "id": "core",
@@ -601,7 +603,7 @@
     {
       "id": "finance",
       "name": "Finance & Reports",
-      "progress": 50,
+      "progress": 75,
       "tasks": [
         {
           "id": "finance-1",
@@ -609,23 +611,23 @@
           "status": "completed",
           "complexity": "medium",
           "componentType": "DAL",
-          "description": "Query budget: categories, items, aggregations, reports"
+          "description": "Query budget: categories, items, aggregations, reports + getGlobalBudgetStats()"
         },
         {
           "id": "finance-2",
           "name": "/finance page (Server)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "hard",
           "componentType": "Server + Client",
-          "description": "Overview finanziaria: revenue, costs, profit per evento"
+          "description": "Overview finanziaria globale: revenue, costs, profit, charts, tabella eventi"
         },
         {
           "id": "finance-3",
           "name": "/finance/report page (Server)",
-          "status": "pending",
-          "complexity": "hard",
-          "componentType": "Server + Client",
-          "description": "Report builder: custom date ranges, export Excel/PDF"
+          "status": "completed",
+          "complexity": "easy",
+          "componentType": "Server",
+          "description": "Placeholder per report builder (future: date ranges, export Excel/PDF)"
         },
         {
           "id": "finance-4",
@@ -798,12 +800,13 @@
     }
   },
   "nextSteps": {
-    "immediate": ["Dashboard finanziaria globale (/finance)"],
+    "immediate": ["Completare /finance/report con filtri e export"],
     "shortTerm": [
-      "Dashboard finanziaria globale (/finance)"
+      "Sistema notifiche email",
+      "Tab Communications (email log + composer)"
     ],
-    "mediumTerm": ["Dashboard finanziaria globale (/finance)", "Sistema notifiche email"],
-    "longTerm": ["QR Code + Check-in system", "Export Excel/PDF reports"]
+    "mediumTerm": ["Tab Surveys (builder + analytics)", "Tab Checkin (QR scanner)"],
+    "longTerm": ["Export Excel/PDF reports avanzati", "Trend analysis e forecasting"]
   },
   "technicalDebt": [
     {

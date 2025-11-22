@@ -220,3 +220,150 @@ export const getBudgetVariance = cache(async (eventId: string) => {
     isOverBudget: variance > 0,
   }
 })
+
+// ============================================================================
+// GLOBAL STATS (Cross-Event)
+// ============================================================================
+
+/**
+ * Get global budget statistics across all events
+ * Returns aggregated financial metrics for the entire organization
+ */
+export const getGlobalBudgetStats = cache(async () => {
+  // Get all budget categories and items
+  const allCategories = await db.query.budgetCategories.findMany({
+    with: {
+      items: true,
+      event: {
+        columns: {
+          id: true,
+          title: true,
+          status: true,
+          startDate: true,
+        },
+      },
+    },
+  })
+
+  // Calculate global totals
+  const totalAllocated = allCategories.reduce((sum, cat) => sum + (cat.allocatedAmount || 0), 0)
+  const totalSpent = allCategories.reduce((sum, cat) => sum + (cat.spentAmount || 0), 0)
+
+  // Get all items for detailed stats
+  const allItems = allCategories.flatMap((cat) => cat.items)
+  const totalEstimated = allItems.reduce((sum, item) => sum + (item.estimatedCost || 0), 0)
+  const totalActual = allItems.reduce((sum, item) => sum + (item.actualCost || 0), 0)
+
+  // Calculate revenue and costs
+  // Revenue comes from categories named "Entrate" or similar
+  let revenue = 0
+  let costs = 0
+
+  allCategories.forEach((cat) => {
+    const isIncomeCategory =
+      cat.name
+        .toLowerCase()
+        .includes('entrat') || // Entrate, Entrata
+      cat.name.toLowerCase().includes('ricav') || // Ricavi
+      cat.name.toLowerCase().includes('income') ||
+      cat.name.toLowerCase().includes('revenue')
+
+    cat.items.forEach((item) => {
+      const amount = item.actualCost || item.estimatedCost || 0
+
+      if (isIncomeCategory) {
+        revenue += amount
+      } else {
+        costs += amount
+      }
+    })
+  })
+
+  const netProfit = revenue - costs
+  const profitMargin = revenue > 0 ? (netProfit / revenue) * 100 : 0
+
+  // Status breakdown
+  const statusCounts = {
+    planned: allItems.filter((item) => item.status === 'planned').length,
+    approved: allItems.filter((item) => item.status === 'approved').length,
+    invoiced: allItems.filter((item) => item.status === 'invoiced').length,
+    paid: allItems.filter((item) => item.status === 'paid').length,
+  }
+
+  // Per-event breakdown
+  const eventBreakdown = allCategories.reduce(
+    (acc, cat) => {
+      const eventId = cat.eventId
+      if (!acc[eventId]) {
+        acc[eventId] = {
+          eventId,
+          eventTitle: cat.event.title,
+          eventStatus: cat.event.status,
+          eventDate: cat.event.startDate,
+          allocated: 0,
+          spent: 0,
+          revenue: 0,
+          costs: 0,
+          itemsCount: 0,
+        }
+      }
+
+      acc[eventId].allocated += cat.allocatedAmount || 0
+      acc[eventId].spent += cat.spentAmount || 0
+      acc[eventId].itemsCount += cat.items.length
+
+      // Determine if this is an income category
+      const isIncomeCategory =
+        cat.name.toLowerCase().includes('entrat') ||
+        cat.name.toLowerCase().includes('ricav') ||
+        cat.name.toLowerCase().includes('income') ||
+        cat.name.toLowerCase().includes('revenue')
+
+      // Calculate revenue and costs for this event
+      cat.items.forEach((item) => {
+        const amount = item.actualCost || item.estimatedCost || 0
+
+        if (isIncomeCategory) {
+          acc[eventId].revenue += amount
+        } else {
+          acc[eventId].costs += amount
+        }
+      })
+
+      return acc
+    },
+    {} as Record<
+      string,
+      {
+        eventId: string
+        eventTitle: string
+        eventStatus: string
+        eventDate: Date
+        allocated: number
+        spent: number
+        revenue: number
+        costs: number
+        itemsCount: number
+      }
+    >
+  )
+
+  return {
+    totalAllocated,
+    totalSpent,
+    totalEstimated,
+    totalActual,
+    revenue,
+    costs,
+    netProfit,
+    profitMargin,
+    remaining: totalAllocated - totalSpent,
+    percentageUsed: totalAllocated > 0 ? (totalSpent / totalAllocated) * 100 : 0,
+    categoriesCount: allCategories.length,
+    itemsCount: allItems.length,
+    statusCounts,
+    eventBreakdown: Object.values(eventBreakdown).sort(
+      (a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime()
+    ),
+  }
+})
