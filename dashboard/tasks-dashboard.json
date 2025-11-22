@@ -5,6 +5,8 @@
     {
       "date": "2025-11-22",
       "items": [
+        "integration-5 completato: Integrazione Agenda ↔ Staff (Operativo)",
+        "Implementati: DB schema (agenda_staff), DAL agenda (staff relation), Server Actions (staffIds), UI (SessionForm staff selector)",
         "integration-4 completato: Integrazione Agenda ↔ Servizi (Logistica)",
         "Implementati: DB schema (agenda_services), Server Actions (create/update session with services), UI (SessionForm multi-select, SessionCard badges)",
         "detail-12 completato: Sistema CRUD Partecipanti completo (create, edit, delete con form completo)",
@@ -48,7 +50,7 @@
       ]
     }
   ],
-  "overallProgress": 88,
+  "overallProgress": 89,
   "modules": [
     {
       "id": "core",
@@ -770,10 +772,10 @@
         {
           "id": "integration-5",
           "name": "Agenda ↔ Staff (Operativo)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server Action",
-          "description": "Assign staff to specific agenda sessions. Files: src/actions/agenda.ts, src/db/libsql-schemas/agenda.ts"
+          "description": "Assign staff to specific agenda sessions. Files: src/db/libsql-schemas/events.ts (agendaStaff table), src/lib/dal/agenda.ts, src/actions/agenda.ts, src/components/dashboard/events/tabs/AgendaTab.tsx, src/components/dashboard/events/agenda/SessionForm.tsx"
         }
       ]
     }
@@ -806,8 +808,8 @@
   ],
   "statistics": {
     "totalTasks": 86,
-    "completedTasks": 77,
-    "pendingTasks": 9,
+    "completedTasks": 78,
+    "pendingTasks": 8,
     "byComplexity": { "easy": 29, "medium": 45, "hard": 25 },
     "byComponentType": {
       "Server": 32,

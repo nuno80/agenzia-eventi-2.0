@@ -64,6 +64,7 @@ interface SessionFormProps {
   sessionToEdit?: AgendaSessionDTO | null
   speakers: { id: string; name: string }[]
   services: { id: string; name: string }[]
+  staff: { id: string; firstName: string; lastName: string; role: string }[]
 }
 
 export function SessionForm({
@@ -73,6 +74,7 @@ export function SessionForm({
   sessionToEdit,
   speakers,
   services,
+  staff,
 }: SessionFormProps) {
   const { toast } = useToast()
   const form = useForm<FormValues>({
@@ -95,6 +97,7 @@ export function SessionForm({
   // Note: In a real app, we'd need to fetch the linked services for this session
   // For now, we'll handle the selection state locally in the form
   const [selectedServices, setSelectedServices] = useState<string[]>([])
+  const [selectedStaff, setSelectedStaff] = useState<string[]>([])
 
   // Reset form when sessionToEdit changes
   useEffect(() => {
@@ -117,6 +120,13 @@ export function SessionForm({
         setSelectedServices(sessionToEdit.services.map((s) => s.serviceId))
       } else {
         setSelectedServices([])
+      }
+
+      // Initialize selected staff if editing
+      if (sessionToEdit?.staff) {
+        setSelectedStaff(sessionToEdit.staff.map((s) => s.staffId))
+      } else {
+        setSelectedStaff([])
       }
     }
   }, [open, sessionToEdit, form])
@@ -152,6 +162,11 @@ export function SessionForm({
         formData.append('serviceIds', id)
       })
 
+      // Append selected staff
+      selectedStaff.forEach((id) => {
+        formData.append('staffIds', id)
+      })
+
       let result: { error?: string; details?: any; success?: boolean }
       if (sessionToEdit) {
         formData.append('id', sessionToEdit.id)
@@ -178,6 +193,7 @@ export function SessionForm({
         onOpenChange(false)
         form.reset()
         setSelectedServices([])
+        setSelectedStaff([])
       }
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -390,6 +406,36 @@ export function SessionForm({
                       />
                       <label htmlFor={`service-${service.id}`} className="text-sm cursor-pointer">
                         {service.name}
+                      </label>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <FormLabel>Staff Assegnato</FormLabel>
+              <div className="border rounded-md p-3 max-h-40 overflow-y-auto space-y-2">
+                {staff.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Nessuno staff disponibile.</p>
+                ) : (
+                  staff.map((member) => (
+                    <div key={member.id} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`staff-${member.id}`}
+                        checked={selectedStaff.includes(member.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedStaff([...selectedStaff, member.id])
+                          } else {
+                            setSelectedStaff(selectedStaff.filter((id) => id !== member.id))
+                          }
+                        }}
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <label htmlFor={`staff-${member.id}`} className="text-sm cursor-pointer">
+                        {member.firstName} {member.lastName} ({member.role})
                       </label>
                     </div>
                   ))

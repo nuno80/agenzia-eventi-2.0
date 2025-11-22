@@ -18,6 +18,7 @@
 import { createId } from '@paralleldrive/cuid2'
 import { relations } from 'drizzle-orm'
 import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { staff } from './staff'
 
 // ============================================================================
 // UTILITY FUNCTIONS
@@ -623,6 +624,29 @@ export const agendaServices = sqliteTable('agenda_services', {
   ...timestamp,
 })
 
+// ============================================================================
+// AGENDA-STAFF JUNCTION TABLE (Agenda ↔ Staff Integration)
+// ============================================================================
+
+export const agendaStaff = sqliteTable('agenda_staff', {
+  id: text('id')
+    .$defaultFn(() => createId())
+    .primaryKey(),
+
+  agendaId: text('agenda_id')
+    .notNull()
+    .references(() => agenda.id, { onDelete: 'cascade' }),
+
+  staffId: text('staff_id')
+    .notNull()
+    .references(() => staff.id, { onDelete: 'cascade' }),
+
+  // Optional: specific role for this session (may differ from staff.role)
+  sessionRole: text('session_role'),
+
+  ...timestamp,
+})
+
 export const agendaServicesRelations = relations(agendaServices, ({ one }) => ({
   session: one(agenda, {
     fields: [agendaServices.agendaId],
@@ -644,6 +668,7 @@ export const agendaRelations = relations(agenda, ({ one, many }) => ({
     references: [speakers.id],
   }),
   services: many(agendaServices),
+  staff: many(agendaStaff),
 }))
 
 export const servicesRelations = relations(services, ({ one, many }) => ({
@@ -652,6 +677,17 @@ export const servicesRelations = relations(services, ({ one, many }) => ({
     references: [events.id],
   }),
   sessions: many(agendaServices),
+}))
+
+export const agendaStaffRelations = relations(agendaStaff, ({ one }) => ({
+  session: one(agenda, {
+    fields: [agendaStaff.agendaId],
+    references: [agenda.id],
+  }),
+  staff: one(staff, {
+    fields: [agendaStaff.staffId],
+    references: [staff.id],
+  }),
 }))
 
 export const budgetCategoriesRelations = relations(budgetCategories, ({ one, many }) => ({
@@ -720,3 +756,9 @@ export type NewDeadline = typeof deadlines.$inferInsert
 
 export type Communication = typeof communications.$inferSelect
 export type NewCommunication = typeof communications.$inferInsert
+
+export type AgendaService = typeof agendaServices.$inferSelect
+export type NewAgendaService = typeof agendaServices.$inferInsert
+
+export type AgendaStaff = typeof agendaStaff.$inferSelect
+export type NewAgendaStaff = typeof agendaStaff.$inferInsert

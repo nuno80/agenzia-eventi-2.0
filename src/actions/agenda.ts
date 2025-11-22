@@ -3,7 +3,7 @@
 import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { agenda, agendaServices, db } from '@/db'
+import { agenda, agendaServices, agendaStaff, db } from '@/db'
 
 // ============================================================================
 // VALIDATION SCHEMAS
@@ -22,6 +22,7 @@ const sessionSchema = z.object({
   maxAttendees: z.number().min(0).optional().nullable(),
   status: z.enum(['scheduled', 'ongoing', 'completed', 'cancelled']).default('scheduled'),
   serviceIds: z.array(z.string()).optional(),
+  staffIds: z.array(z.string()).optional(),
 })
 
 export type SessionFormData = z.infer<typeof sessionSchema>
@@ -45,6 +46,7 @@ export async function createSession(_prevState: any, formData: FormData) {
     maxAttendees: formData.get('maxAttendees') ? Number(formData.get('maxAttendees')) : null,
     status: formData.get('status') || 'scheduled',
     serviceIds: formData.getAll('serviceIds'),
+    staffIds: formData.getAll('staffIds'),
   }
 
   // Validate
@@ -81,6 +83,16 @@ export async function createSession(_prevState: any, formData: FormData) {
       )
     }
 
+    // Link staff if provided
+    if (data.staffIds && data.staffIds.length > 0) {
+      await db.insert(agendaStaff).values(
+        data.staffIds.map((staffId) => ({
+          agendaId: newSession.id,
+          staffId,
+        }))
+      )
+    }
+
     revalidatePath(`/eventi/${data.eventId}`)
     revalidatePath(`/eventi/${data.eventId}/agenda`)
     return { success: true }
@@ -109,6 +121,7 @@ export async function updateSession(_prevState: any, formData: FormData) {
     maxAttendees: formData.get('maxAttendees') ? Number(formData.get('maxAttendees')) : null,
     status: formData.get('status') || undefined,
     serviceIds: formData.getAll('serviceIds'),
+    staffIds: formData.getAll('staffIds'),
   }
 
   // Validate
@@ -143,6 +156,20 @@ export async function updateSession(_prevState: any, formData: FormData) {
         serviceIds.map((serviceId) => ({
           agendaId: id,
           serviceId,
+        }))
+      )
+    }
+
+    // Update staff links
+    // 1. Delete existing
+    await db.delete(agendaStaff).where(eq(agendaStaff.agendaId, id))
+
+    // 2. Insert new
+    if (data.staffIds && data.staffIds.length > 0) {
+      await db.insert(agendaStaff).values(
+        data.staffIds.map((staffId) => ({
+          agendaId: id,
+          staffId,
         }))
       )
     }

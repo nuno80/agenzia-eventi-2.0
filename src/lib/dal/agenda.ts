@@ -43,6 +43,17 @@ export type AgendaSessionDTO = {
       serviceName: string
     }
   }[]
+  staff: {
+    staffId: string
+    sessionRole: string | null
+    staff: {
+      id: string
+      firstName: string
+      lastName: string
+      role: string
+      photoUrl: string | null
+    }
+  }[]
 }
 
 // ============================================================================
@@ -76,6 +87,23 @@ export const getEventAgenda = cache(async (eventId: string): Promise<AgendaSessi
           service: {
             columns: {
               serviceName: true,
+            },
+          },
+        },
+      },
+      staff: {
+        columns: {
+          staffId: true,
+          sessionRole: true,
+        },
+        with: {
+          staff: {
+            columns: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              role: true,
+              photoUrl: true,
             },
           },
         },
@@ -115,6 +143,23 @@ export const getSessionById = cache(async (sessionId: string): Promise<AgendaSes
           },
         },
       },
+      staff: {
+        columns: {
+          staffId: true,
+          sessionRole: true,
+        },
+        with: {
+          staff: {
+            columns: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              role: true,
+              photoUrl: true,
+            },
+          },
+        },
+      },
     },
   })
 
@@ -147,6 +192,23 @@ export const getSpeakerSessions = cache(async (speakerId: string): Promise<Agend
           service: {
             columns: {
               serviceName: true,
+            },
+          },
+        },
+      },
+      staff: {
+        columns: {
+          staffId: true,
+          sessionRole: true,
+        },
+        with: {
+          staff: {
+            columns: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              role: true,
+              photoUrl: true,
             },
           },
         },
