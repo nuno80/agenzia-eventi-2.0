@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import { it } from 'date-fns/locale'
 import { CalendarIcon, Loader2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -62,6 +63,7 @@ interface SessionFormProps {
   onOpenChange: (open: boolean) => void
   sessionToEdit?: AgendaSessionDTO | null
   speakers: { id: string; name: string }[]
+  services: { id: string; name: string }[]
 }
 
 export function SessionForm({
@@ -70,6 +72,7 @@ export function SessionForm({
   onOpenChange,
   sessionToEdit,
   speakers,
+  services,
 }: SessionFormProps) {
   const { toast } = useToast()
   const form = useForm<FormValues>({
@@ -87,6 +90,36 @@ export function SessionForm({
       maxAttendees: sessionToEdit?.maxAttendees?.toString() || '',
     },
   })
+
+  // Initialize selected services from sessionToEdit
+  // Note: In a real app, we'd need to fetch the linked services for this session
+  // For now, we'll handle the selection state locally in the form
+  const [selectedServices, setSelectedServices] = useState<string[]>([])
+
+  // Reset form when sessionToEdit changes
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        title: sessionToEdit?.title || '',
+        description: sessionToEdit?.description || '',
+        date: sessionToEdit ? new Date(sessionToEdit.startTime) : new Date(),
+        startTime: sessionToEdit ? format(new Date(sessionToEdit.startTime), 'HH:mm') : '09:00',
+        endTime: sessionToEdit ? format(new Date(sessionToEdit.endTime), 'HH:mm') : '10:00',
+        sessionType: sessionToEdit?.sessionType || 'talk',
+        room: sessionToEdit?.room || '',
+        location: sessionToEdit?.location || '',
+        speakerId: sessionToEdit?.speakerId || 'none',
+        maxAttendees: sessionToEdit?.maxAttendees?.toString() || '',
+      })
+
+      // Initialize selected services if editing
+      if (sessionToEdit?.services) {
+        setSelectedServices(sessionToEdit.services.map((s) => s.serviceId))
+      } else {
+        setSelectedServices([])
+      }
+    }
+  }, [open, sessionToEdit, form])
 
   const isSubmitting = form.formState.isSubmitting
 
@@ -114,6 +147,11 @@ export function SessionForm({
         formData.append('speakerId', values.speakerId)
       if (values.maxAttendees) formData.append('maxAttendees', values.maxAttendees)
 
+      // Append selected services
+      selectedServices.forEach((id) => {
+        formData.append('serviceIds', id)
+      })
+
       let result: { error?: string; details?: any; success?: boolean }
       if (sessionToEdit) {
         formData.append('id', sessionToEdit.id)
@@ -139,6 +177,7 @@ export function SessionForm({
         })
         onOpenChange(false)
         form.reset()
+        setSelectedServices([])
       }
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -152,7 +191,7 @@ export function SessionForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{sessionToEdit ? 'Modifica Sessione' : 'Nuova Sessione'}</DialogTitle>
           <DialogDescription>Inserisci i dettagli della sessione dell'evento.</DialogDescription>
@@ -326,6 +365,36 @@ export function SessionForm({
                   </FormItem>
                 )}
               />
+            </div>
+
+            <div className="space-y-2">
+              <FormLabel>Servizi Richiesti</FormLabel>
+              <div className="border rounded-md p-3 max-h-40 overflow-y-auto space-y-2">
+                {services.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Nessun servizio disponibile.</p>
+                ) : (
+                  services.map((service) => (
+                    <div key={service.id} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`service-${service.id}`}
+                        checked={selectedServices.includes(service.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedServices([...selectedServices, service.id])
+                          } else {
+                            setSelectedServices(selectedServices.filter((id) => id !== service.id))
+                          }
+                        }}
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <label htmlFor={`service-${service.id}`} className="text-sm cursor-pointer">
+                        {service.name}
+                      </label>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
 
             <FormField

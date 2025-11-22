@@ -150,6 +150,16 @@ export function SessionCard({ session, onEdit }: SessionCardProps) {
               </span>
             </div>
           )}
+
+          {session.services && session.services.length > 0 && (
+            <div className="flex items-center gap-2">
+              {session.services.map((s) => (
+                <Badge key={s.serviceId} variant="secondary" className="text-xs font-normal">
+                  {s.service.serviceName}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

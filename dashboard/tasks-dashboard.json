@@ -5,6 +5,8 @@
     {
       "date": "2025-11-22",
       "items": [
+        "integration-4 completato: Integrazione Agenda ↔ Servizi (Logistica)",
+        "Implementati: DB schema (agenda_services), Server Actions (create/update session with services), UI (SessionForm multi-select, SessionCard badges)",
         "detail-12 completato: Sistema CRUD Partecipanti completo (create, edit, delete con form completo)",
         "Implementati 4 nuovi componenti: ParticipantForm, AddParticipantDialog, ParticipantActions, ViewBadgeDialog",
         "Aggiunta visualizzazione badge con QR code nella tabella partecipanti",
@@ -46,7 +48,7 @@
       ]
     }
   ],
-  "overallProgress": 87,
+  "overallProgress": 88,
   "modules": [
     {
       "id": "core",
@@ -731,7 +733,7 @@
     {
       "id": "integrations",
       "name": "Intelligent Integrations",
-      "progress": 0,
+      "progress": 20,
       "tasks": [
         {
           "id": "integration-1",
@@ -760,7 +762,7 @@
         {
           "id": "integration-4",
           "name": "Agenda ↔ Servizi (Logistica)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server Action",
           "description": "Link agenda sessions to required services. Files: src/actions/agenda.ts, src/components/dashboard/events/agenda/SessionForm.tsx"
@@ -780,8 +782,8 @@
     {
       "priority": 1,
       "module": "integrations",
-      "tasks": ["integration-3"],
-      "rationale": "Completare integrazione Sponsor → Budget per continuità e valore business"
+      "tasks": ["integration-5"],
+      "rationale": "Completare integrazione Agenda → Staff per gestione operativa completa"
     },
     {
       "priority": 2,

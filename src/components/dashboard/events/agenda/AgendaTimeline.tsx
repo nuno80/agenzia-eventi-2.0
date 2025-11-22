@@ -31,6 +31,7 @@ interface AgendaTimelineProps {
   eventId: string
   sessions: AgendaSessionDTO[]
   speakers: { id: string; name: string }[]
+  services: { id: string; name: string }[]
 }
 
 // Sortable wrapper for SessionCard
@@ -58,7 +59,7 @@ function SortableSessionItem({
   )
 }
 
-export function AgendaTimeline({ eventId, sessions, speakers }: AgendaTimelineProps) {
+export function AgendaTimeline({ eventId, sessions, speakers, services }: AgendaTimelineProps) {
   const [items, setItems] = useState<AgendaSessionDTO[]>(sessions)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingSession, setEditingSession] = useState<AgendaSessionDTO | null>(null)
@@ -179,6 +180,7 @@ export function AgendaTimeline({ eventId, sessions, speakers }: AgendaTimelinePr
         onOpenChange={setIsFormOpen}
         sessionToEdit={editingSession}
         speakers={speakers}
+        services={services}
       />
     </div>
   )

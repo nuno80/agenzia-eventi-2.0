@@ -3,7 +3,7 @@
 import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { agenda, db } from '@/db'
+import { agenda, agendaServices, db } from '@/db'
 
 // ============================================================================
 // VALIDATION SCHEMAS
@@ -21,6 +21,7 @@ const sessionSchema = z.object({
   speakerId: z.string().optional().nullable(),
   maxAttendees: z.number().min(0).optional().nullable(),
   status: z.enum(['scheduled', 'ongoing', 'completed', 'cancelled']).default('scheduled'),
+  serviceIds: z.array(z.string()).optional(),
 })
 
 export type SessionFormData = z.infer<typeof sessionSchema>
@@ -43,6 +44,7 @@ export async function createSession(_prevState: any, formData: FormData) {
     speakerId: formData.get('speakerId') || null,
     maxAttendees: formData.get('maxAttendees') ? Number(formData.get('maxAttendees')) : null,
     status: formData.get('status') || 'scheduled',
+    serviceIds: formData.getAll('serviceIds'),
   }
 
   // Validate
@@ -59,10 +61,25 @@ export async function createSession(_prevState: any, formData: FormData) {
   const duration = Math.round((data.endTime.getTime() - data.startTime.getTime()) / (1000 * 60))
 
   try {
-    await db.insert(agenda).values({
-      ...data,
-      duration,
-    })
+    const { serviceIds, ...sessionData } = data
+
+    const [newSession] = await db
+      .insert(agenda)
+      .values({
+        ...sessionData,
+        duration,
+      })
+      .returning({ id: agenda.id })
+
+    // Link services if provided
+    if (serviceIds && serviceIds.length > 0) {
+      await db.insert(agendaServices).values(
+        serviceIds.map((serviceId) => ({
+          agendaId: newSession.id,
+          serviceId,
+        }))
+      )
+    }
 
     revalidatePath(`/eventi/${data.eventId}`)
     revalidatePath(`/eventi/${data.eventId}/agenda`)
@@ -91,6 +108,7 @@ export async function updateSession(_prevState: any, formData: FormData) {
     speakerId: formData.get('speakerId') || null,
     maxAttendees: formData.get('maxAttendees') ? Number(formData.get('maxAttendees')) : null,
     status: formData.get('status') || undefined,
+    serviceIds: formData.getAll('serviceIds'),
   }
 
   // Validate
@@ -105,13 +123,29 @@ export async function updateSession(_prevState: any, formData: FormData) {
   const duration = Math.round((data.endTime.getTime() - data.startTime.getTime()) / (1000 * 60))
 
   try {
+    const { serviceIds, ...sessionData } = data
+
     await db
       .update(agenda)
       .set({
-        ...data,
+        ...sessionData,
         duration,
       })
       .where(eq(agenda.id, id))
+
+    // Update services links
+    // 1. Delete existing
+    await db.delete(agendaServices).where(eq(agendaServices.agendaId, id))
+
+    // 2. Insert new
+    if (serviceIds && serviceIds.length > 0) {
+      await db.insert(agendaServices).values(
+        serviceIds.map((serviceId) => ({
+          agendaId: id,
+          serviceId,
+        }))
+      )
+    }
 
     revalidatePath(`/eventi/${data.eventId}`)
     revalidatePath(`/eventi/${data.eventId}/agenda`)

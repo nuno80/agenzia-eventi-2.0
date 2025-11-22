@@ -1,4 +1,5 @@
 import { getEventAgenda } from '@/lib/dal/agenda'
+import { getEventWithServices } from '@/lib/dal/events'
 import { getSpeakersByEvent } from '@/lib/dal/speakers'
 import { AgendaTimeline } from '../agenda/AgendaTimeline'
 
@@ -7,15 +8,22 @@ interface AgendaTabProps {
 }
 
 export async function AgendaTab({ eventId }: AgendaTabProps) {
-  const [sessions, speakers] = await Promise.all([
+  const [sessions, speakers, eventWithServices] = await Promise.all([
     getEventAgenda(eventId),
     getSpeakersByEvent(eventId),
+    getEventWithServices(eventId),
   ])
 
   const speakersList = speakers.map((s) => ({
     id: s.id,
     name: `${s.firstName} ${s.lastName}`,
   }))
+
+  const servicesList =
+    eventWithServices?.services.map((s) => ({
+      id: s.id,
+      name: s.serviceName,
+    })) || []
 
   return (
     <div className="space-y-6">
@@ -26,7 +34,12 @@ export async function AgendaTab({ eventId }: AgendaTabProps) {
         </p>
       </div>
 
-      <AgendaTimeline eventId={eventId} sessions={sessions} speakers={speakersList} />
+      <AgendaTimeline
+        eventId={eventId}
+        sessions={sessions}
+        speakers={speakersList}
+        services={servicesList}
+      />
     </div>
   )
 }

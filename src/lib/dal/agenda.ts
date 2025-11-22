@@ -37,6 +37,12 @@ export type AgendaSessionDTO = {
   } | null
   maxAttendees: number | null
   status: 'scheduled' | 'ongoing' | 'completed' | 'cancelled'
+  services: {
+    serviceId: string
+    service: {
+      serviceName: string
+    }
+  }[]
 }
 
 // ============================================================================
@@ -62,6 +68,18 @@ export const getEventAgenda = cache(async (eventId: string): Promise<AgendaSessi
           jobTitle: true,
         },
       },
+      services: {
+        columns: {
+          serviceId: true,
+        },
+        with: {
+          service: {
+            columns: {
+              serviceName: true,
+            },
+          },
+        },
+      },
     },
   })
 
@@ -83,6 +101,18 @@ export const getSessionById = cache(async (sessionId: string): Promise<AgendaSes
           photoUrl: true,
           company: true,
           jobTitle: true,
+        },
+      },
+      services: {
+        columns: {
+          serviceId: true,
+        },
+        with: {
+          service: {
+            columns: {
+              serviceName: true,
+            },
+          },
         },
       },
     },
@@ -107,6 +137,18 @@ export const getSpeakerSessions = cache(async (speakerId: string): Promise<Agend
           photoUrl: true,
           company: true,
           jobTitle: true,
+        },
+      },
+      services: {
+        columns: {
+          serviceId: true,
+        },
+        with: {
+          service: {
+            columns: {
+              serviceName: true,
+            },
+          },
         },
       },
     },

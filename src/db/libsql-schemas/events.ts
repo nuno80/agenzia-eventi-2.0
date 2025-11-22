@@ -603,7 +603,38 @@ export const sponsorsRelations = relations(sponsors, ({ one }) => ({
   }),
 }))
 
-export const agendaRelations = relations(agenda, ({ one }) => ({
+// ============================================================================
+// AGENDA-SERVICES JUNCTION TABLE
+// ============================================================================
+
+export const agendaServices = sqliteTable('agenda_services', {
+  id: text('id')
+    .$defaultFn(() => createId())
+    .primaryKey(),
+
+  agendaId: text('agenda_id')
+    .notNull()
+    .references(() => agenda.id, { onDelete: 'cascade' }),
+
+  serviceId: text('service_id')
+    .notNull()
+    .references(() => services.id, { onDelete: 'cascade' }),
+
+  ...timestamp,
+})
+
+export const agendaServicesRelations = relations(agendaServices, ({ one }) => ({
+  session: one(agenda, {
+    fields: [agendaServices.agendaId],
+    references: [agenda.id],
+  }),
+  service: one(services, {
+    fields: [agendaServices.serviceId],
+    references: [services.id],
+  }),
+}))
+
+export const agendaRelations = relations(agenda, ({ one, many }) => ({
   event: one(events, {
     fields: [agenda.eventId],
     references: [events.id],
@@ -612,13 +643,15 @@ export const agendaRelations = relations(agenda, ({ one }) => ({
     fields: [agenda.speakerId],
     references: [speakers.id],
   }),
+  services: many(agendaServices),
 }))
 
-export const servicesRelations = relations(services, ({ one }) => ({
+export const servicesRelations = relations(services, ({ one, many }) => ({
   event: one(events, {
     fields: [services.eventId],
     references: [events.id],
   }),
+  sessions: many(agendaServices),
 }))
 
 export const budgetCategoriesRelations = relations(budgetCategories, ({ one, many }) => ({
