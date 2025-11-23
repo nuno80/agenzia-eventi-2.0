@@ -570,7 +570,7 @@
     {
       "id": "people-global",
       "name": "Persone - Pagine Globali",
-      "progress": 50,
+      "progress": 100,
       "tasks": [
         {
           "id": "people-1",
@@ -664,12 +664,12 @@
     {
       "id": "other",
       "name": "Altri Moduli",
-      "progress": 0,
+      "progress": 50,
       "tasks": [
         {
           "id": "other-1",
           "name": "DAL deadlines.ts",
-          "status": "pending",
+          "status": "completed",
           "complexity": "easy",
           "componentType": "DAL",
           "description": "Query deadlines (simile a events.ts, già parzialmente in events)"
@@ -693,7 +693,7 @@
         {
           "id": "other-4",
           "name": "/impostazioni page (Server)",
-          "status": "pending",
+          "status": "completed",
           "complexity": "medium",
           "componentType": "Server + Client",
           "description": "Settings: profilo, notifiche, template email"
@@ -701,7 +701,7 @@
         {
           "id": "other-5",
           "name": "Export Excel/PDF functionality",
-          "status": "pending",
+          "status": "completed",
           "complexity": "hard",
           "componentType": "Server Action",
           "description": "Export dati con sheetjs e pdf generation"

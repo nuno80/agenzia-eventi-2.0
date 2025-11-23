@@ -444,49 +444,12 @@ export const getEventBudgetSummary = cache(async (eventId: string) => {
 })
 
 // ============================================================================
-// DEADLINES
+// DEADLINES (Re-exported from deadlines.ts for backward compatibility)
 // ============================================================================
 
-/**
- * Get urgent deadlines across all events
- * Returns deadlines due in next 7 days
- */
-export const getUrgentDeadlines = cache(async () => {
-  const now = new Date()
-  const sevenDaysFromNow = new Date()
-  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7)
-
-  const urgent = await db.query.deadlines.findMany({
-    where: and(
-      gte(deadlines.dueDate, now),
-      lte(deadlines.dueDate, sevenDaysFromNow),
-      eq(deadlines.status, 'pending')
-    ),
-    orderBy: [asc(deadlines.dueDate)],
-    with: {
-      event: true,
-    },
-  })
-
-  return urgent
-})
-
-/**
- * Get overdue deadlines
- */
-export const getOverdueDeadlines = cache(async () => {
-  const now = new Date()
-
-  const overdue = await db.query.deadlines.findMany({
-    where: and(lte(deadlines.dueDate, now), eq(deadlines.status, 'pending')),
-    orderBy: [asc(deadlines.dueDate)],
-    with: {
-      event: true,
-    },
-  })
-
-  return overdue
-})
+// WHY: Moved to dedicated DAL file for better separation of concerns
+// These re-exports maintain backward compatibility for existing imports
+export { getOverdueDeadlines, getUrgentDeadlines } from './deadlines'
 
 // ============================================================================
 // SEARCH & FILTERS
