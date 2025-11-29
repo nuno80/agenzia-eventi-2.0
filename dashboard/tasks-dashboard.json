@@ -305,7 +305,7 @@
     {
       "id": "events-detail",
       "name": "Eventi - Dettaglio",
-      "progress": 78,
+      "progress": 100,
       "tasks": [
         {
           "id": "detail-1",
@@ -416,6 +416,14 @@
           "complexity": "medium",
           "componentType": "Server",
           "description": "Lista staff assegnato + pagamenti + quick assign + UX: sorting header click, filtro pagamenti critici, badge ruolo"
+        },
+        {
+          "id": "detail-15",
+          "name": "SurveysTab (Server/Client)",
+          "status": "completed",
+          "complexity": "hard",
+          "componentType": "Server + Client",
+          "description": "Survey builder + responses + statistics + DAL surveys"
         }
       ]
     },

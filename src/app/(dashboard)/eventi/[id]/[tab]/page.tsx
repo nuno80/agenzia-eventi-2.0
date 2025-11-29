@@ -122,8 +122,10 @@ async function TabContent({
       )
       return <CommunicationsTab eventId={eventId} />
     }
-    case 'sondaggi':
-      return <PlaceholderTab title="Sondaggi" />
+    case 'sondaggi': {
+      const { SurveysTab } = await import('@/components/dashboard/events/tabs/SurveysTab')
+      return <SurveysTab eventId={eventId} />
+    }
     case 'checkin': {
       const { CheckinTab } = await import('@/components/dashboard/events/tabs/CheckinTab')
       return <CheckinTab eventId={eventId} />

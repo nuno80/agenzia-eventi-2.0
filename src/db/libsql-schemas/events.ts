@@ -19,6 +19,7 @@ import { createId } from '@paralleldrive/cuid2'
 import { relations } from 'drizzle-orm'
 import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { staff } from './staff'
+import { surveys } from './surveys'
 
 // ============================================================================
 // UTILITY FUNCTIONS
@@ -580,6 +581,7 @@ export const eventsRelations = relations(events, ({ many }) => ({
   budgetItems: many(budgetItems),
   deadlines: many(deadlines),
   communications: many(communications),
+  surveys: many(surveys),
 }))
 
 export const participantsRelations = relations(participants, ({ one }) => ({

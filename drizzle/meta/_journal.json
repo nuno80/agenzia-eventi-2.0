@@ -29,6 +29,13 @@
       "when": 1763826353136,
       "tag": "0003_lush_jigsaw",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1763922918336,
+      "tag": "0004_rare_vargas",
+      "breakpoints": true
     }
   ]
 }
