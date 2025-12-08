@@ -1,7 +1,15 @@
 {
   "project": "EventHub Dashboard",
-  "lastUpdated": "2025-11-22",
+  "lastUpdated": "2025-12-08",
   "changelog": [
+    {
+      "date": "2025-12-08",
+      "items": [
+        "finance-3 completato: Report Builder finanziario completo (/finance/report)",
+        "Implementati: getBudgetReportData DAL (filtri date/eventi), ReportBuilder.tsx (Client), Server Actions (generate + export CSV)",
+        "Features: date range filtering, event multi-select, summary cards, event breakdown table, category breakdown, CSV export"
+      ]
+    },
     {
       "date": "2025-11-22",
       "items": [
@@ -50,7 +58,7 @@
       ]
     }
   ],
-  "overallProgress": 89,
+  "overallProgress": 91,
   "modules": [
     {
       "id": "core",
@@ -633,7 +641,7 @@
     {
       "id": "finance",
       "name": "Finance & Reports",
-      "progress": 75,
+      "progress": 100,
       "tasks": [
         {
           "id": "finance-1",
@@ -657,7 +665,7 @@
           "status": "completed",
           "complexity": "easy",
           "componentType": "Server",
-          "description": "Placeholder per report builder (future: date ranges, export Excel/PDF)"
+          "description": "Report builder completo: filtri date/eventi, summary cards, tabelle breakdown, export CSV"
         },
         {
           "id": "finance-4",

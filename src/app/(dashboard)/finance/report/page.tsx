@@ -1,76 +1,94 @@
 /**
  * FILE: src/app/(dashboard)/finance/report/page.tsx
  *
- * VERSION: 1.0
+ * VERSION: 2.0
  *
  * PAGE: Financial Reports
  * TYPE: Server Component
  *
  * WHY SERVER:
- * - Simple placeholder for now
- * - Will be enhanced with filters and export functionality
+ * - Fetches initial report data
+ * - Fetches event list for filters
+ * - Passes data to ReportBuilder client component
  *
  * FEATURES:
- * - Placeholder for detailed reporting
- * - Future: Date range filters, event selector, export to Excel/PDF
+ * - Custom date range filtering
+ * - Event-specific financial reports
+ * - Export to CSV
+ * - Budget variance analysis
  *
  * ROUTE: /finance/report
  */
+
+import { ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
+import { Suspense } from 'react'
+
+import { exportBudgetReportCsv, generateBudgetReport } from '@/app/actions/reports'
+import { ReportBuilder } from '@/components/dashboard/finance/ReportBuilder'
+import { getBudgetReportData } from '@/lib/dal/budget'
+import { getAllEvents } from '@/lib/dal/events'
+
+async function ReportContent() {
+  // Fetch initial data (all events, no date filter)
+  const [reportData, allEvents] = await Promise.all([getBudgetReportData(), getAllEvents()])
+
+  // Map events to simple selector format
+  const eventOptions = allEvents.map((e) => ({
+    id: e.id,
+    title: e.title,
+  }))
+
+  return (
+    <ReportBuilder
+      events={eventOptions}
+      initialData={reportData}
+      generateReportAction={generateBudgetReport}
+      exportCsvAction={exportBudgetReportCsv}
+    />
+  )
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="animate-pulse space-y-6">
+      <div className="h-48 rounded-lg bg-gray-200" />
+      <div className="grid gap-4 md:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="h-24 rounded-lg bg-gray-200" />
+        ))}
+      </div>
+      <div className="h-64 rounded-lg bg-gray-200" />
+    </div>
+  )
+}
 
 export default function FinanceReportPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Financial Reports</h1>
-        <p className="mt-2 text-gray-600">Detailed financial reporting and analysis</p>
-      </div>
-
-      {/* Placeholder Content */}
-      <div className="rounded-lg border border-dashed border-gray-300 bg-white p-12 text-center">
-        <div className="mx-auto max-w-md">
-          <svg
-            className="mx-auto h-12 w-12 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          <h3 className="mt-2 text-sm font-semibold text-gray-900">Reports Coming Soon</h3>
-          <p className="mt-1 text-sm text-gray-500">
-            This page will include advanced reporting features:
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="mb-2 flex items-center gap-2">
+            <Link
+              href="/finance"
+              className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Torna a Finance
+            </Link>
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight">Report Finanziari</h1>
+          <p className="mt-2 text-gray-600">
+            Genera report dettagliati con filtri personalizzati ed esporta i dati.
           </p>
-          <ul className="mt-4 space-y-2 text-left text-sm text-gray-600">
-            <li className="flex items-start">
-              <span className="mr-2">•</span>
-              <span>Custom date range filtering</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2">•</span>
-              <span>Event-specific financial reports</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2">•</span>
-              <span>Export to Excel and PDF</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2">•</span>
-              <span>Budget variance analysis</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2">•</span>
-              <span>Trend analysis and forecasting</span>
-            </li>
-          </ul>
         </div>
       </div>
+
+      {/* Report Content with Suspense */}
+      <Suspense fallback={<LoadingSkeleton />}>
+        <ReportContent />
+      </Suspense>
     </div>
   )
 }

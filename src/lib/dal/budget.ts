@@ -229,6 +229,217 @@ export const getBudgetVariance = cache(async (eventId: string) => {
  * Get global budget statistics across all events
  * Returns aggregated financial metrics for the entire organization
  */
+// ============================================================================
+// REPORT DATA (Filtered Cross-Event Reports)
+// ============================================================================
+
+export type BudgetReportFilters = {
+  startDate?: Date
+  endDate?: Date
+  eventIds?: string[]
+}
+
+export type BudgetReportData = {
+  filters: {
+    startDate: Date | null
+    endDate: Date | null
+    eventIds: string[]
+  }
+  summary: {
+    totalRevenue: number
+    totalCosts: number
+    netProfit: number
+    profitMargin: number
+    totalItems: number
+    totalEvents: number
+  }
+  categoryBreakdown: {
+    categoryName: string
+    totalAmount: number
+    itemCount: number
+    isRevenue: boolean
+  }[]
+  eventBreakdown: {
+    eventId: string
+    eventTitle: string
+    eventDate: Date
+    eventStatus: string
+    revenue: number
+    costs: number
+    netProfit: number
+    itemsCount: number
+  }[]
+  items: {
+    id: string
+    name: string
+    categoryName: string
+    eventTitle: string
+    estimatedCost: number
+    actualCost: number
+    status: string
+    isRevenue: boolean
+  }[]
+}
+
+/**
+ * Get budget report data with optional filters
+ * @param filters - Optional date range and event IDs
+ * Returns aggregated data for financial reports
+ */
+export const getBudgetReportData = cache(
+  async (filters?: BudgetReportFilters): Promise<BudgetReportData> => {
+    // Get all budget categories and items
+    const allCategories = await db.query.budgetCategories.findMany({
+      with: {
+        items: true,
+        event: {
+          columns: {
+            id: true,
+            title: true,
+            status: true,
+            startDate: true,
+          },
+        },
+      },
+    })
+
+    // Apply filters
+    let filteredCategories = allCategories
+
+    // Filter by event IDs if specified
+    if (filters?.eventIds && filters.eventIds.length > 0) {
+      filteredCategories = filteredCategories.filter((cat) =>
+        filters.eventIds!.includes(cat.eventId)
+      )
+    }
+
+    // Filter by date range if specified
+    if (filters?.startDate || filters?.endDate) {
+      filteredCategories = filteredCategories.filter((cat) => {
+        const eventDate = new Date(cat.event.startDate)
+        if (filters.startDate && eventDate < filters.startDate) return false
+        if (filters.endDate && eventDate > filters.endDate) return false
+        return true
+      })
+    }
+
+    // Helper to check if category is revenue
+    const isIncomeCategory = (catName: string) =>
+      catName.toLowerCase().includes('entrat') ||
+      catName.toLowerCase().includes('ricav') ||
+      catName.toLowerCase().includes('income') ||
+      catName.toLowerCase().includes('revenue')
+
+    // Calculate totals
+    let totalRevenue = 0
+    let totalCosts = 0
+    const allItems: BudgetReportData['items'] = []
+    const categoryMap = new Map<
+      string,
+      { totalAmount: number; itemCount: number; isRevenue: boolean }
+    >()
+    const eventMap = new Map<
+      string,
+      {
+        eventId: string
+        eventTitle: string
+        eventDate: Date
+        eventStatus: string
+        revenue: number
+        costs: number
+        itemsCount: number
+      }
+    >()
+
+    filteredCategories.forEach((cat) => {
+      const isRevenue = isIncomeCategory(cat.name)
+
+      // Category aggregation
+      if (!categoryMap.has(cat.name)) {
+        categoryMap.set(cat.name, { totalAmount: 0, itemCount: 0, isRevenue })
+      }
+      const catStats = categoryMap.get(cat.name)!
+
+      // Event aggregation
+      if (!eventMap.has(cat.eventId)) {
+        eventMap.set(cat.eventId, {
+          eventId: cat.eventId,
+          eventTitle: cat.event.title,
+          eventDate: cat.event.startDate,
+          eventStatus: cat.event.status,
+          revenue: 0,
+          costs: 0,
+          itemsCount: 0,
+        })
+      }
+      const eventStats = eventMap.get(cat.eventId)!
+
+      cat.items.forEach((item) => {
+        const amount = item.actualCost || item.estimatedCost || 0
+
+        if (isRevenue) {
+          totalRevenue += amount
+          eventStats.revenue += amount
+        } else {
+          totalCosts += amount
+          eventStats.costs += amount
+        }
+
+        catStats.totalAmount += amount
+        catStats.itemCount += 1
+        eventStats.itemsCount += 1
+
+        allItems.push({
+          id: item.id,
+          name: item.description,
+          categoryName: cat.name,
+          eventTitle: cat.event.title,
+          estimatedCost: item.estimatedCost || 0,
+          actualCost: item.actualCost || 0,
+          status: item.status,
+          isRevenue,
+        })
+      })
+    })
+
+    const netProfit = totalRevenue - totalCosts
+    const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0
+
+    // Build category breakdown
+    const categoryBreakdown = Array.from(categoryMap.entries()).map(([categoryName, stats]) => ({
+      categoryName,
+      ...stats,
+    }))
+
+    // Build event breakdown with net profit
+    const eventBreakdown = Array.from(eventMap.values())
+      .map((e) => ({
+        ...e,
+        netProfit: e.revenue - e.costs,
+      }))
+      .sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime())
+
+    return {
+      filters: {
+        startDate: filters?.startDate || null,
+        endDate: filters?.endDate || null,
+        eventIds: filters?.eventIds || [],
+      },
+      summary: {
+        totalRevenue,
+        totalCosts,
+        netProfit,
+        profitMargin,
+        totalItems: allItems.length,
+        totalEvents: eventMap.size,
+      },
+      categoryBreakdown,
+      eventBreakdown,
+      items: allItems,
+    }
+  }
+)
+
 export const getGlobalBudgetStats = cache(async () => {
   // Get all budget categories and items
   const allCategories = await db.query.budgetCategories.findMany({
