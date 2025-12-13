@@ -1,31 +1,80 @@
-// src/proxy.ts
-// Proxy for route protection
+/**
+ * FILE: src/proxy.ts
+ * TYPE: Route Protection Middleware
+ *
+ * PURPOSE: Protects dashboard routes using Better Auth session cookies
+ *
+ * PROTECTED ROUTES: /dashboard, /eventi, /finance, /persone, /files, /impostazioni, /guida
+ * PUBLIC ROUTES: /, /login, /signup, /api/auth
+ */
 
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
-// Define which routes require authentication
-const protectedRoutes = ['/files', '/files-list']
+// Public routes that don't require authentication
+const publicRoutes = [
+  '/',
+  '/login',
+  '/signup',
+  '/forgot-password',
+  '/api/auth',
+  '/pricing',
+  '/contact',
+  '/features',
+]
 
-// Export the proxy function (previously called middleware)
+// Dashboard routes that require authentication
+const protectedRoutes = [
+  '/dashboard',
+  '/eventi',
+  '/finance',
+  '/persone',
+  '/files',
+  '/impostazioni',
+  '/guida',
+  '/files-list',
+]
+
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Check if the route requires authentication
-  const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
+  // Check if route is public
+  const isPublicRoute = publicRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  )
 
-  if (isProtectedRoute) {
-    // In a real implementation, we would check for a valid session token
-    // For now, we'll just log that the proxy is working
-    console.log(`Accessing protected route: ${pathname}`)
-
-    // Placeholder for actual authentication logic
-    // const isAuthenticated = checkAuth(request);
-    // if (!isAuthenticated) {
-    //   return NextResponse.redirect(new URL('/login', request.url));
-    // }
+  // Allow API routes except protected ones
+  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/protected/')) {
+    return NextResponse.next()
   }
 
+  // Allow public routes
+  if (isPublicRoute) {
+    return NextResponse.next()
+  }
+
+  // Check if route is protected
+  const isProtectedRoute = protectedRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  )
+
+  if (isProtectedRoute) {
+    // Check for Better Auth session cookie
+    const sessionCookie = request.cookies.get('better-auth.session_token')
+
+    if (!sessionCookie) {
+      // No session - redirect to login
+      const loginUrl = new URL('/login', request.url)
+      loginUrl.searchParams.set('callbackUrl', pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+
+    // Session exists - allow access
+    // Note: Full session validation happens in Server Components
+    return NextResponse.next()
+  }
+
+  // Allow all other routes
   return NextResponse.next()
 }
 
@@ -34,11 +83,11 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - public folder files
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.jpg$|.*\\.svg$).*)',
   ],
 }

@@ -139,10 +139,11 @@ export const getEventsByPriority = cache(async (priority: 'low' | 'medium' | 'hi
  * Returns counts by status and totals
  */
 export const getEventStats = cache(async () => {
-  const now = new Date()
-
-  // Get all events
+  // Get all events (must be before new Date() for Next.js 16 prerendering)
   const allEvents = await db.select().from(events)
+
+  // Now we can use current time
+  const now = new Date()
 
   // Calculate stats
   const stats = {
@@ -167,45 +168,51 @@ export const getEventStats = cache(async () => {
  * @param limit - Number of events to return (default: 5)
  */
 export const getUpcomingEvents = cache(async (limit: number = 5) => {
-  const now = new Date()
-
-  const upcoming = await db.query.events.findMany({
-    where: and(gte(events.startDate, now), eq(events.status, 'open')),
+  // Fetch open events first (Next.js 16: data access before Date)
+  const openEvents = await db.query.events.findMany({
+    where: eq(events.status, 'open'),
     orderBy: [asc(events.startDate)],
-    limit,
   })
 
-  return upcoming
+  const now = new Date()
+
+  // Filter to future ones and limit
+  return openEvents.filter((e) => e.startDate && new Date(e.startDate) > now).slice(0, limit)
 })
 
 /**
  * Get ongoing events (currently happening)
  */
 export const getOngoingEvents = cache(async () => {
-  const now = new Date()
-
-  const ongoing = await db.query.events.findMany({
-    where: and(lte(events.startDate, now), gte(events.endDate, now), eq(events.status, 'ongoing')),
+  // Fetch ongoing events first (Next.js 16: data access before Date)
+  const ongoingEvents = await db.query.events.findMany({
+    where: eq(events.status, 'ongoing'),
     orderBy: [asc(events.startDate)],
   })
 
-  return ongoing
+  const now = new Date()
+
+  // Filter to those actually ongoing
+  return ongoingEvents.filter(
+    (e) => e.startDate && e.endDate && new Date(e.startDate) <= now && new Date(e.endDate) >= now
+  )
 })
 
 /**
  * Get recent events (last 30 days)
  */
 export const getRecentEvents = cache(async () => {
+  // Fetch all recent events first (Next.js 16: data access before Date)
+  const allRecent = await db.query.events.findMany({
+    orderBy: [desc(events.createdAt)],
+    limit: 50,
+  })
+
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-  const recent = await db.query.events.findMany({
-    where: gte(events.createdAt, thirtyDaysAgo),
-    orderBy: [desc(events.createdAt)],
-    limit: 10,
-  })
-
-  return recent
+  // Filter to last 30 days
+  return allRecent.filter((e) => e.createdAt && new Date(e.createdAt) >= thirtyDaysAgo).slice(0, 10)
 })
 
 // ============================================================================

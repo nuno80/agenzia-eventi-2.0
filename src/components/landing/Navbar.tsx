@@ -9,9 +9,10 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from '@heroui/navbar'
-import { ArrowRight, Phone } from 'lucide-react'
+import { ArrowRight, LogIn, LogOut, Phone, User } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
+import { signOut, useSession } from '@/lib/auth-client'
 
 type MenuItem = {
   name: string
@@ -21,9 +22,14 @@ type MenuItem = {
 
 const CustomNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { data: session, isPending } = useSession()
+
+  // Check if user is admin
+  const isAdmin = session?.user && (session.user as { role?: string }).role === 'admin'
 
   const menuItems: MenuItem[] = [
-    { name: 'Dashboard', href: '/dashboard' },
+    // Dashboard only visible to admins
+    ...(isAdmin ? [{ name: 'Dashboard', href: '/dashboard' }] : []),
     { name: 'Servizi', id: 'services' },
     { name: 'Processo', id: 'process' },
     { name: 'Casi Studio', id: 'case-studies' },
@@ -39,6 +45,16 @@ const CustomNavbar = () => {
       element.scrollIntoView({ behavior: 'smooth' })
       setIsMenuOpen(false)
     }
+  }
+
+  const handleLogout = async () => {
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = '/'
+        },
+      },
+    })
   }
 
   return (
@@ -80,6 +96,36 @@ const CustomNavbar = () => {
       </NavbarContent>
 
       <NavbarContent justify="end">
+        {/* Auth buttons */}
+        {!isPending &&
+          (session ? (
+            <>
+              <NavbarItem className="hidden md:flex items-center gap-2 text-slate-600">
+                <User size={16} />
+                <span className="text-sm">{session.user.name || session.user.email}</span>
+              </NavbarItem>
+              <NavbarItem>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 text-slate-700 hover:text-red-600 transition-colors px-3 py-2 rounded-md border border-slate-200 hover:border-red-300"
+                >
+                  <LogOut size={16} />
+                  <span className="hidden md:inline">Logout</span>
+                </button>
+              </NavbarItem>
+            </>
+          ) : (
+            <NavbarItem>
+              <Link
+                href="/login"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition-colors"
+              >
+                <LogIn size={16} />
+                <span>Accedi</span>
+              </Link>
+            </NavbarItem>
+          ))}
+
         <NavbarItem className="hidden lg:flex">
           <button
             onClick={() => handleScrollToSection('contact-form')}
@@ -118,6 +164,30 @@ const CustomNavbar = () => {
             )}
           </NavbarMenuItem>
         ))}
+
+        {/* Mobile auth */}
+        {!isPending && (
+          <NavbarMenuItem>
+            {session ? (
+              <button
+                onClick={handleLogout}
+                className="w-full mt-2 flex items-center justify-center gap-2 text-red-600 border border-red-200 px-4 py-2 rounded-md transition-colors"
+              >
+                <LogOut size={16} />
+                Logout ({session.user.email})
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="w-full mt-2 flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition-colors"
+              >
+                <LogIn size={16} />
+                Accedi
+              </Link>
+            )}
+          </NavbarMenuItem>
+        )}
+
         <NavbarMenuItem>
           <button
             onClick={() => handleScrollToSection('contact-form')}

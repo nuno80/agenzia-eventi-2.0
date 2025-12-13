@@ -8,11 +8,14 @@
  * - Manages mobile menu state (isMobileMenuOpen)
  * - Passes callbacks to Sidebar and Header components
  * - Needs useState for interactive UI state management
+ *
+ * PROTECTION: AdminGuard restricts access to admin users only
  */
 
 'use client'
 
 import { Suspense, useState } from 'react'
+import { AdminGuard } from '@/components/auth/AdminGuard'
 import { Header } from '@/components/dashboard/Header'
 import { Sidebar } from '@/components/dashboard/Sidebar'
 
@@ -20,24 +23,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Sidebar - Fixed on desktop, overlay on mobile */}
-      <Suspense
-        fallback={
-          <div className="hidden lg:block lg:w-64 lg:fixed lg:inset-y-0 lg:z-50 bg-white border-r" />
-        }
-      >
-        <Sidebar isMobileOpen={isMobileMenuOpen} onMobileClose={() => setIsMobileMenuOpen(false)} />
-      </Suspense>
+    <AdminGuard>
+      <div className="min-h-screen bg-gray-50">
+        {/* Sidebar - Fixed on desktop, overlay on mobile */}
+        <Suspense
+          fallback={
+            <div className="hidden lg:block lg:w-64 lg:fixed lg:inset-y-0 lg:z-50 bg-white border-r" />
+          }
+        >
+          <Sidebar
+            isMobileOpen={isMobileMenuOpen}
+            onMobileClose={() => setIsMobileMenuOpen(false)}
+          />
+        </Suspense>
 
-      {/* Main content area - Offset by sidebar width on desktop */}
-      <div className="lg:pl-64">
-        {/* Sticky header */}
-        <Header onMobileMenuToggle={() => setIsMobileMenuOpen(true)} />
+        {/* Main content area - Offset by sidebar width on desktop */}
+        <div className="lg:pl-64">
+          {/* Sticky header */}
+          <Header onMobileMenuToggle={() => setIsMobileMenuOpen(true)} />
 
-        {/* Page content */}
-        <main className="p-4 lg:p-6">{children}</main>
+          {/* Page content */}
+          <main className="p-4 lg:p-6">{children}</main>
+        </div>
       </div>
-    </div>
+    </AdminGuard>
   )
 }

@@ -10,7 +10,7 @@
  * - Stats and filters
  */
 
-import { and, asc, eq, gte, lte } from 'drizzle-orm'
+import { asc, eq } from 'drizzle-orm'
 import { cache } from 'react'
 import { db, deadlines } from '@/db'
 
@@ -99,6 +99,7 @@ export const getDeadlineById = cache(async (id: string): Promise<DeadlineDTO | n
 
   if (!row) return null
 
+  // Fix generic type or explicitly cast row.event check
   return toDTO(row, row.event)
 })
 
@@ -134,16 +135,9 @@ export const getAllDeadlines = cache(async (): Promise<DeadlineDTO[]> => {
  * Returns deadlines due in next 7 days that are still pending
  */
 export const getUrgentDeadlines = cache(async () => {
-  const now = new Date()
-  const sevenDaysFromNow = new Date()
-  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7)
-
-  const urgent = await db.query.deadlines.findMany({
-    where: and(
-      gte(deadlines.dueDate, now),
-      lte(deadlines.dueDate, sevenDaysFromNow),
-      eq(deadlines.status, 'pending')
-    ),
+  // First fetch all pending deadlines (Next.js 16: data access before Date)
+  const allPending = await db.query.deadlines.findMany({
+    where: eq(deadlines.status, 'pending'),
     orderBy: [asc(deadlines.dueDate)],
     with: {
       event: {
@@ -156,6 +150,17 @@ export const getUrgentDeadlines = cache(async () => {
         },
       },
     },
+  })
+
+  // Now we can use Date
+  const now = new Date()
+  const sevenDaysFromNow = new Date()
+  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7)
+
+  // Filter to urgent ones
+  const urgent = allPending.filter((d) => {
+    const dueDate = new Date(d.dueDate)
+    return dueDate >= now && dueDate <= sevenDaysFromNow
   })
 
   return urgent.map((row) => toDTO(row, row.event))
@@ -166,10 +171,9 @@ export const getUrgentDeadlines = cache(async () => {
  * Returns pending deadlines past their due date
  */
 export const getOverdueDeadlines = cache(async () => {
-  const now = new Date()
-
-  const overdue = await db.query.deadlines.findMany({
-    where: and(lte(deadlines.dueDate, now), eq(deadlines.status, 'pending')),
+  // First fetch all pending deadlines (Next.js 16: data access before Date)
+  const allPending = await db.query.deadlines.findMany({
+    where: eq(deadlines.status, 'pending'),
     orderBy: [asc(deadlines.dueDate)],
     with: {
       event: {
@@ -183,6 +187,12 @@ export const getOverdueDeadlines = cache(async () => {
       },
     },
   })
+
+  // Now we can use Date
+  const now = new Date()
+
+  // Filter to overdue ones
+  const overdue = allPending.filter((d) => new Date(d.dueDate) < now)
 
   return overdue.map((row) => toDTO(row, row.event))
 })

@@ -5,6 +5,14 @@
     {
       "date": "2025-12-13",
       "items": [
+        "auth-1 completato: Better Auth integration con Google OAuth e Email/Password",
+        "Implementati: src/lib/auth.ts, src/lib/auth-client.ts, src/app/api/auth/[...all]/route.ts",
+        "Features: Login page, Signup page, AdminGuard component per protezione dashboard",
+        "New: Dashboard accessibile solo agli admin - AdminGuard wrappa layout",
+        "New: Scripts set-admin.ts per promuovere utenti ad admin da CLI",
+        "New: Navbar landing con Login/Logout dinamico e link Dashboard solo per admin",
+        "Fix: Next.js 16 prerender - new Date() dopo data access in DAL (events.ts, deadlines.ts)",
+        "Doc: Aggiornata guida guide/guida-betterauth.md con implementazione completa",
         "other-9 completato: Settings DB persistence",
         "Implementati: DB schema organization_settings, DAL settings.ts, server actions update",
         "Features: profile settings + notification settings persistenza su database invece di localStorage",

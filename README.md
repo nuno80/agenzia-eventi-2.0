@@ -99,7 +99,50 @@ TURSO_AUTH_TOKEN=your-auth-token-here
 
 # Vercel Blob (required for file uploads)
 BLOB_READ_WRITE_TOKEN=your_actual_vercel_blob_token_here
+
+# Better Auth (authentication)
+BETTER_AUTH_SECRET=your-secret-here  # Generate with: openssl rand -base64 32
+BETTER_AUTH_URL=http://localhost:3000
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 ```
+
+### 🔐 Google OAuth Credentials Setup
+
+Per configurare l'autenticazione Google OAuth:
+
+#### 1. Google Cloud Console
+1. Vai a https://console.cloud.google.com
+2. Crea un nuovo progetto o seleziona uno esistente
+
+#### 2. Abilita le API
+1. Menu → **"API e servizi"** → **"Libreria"**
+2. Cerca e abilita **"Google+ API"**
+
+#### 3. Configura Schermata di Consenso OAuth
+1. **"API e servizi"** → **"Schermata consenso OAuth"**
+2. Seleziona **"Esterno"**, poi **"Crea"**
+3. Compila nome app, email assistenza e sviluppatore
+4. Salva e continua
+
+#### 4. Crea Credenziali OAuth
+1. **"API e servizi"** → **"Credenziali"**
+2. **"+ Crea credenziali"** → **"ID client OAuth"**
+3. Tipo: **Applicazione Web**
+4. Nome: `EventHub Web Client`
+5. URI di reindirizzamento autorizzati:
+   ```
+   http://localhost:3000/api/auth/callback/google
+   ```
+6. Clicca **"Crea"** e copia Client ID + Secret
+
+#### 5. Genera Better Auth Secret
+```bash
+openssl rand -base64 32
+```
+
+#### 6. Aggiorna .env.local
+Copia le credenziali nel file `.env.local`.
 
 > **Important**: Make sure to use `TURSO_CONNECTION_URL` (not `TURSO_DATABASE_URL`)
 
