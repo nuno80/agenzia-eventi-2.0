@@ -1,0 +1,162 @@
+# GEMINI.md - Guida per AI Developer
+
+> File snello per guidare l'AI nello sviluppo. Per dettagli, consultare `docs/`.
+
+---
+
+## 🚀 Inizio Sessione
+
+Prima di qualsiasi attività:
+
+1. **Leggere README.md** - Tech stack e struttura progetto
+2. **Consultare docs/** a seconda del task:
+   - `docs/nextjs16-reference.md` → Architettura e pattern Next.js 16
+   - `docs/database.md` → Drizzle ORM + Turso
+   - `docs/authentication.md` → Better Auth (opt-in)
+   - `docs/code-style.md` → Biome e convenzioni
+
+---
+
+## 🏗️ Tech Stack
+
+| Categoria | Tecnologia |
+|-----------|------------|
+| Framework | Next.js 16 (App Router) |
+| UI | React 19, Tailwind v4, shadcn/ui |
+| Database | Turso (LibSQL) + Drizzle ORM |
+| Auth | Better Auth (disabilitata di default) |
+| File Storage | Vercel Blob |
+| Code Quality | Biome + Husky |
+| Package Manager | pnpm (obbligatorio) |
+
+---
+
+## 🎯 Principi Fondamentali
+
+```
+1. Server-First Architecture
+   → Default: Server Components
+   → "use client" solo per interattività
+
+2. Type Safety
+   → Zero `any` (usare `unknown` + type guards)
+   → Zod per validazione input
+
+3. Security by Default
+   → Validazione: SEMPRE
+   → DTO pattern: mai esporre oggetti DB
+
+4. Separation of Concerns
+   Components → Server Actions → DAL (Data Access Layer)
+```
+
+---
+
+## 📁 Struttura Progetto
+
+```
+src/
+├── app/              # Pages e API routes
+│   ├── (auth)/       # Login, Signup
+│   ├── (dashboard)/  # Dashboard protetta
+│   └── api/          # API endpoints
+├── components/       # Componenti React
+│   ├── ui/           # shadcn/ui
+│   └── dashboard/    # Componenti dashboard
+├── lib/
+│   ├── auth.ts       # Configurazione Better Auth
+│   ├── config.ts     # Auth opt-in flag
+│   ├── dal/          # Data Access Layer
+│   └── validations/  # Schemi Zod
+└── db/               # Schemi Drizzle
+```
+
+---
+
+## 🔐 Auth Opt-in
+
+L'autenticazione è **disabilitata di default** per facilitare sviluppo e test.
+
+```typescript
+// src/lib/config.ts
+export const config = {
+  auth: {
+    enabled: false,  // Cambiare a true per abilitare
+  },
+}
+```
+
+Per abilitare: vedi `docs/authentication.md`
+
+---
+
+## ⌨️ Comandi Essenziali
+
+```bash
+# Sviluppo
+pnpm dev              # Start server
+
+# Code Quality
+pnpm check            # Verifica errori
+pnpm check:fix        # Corregge errori
+pnpm check:fix:unsafe # Fix unsafe (usa prima questo!)
+
+# Database
+pnpm db:push          # Push schema
+pnpm db:studio        # Apri Drizzle Studio
+```
+
+---
+
+## 📄 Template Documentazione Componenti
+
+```typescript
+/**
+ * FILE: src/components/[path]/ComponentName.tsx
+ * TYPE: Server | Client Component
+ *
+ * WHY CLIENT: (se applicabile)
+ * - Motivo 1
+ * - Motivo 2
+ *
+ * PROPS:
+ * - prop1: tipo - descrizione
+ *
+ * USAGE:
+ * <ComponentName prop1={value} />
+ */
+```
+
+---
+
+## 🎯 Decision Matrix
+
+| Scenario | Soluzione | Docs |
+|----------|-----------|------|
+| Serve useState? | `"use client"` | nextjs16-reference.md |
+| Fetch dati async? | Server Component | nextjs16-reference.md |
+| Form submission? | Server Action | nextjs16-reference.md |
+| Operazioni DB? | DAL pattern | database.md |
+| Upload file? | Vercel Blob | README.md |
+
+---
+
+## ⚠️ Regole Non Negoziabili
+
+1. **Zero `any`** - Usa `unknown` o tipi espliciti
+2. **Validazione input** - Sempre con Zod
+3. **pnpm** - Mai npm o yarn
+4. **shadcn/ui** - Per componenti UI, mai raw HTML
+5. **Biome** - Deve passare prima di ogni commit
+
+---
+
+## 📚 Riferimenti Dettagliati
+
+Per approfondimenti, consultare sempre la cartella `docs/`:
+
+- [Environment Setup](docs/environment-setup.md) - Credenziali
+- [Database](docs/database.md) - Drizzle + Turso
+- [Authentication](docs/authentication.md) - Better Auth
+- [Code Style](docs/code-style.md) - Biome
+- [Next.js 16](docs/nextjs16-reference.md) - Pattern e best practice
