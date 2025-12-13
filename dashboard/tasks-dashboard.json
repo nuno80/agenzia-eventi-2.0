@@ -11,7 +11,9 @@
         "Fix: Aggiunto Toaster component (Sonner) al root layout per feedback visivo salvataggio",
         "New: Pagina Guida (/guida) con documentazione completa per ogni sezione dashboard",
         "New: Route /dashboard dedicata con StatsOverview, UrgentDeadlines, UpcomingEvents, PaymentsWidget",
-        "Fix: Corretti link Dashboard nella Sidebar e Navbar landing page"
+        "Fix: Corretti link Dashboard nella Sidebar e Navbar landing page",
+        "New: Menu utente reale - Header e Sidebar mostrano nome organizzazione dalle impostazioni",
+        "New: Notifiche reali - scadenze urgenti e pagamenti scaduti dal database via API /api/header-data"
       ]
     },
     {

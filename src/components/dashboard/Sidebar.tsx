@@ -41,7 +41,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 interface SidebarProps {
@@ -125,6 +125,29 @@ const navigation: NavItem[] = [
 export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
   const pathname = usePathname()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
+  const [orgData, setOrgData] = useState({
+    organizationName: 'EventHub',
+    organizationEmail: '',
+  })
+
+  // Fetch organization data
+  useEffect(() => {
+    async function fetchOrgData() {
+      try {
+        const response = await fetch('/api/header-data')
+        if (response.ok) {
+          const data = await response.json()
+          setOrgData({
+            organizationName: data.organizationName || 'EventHub',
+            organizationEmail: data.organizationEmail || '',
+          })
+        }
+      } catch {
+        // Keep defaults on error
+      }
+    }
+    fetchOrgData()
+  }, [])
 
   const toggleExpanded = (label: string) => {
     setExpandedItems((prev) =>
@@ -273,15 +296,21 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
           </ul>
         </nav>
 
-        {/* Footer - User info placeholder */}
+        {/* Footer - Organization info */}
         <div className="p-4 border-t border-gray-200">
           <div className="flex items-center space-x-3 px-3 py-2">
-            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-              <span className="text-sm font-medium text-gray-600">A</span>
+            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+              <span className="text-sm font-medium text-white" suppressHydrationWarning>
+                {orgData.organizationName.charAt(0).toUpperCase()}
+              </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">Admin User</p>
-              <p className="text-xs text-gray-500 truncate">admin@eventhub.com</p>
+              <p className="text-sm font-medium text-gray-900 truncate" suppressHydrationWarning>
+                {orgData.organizationName}
+              </p>
+              <p className="text-xs text-gray-500 truncate" suppressHydrationWarning>
+                {orgData.organizationEmail || 'Organizzatore'}
+              </p>
             </div>
           </div>
         </div>

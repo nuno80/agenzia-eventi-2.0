@@ -1,5 +1,5 @@
 /**
- * src/components/dashboard/events/tabs/Header.tsx
+ * src/components/dashboard/Header.tsx
  * COMPONENT: Header
  * TYPE: Client Component
  *
@@ -7,6 +7,7 @@
  * - Handles mobile menu toggle interaction
  * - Manages search input state
  * - Dropdown menus for notifications and user menu
+ * - Fetches organization data on mount
  *
  * PROPS:
  * - onMobileMenuToggle: () => void - Callback to open mobile sidebar
@@ -18,8 +19,8 @@
  * FEATURES:
  * - Mobile hamburger menu
  * - Search bar (desktop only, placeholder for now)
- * - Notifications bell with badge
- * - User dropdown menu
+ * - Notifications bell with real data from API
+ * - User dropdown menu with organization name
  *
  * USAGE:
  * <Header onMobileMenuToggle={() => setIsMobileMenuOpen(true)} />
@@ -28,6 +29,7 @@
 'use client'
 
 import { Bell, ChevronDown, LogOut, Menu, Search, Settings, User } from 'lucide-react'
+import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -35,13 +37,54 @@ interface HeaderProps {
   onMobileMenuToggle: () => void
 }
 
+interface Notification {
+  id: string
+  title: string
+  message: string
+  time: string
+  unread: boolean
+  type: 'deadline' | 'payment' | 'info'
+  link?: string
+}
+
+interface HeaderData {
+  organizationName: string
+  organizationEmail: string | null
+  notifications: Notification[]
+}
+
 export function Header({ onMobileMenuToggle }: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [headerData, setHeaderData] = useState<HeaderData>({
+    organizationName: 'EventHub',
+    organizationEmail: null,
+    notifications: [],
+  })
+  const [isLoading, setIsLoading] = useState(true)
 
   const notificationsRef = useRef<HTMLDivElement>(null)
   const userMenuRef = useRef<HTMLDivElement>(null)
+
+  // Fetch header data on mount
+  useEffect(() => {
+    async function fetchHeaderData() {
+      try {
+        const response = await fetch('/api/header-data')
+        if (response.ok) {
+          const data = await response.json()
+          setHeaderData(data)
+        }
+      } catch (error) {
+        console.error('Failed to fetch header data:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchHeaderData()
+  }, [])
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -58,32 +101,17 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Mock notifications (sostituire con dati reali)
-  const notifications = [
-    {
-      id: 1,
-      title: 'Nuova iscrizione',
-      message: 'Giovanni Rossi si è iscritto a "Tech Summit 2024"',
-      time: '5 min fa',
-      unread: true,
-    },
-    {
-      id: 2,
-      title: 'Scadenza imminente',
-      message: 'Il contratto con lo sponsor scade tra 2 giorni',
-      time: '1 ora fa',
-      unread: true,
-    },
-    {
-      id: 3,
-      title: 'Budget aggiornato',
-      message: 'Il budget per "Workshop AI" è stato modificato',
-      time: '3 ore fa',
-      unread: false,
-    },
-  ]
+  const unreadCount = headerData.notifications.filter((n) => n.unread).length
 
-  const unreadCount = notifications.filter((n) => n.unread).length
+  // Get initials from organization name
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((word) => word[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase()
+  }
 
   return (
     <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
@@ -147,35 +175,42 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
                 </div>
 
                 <div className="max-h-96 overflow-y-auto">
-                  {notifications.length === 0 ? (
+                  {headerData.notifications.length === 0 ? (
                     <div className="px-4 py-8 text-center">
                       <Bell className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                      <p className="text-sm text-gray-500">Nessuna notifica</p>
+                      <p className="text-sm text-gray-500">
+                        {isLoading ? 'Caricamento...' : 'Nessuna notifica'}
+                      </p>
                     </div>
                   ) : (
                     <ul>
-                      {notifications.map((notification) => (
+                      {headerData.notifications.map((notification) => (
                         <li key={notification.id}>
-                          <button
-                            className={cn(
-                              'w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors border-l-4',
-                              notification.unread
-                                ? 'border-blue-500 bg-blue-50/50'
-                                : 'border-transparent'
-                            )}
-                          >
-                            <div className="flex items-start space-x-3">
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900 truncate">
-                                  {notification.title}
-                                </p>
-                                <p className="text-sm text-gray-600 mt-0.5">
-                                  {notification.message}
-                                </p>
-                                <p className="text-xs text-gray-400 mt-1">{notification.time}</p>
-                              </div>
+                          {notification.link ? (
+                            <Link
+                              href={notification.link}
+                              onClick={() => setShowNotifications(false)}
+                              className={cn(
+                                'block w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors border-l-4',
+                                notification.unread
+                                  ? 'border-blue-500 bg-blue-50/50'
+                                  : 'border-transparent'
+                              )}
+                            >
+                              <NotificationContent notification={notification} />
+                            </Link>
+                          ) : (
+                            <div
+                              className={cn(
+                                'w-full px-4 py-3 text-left border-l-4',
+                                notification.unread
+                                  ? 'border-blue-500 bg-blue-50/50'
+                                  : 'border-transparent'
+                              )}
+                            >
+                              <NotificationContent notification={notification} />
                             </div>
-                          </button>
+                          )}
                         </li>
                       ))}
                     </ul>
@@ -183,9 +218,13 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
                 </div>
 
                 <div className="px-4 py-2 border-t border-gray-200">
-                  <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setShowNotifications(false)}
+                    className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                  >
                     Visualizza tutte
-                  </button>
+                  </Link>
                 </div>
               </div>
             )}
@@ -198,11 +237,15 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
               className="flex items-center space-x-2 lg:space-x-3 p-1 lg:p-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
               <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium text-white">A</span>
+                <span className="text-sm font-medium text-white">
+                  {isLoading ? '...' : getInitials(headerData.organizationName)}
+                </span>
               </div>
               <div className="hidden lg:block text-left">
-                <p className="text-sm font-medium text-gray-900">Admin User</p>
-                <p className="text-xs text-gray-500">Administrator</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {isLoading ? 'Caricamento...' : headerData.organizationName}
+                </p>
+                <p className="text-xs text-gray-500">Organizzatore</p>
               </div>
               <ChevronDown className="hidden lg:block w-4 h-4 text-gray-500" />
             </button>
@@ -212,22 +255,32 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
               <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                 {/* User info (mobile only) */}
                 <div className="lg:hidden px-4 py-3 border-b border-gray-200">
-                  <p className="text-sm font-medium text-gray-900">Admin User</p>
-                  <p className="text-xs text-gray-500">admin@eventhub.com</p>
+                  <p className="text-sm font-medium text-gray-900">{headerData.organizationName}</p>
+                  {headerData.organizationEmail && (
+                    <p className="text-xs text-gray-500">{headerData.organizationEmail}</p>
+                  )}
                 </div>
 
                 <ul>
                   <li>
-                    <button className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                    <Link
+                      href="/impostazioni"
+                      onClick={() => setShowUserMenu(false)}
+                      className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
                       <User className="w-4 h-4" />
                       <span>Profilo</span>
-                    </button>
+                    </Link>
                   </li>
                   <li>
-                    <button className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                    <Link
+                      href="/impostazioni"
+                      onClick={() => setShowUserMenu(false)}
+                      className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
                       <Settings className="w-4 h-4" />
                       <span>Impostazioni</span>
-                    </button>
+                    </Link>
                   </li>
                 </ul>
 
@@ -257,5 +310,17 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
         </div>
       </div>
     </header>
+  )
+}
+
+function NotificationContent({ notification }: { notification: Notification }) {
+  return (
+    <div className="flex items-start space-x-3">
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-gray-900 truncate">{notification.title}</p>
+        <p className="text-sm text-gray-600 mt-0.5">{notification.message}</p>
+        <p className="text-xs text-gray-400 mt-1">{notification.time}</p>
+      </div>
+    </div>
   )
 }
