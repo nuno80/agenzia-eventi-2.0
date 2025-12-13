@@ -4,107 +4,14 @@
  * PAGE: Dashboard Home
  * TYPE: Server Component
  *
- * WHY SERVER:
- * - Fetches data from database
- * - Renders overview widgets
- * - No client-side interactivity needed
- *
- * FEATURES:
- * - Statistics overview (events by status)
- * - Urgent deadlines widget
- * - Upcoming events preview
- * - Payments widget
- *
- * USAGE:
- * Automatically rendered at /dashboard route
+ * PURPOSE: Simple starter dashboard with welcome message
  */
-
-import { Suspense } from 'react'
-import { PaymentsWidget } from '@/components/dashboard/home/PaymentsWidget'
-import { StatsOverview } from '@/components/dashboard/home/StatsOverview'
-import { UpcomingEvents } from '@/components/dashboard/home/UpcomingEvents'
-import { UrgentDeadlines } from '@/components/dashboard/home/UrgentDeadlines'
-import { getUrgentDeadlines } from '@/lib/dal/deadlines'
-import { getEventStats, getUpcomingEvents } from '@/lib/dal/events'
 
 export const metadata = {
-  title: 'Dashboard | EventHub',
-  description: 'Panoramica eventi, scadenze e statistiche',
+  title: 'Dashboard | My App',
+  description: 'Welcome to your dashboard',
 }
 
-/**
- * Loading skeleton for the dashboard
- */
-function DashboardSkeleton() {
-  return (
-    <div className="space-y-6">
-      {/* Stats skeleton */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse">
-            <div className="w-12 h-12 bg-gray-200 rounded-lg mb-4" />
-            <div className="h-8 bg-gray-200 rounded w-16 mb-2" />
-            <div className="h-4 bg-gray-200 rounded w-24" />
-          </div>
-        ))}
-      </div>
-
-      {/* Deadlines skeleton */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse">
-        <div className="h-6 bg-gray-200 rounded w-48 mb-4" />
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-16 bg-gray-100 rounded" />
-          ))}
-        </div>
-      </div>
-
-      {/* Events skeleton */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse">
-        <div className="h-6 bg-gray-200 rounded w-48 mb-4" />
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-20 bg-gray-100 rounded" />
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/**
- * Dashboard content with data fetching
- */
-async function DashboardContent() {
-  const [stats, deadlines, events] = await Promise.all([
-    getEventStats(),
-    getUrgentDeadlines(),
-    getUpcomingEvents(),
-  ])
-
-  return (
-    <div className="space-y-6">
-      {/* Stats Overview */}
-      <StatsOverview stats={stats} />
-
-      {/* Payments Widget */}
-      <PaymentsWidget />
-
-      {/* Two column layout for medium+ screens */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Urgent Deadlines */}
-        <UrgentDeadlines deadlines={deadlines} />
-
-        {/* Upcoming Events */}
-        <UpcomingEvents events={events} />
-      </div>
-    </div>
-  )
-}
-
-/**
- * Main Dashboard Page
- */
 export default function DashboardPage() {
   return (
     <div className="space-y-6">
@@ -112,14 +19,45 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
         <p className="text-sm text-gray-600 mt-1">
-          Panoramica eventi, scadenze urgenti e statistiche
+          Benvenuto nella tua dashboard
         </p>
       </div>
 
-      {/* Content with Suspense */}
-      <Suspense fallback={<DashboardSkeleton />}>
-        <DashboardContent />
-      </Suspense>
+      {/* Welcome Card */}
+      <div className="bg-white rounded-lg border border-gray-200 p-8">
+        <div className="text-center max-w-2xl mx-auto">
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl">🚀</span>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Starter Kit Pronto!
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Questo è il tuo punto di partenza. Aggiungi widget, grafici e
+            funzionalità secondo le tue necessità.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <h3 className="font-medium text-gray-900 mb-1">📁 Files</h3>
+              <p className="text-sm text-gray-600">
+                Gestione file con Vercel Blob
+              </p>
+            </div>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <h3 className="font-medium text-gray-900 mb-1">🔐 Auth</h3>
+              <p className="text-sm text-gray-600">
+                Better Auth pronto (opt-in)
+              </p>
+            </div>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <h3 className="font-medium text-gray-900 mb-1">🗄️ Database</h3>
+              <p className="text-sm text-gray-600">
+                Drizzle ORM + Turso
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

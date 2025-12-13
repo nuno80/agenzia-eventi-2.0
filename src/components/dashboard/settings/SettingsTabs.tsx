@@ -4,35 +4,26 @@
  * WHY: Interactive tab navigation with state management
  *
  * FEATURES:
- * - 3 tabs: Profilo, Notifiche, Template Email
- * - State management for active tab
- * - Responsive design
- * - Accepts initial settings from server (DB)
+ * - Profile settings tab
+ * - Expandable for additional tabs
  */
 
 'use client'
 
+import type { ProfileSettings } from '@/lib/validations/settings'
 import { useState } from 'react'
-import type { NotificationSettings, ProfileSettings } from '@/lib/validations/settings'
-import { EmailTemplateSettings } from './EmailTemplateSettings'
-import { NotificationSettingsForm } from './NotificationSettings'
 import { ProfileSettingsForm } from './ProfileSettings'
 
-type Tab = 'profile' | 'notifications' | 'templates'
+type Tab = 'profile'
 
 interface SettingsTabsProps {
   initialProfile: ProfileSettings
-  initialNotifications: NotificationSettings
 }
 
-export function SettingsTabs({ initialProfile, initialNotifications }: SettingsTabsProps) {
+export function SettingsTabs({ initialProfile }: SettingsTabsProps) {
   const [activeTab, setActiveTab] = useState<Tab>('profile')
 
-  const tabs = [
-    { id: 'profile' as const, label: 'Profilo', icon: '👤' },
-    { id: 'notifications' as const, label: 'Notifiche', icon: '🔔' },
-    { id: 'templates' as const, label: 'Template Email', icon: '📧' },
-  ]
+  const tabs = [{ id: 'profile' as const, label: 'Profilo', icon: '👤' }]
 
   return (
     <div className="space-y-6">
@@ -64,10 +55,6 @@ export function SettingsTabs({ initialProfile, initialNotifications }: SettingsT
       {/* Tab Content */}
       <div className="mt-6">
         {activeTab === 'profile' && <ProfileSettingsForm initialSettings={initialProfile} />}
-        {activeTab === 'notifications' && (
-          <NotificationSettingsForm initialSettings={initialNotifications} />
-        )}
-        {activeTab === 'templates' && <EmailTemplateSettings />}
       </div>
     </div>
   )

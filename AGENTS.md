@@ -1,4 +1,4 @@
-# Event Manager App (Guida Completa)
+# Next.js 16 Starter Kit (AI Guide)
 
 ## 🚀 INIZIO SESSIONE - PROCEDURA OBBLIGATORIA
 
@@ -7,7 +7,7 @@
 1. **STEP 1 - Fondamenta Architetturali** ⭐ PRIORITÀ MASSIMA
 
 ```
-   📖 Leggere: guide/nextjs16-quick-reference.md
+   📖 Leggere: docs/nextjs16-reference.md
 
    Focus su:
    - Mental Model (Server vs Client Components)
@@ -21,12 +21,12 @@
 2. **STEP 2 - Contesto Progetto**
 
 ```
-   📖 Leggere: dashboard/prompt.md
+   📖 Leggere: README.md e docs/
 
-   Per chiarire:
-   - Obiettivi specifici del progetto
-   - Contesto di business
-   - Stakeholder e requirements
+   Per capire:
+   - Tech stack utilizzato
+   - Struttura del progetto
+   - Come configurare l'ambiente
 
 ```
 

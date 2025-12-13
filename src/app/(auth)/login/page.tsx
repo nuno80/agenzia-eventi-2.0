@@ -87,9 +87,9 @@ export default function LoginPage() {
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">EventHub</h1>
+          <h1 className="text-3xl font-bold text-gray-900">My App</h1>
           <h2 className="mt-6 text-2xl font-semibold text-gray-900">Accedi al tuo account</h2>
-          <p className="mt-2 text-sm text-gray-600">Gestisci i tuoi eventi in modo professionale</p>
+          <p className="mt-2 text-sm text-gray-600">Accedi per iniziare</p>
         </div>
 
         {/* Error Message */}

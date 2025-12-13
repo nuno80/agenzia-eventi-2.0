@@ -24,25 +24,11 @@
 
 'use client'
 
-import {
-  Building2,
-  Calendar,
-  ChevronDown,
-  Euro,
-  FileText,
-  FolderOpen,
-  HelpCircle,
-  LayoutDashboard,
-  Mic,
-  Settings,
-  Users,
-  UsersRound,
-  X,
-} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { ChevronDown, FolderOpen, LayoutDashboard, Settings, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { cn } from '@/lib/utils'
+import { useState } from 'react'
 
 interface SidebarProps {
   isMobileOpen: boolean
@@ -64,48 +50,6 @@ const navigation: NavItem[] = [
     icon: LayoutDashboard,
   },
   {
-    label: 'Eventi',
-    href: '/eventi',
-    icon: Calendar,
-  },
-  {
-    label: 'Persone',
-    href: '/persone',
-    icon: Users,
-    children: [
-      {
-        label: 'Partecipanti',
-        href: '/persone/partecipanti',
-        icon: Users,
-      },
-      {
-        label: 'Relatori',
-        href: '/persone/relatori',
-        icon: Mic,
-      },
-      {
-        label: 'Sponsor',
-        href: '/persone/sponsor',
-        icon: Building2,
-      },
-      {
-        label: 'Staff',
-        href: '/persone/staff',
-        icon: UsersRound,
-      },
-    ],
-  },
-  {
-    label: 'Finance',
-    href: '/finance',
-    icon: Euro,
-  },
-  {
-    label: 'Report',
-    href: '/finance/report',
-    icon: FileText,
-  },
-  {
     label: 'Files',
     href: '/files',
     icon: FolderOpen,
@@ -114,11 +58,6 @@ const navigation: NavItem[] = [
     label: 'Impostazioni',
     href: '/impostazioni',
     icon: Settings,
-  },
-  {
-    label: 'Guida',
-    href: '/guida',
-    icon: HelpCircle,
   },
 ]
 
@@ -129,25 +68,6 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
     organizationName: 'EventHub',
     organizationEmail: '',
   })
-
-  // Fetch organization data
-  useEffect(() => {
-    async function fetchOrgData() {
-      try {
-        const response = await fetch('/api/header-data')
-        if (response.ok) {
-          const data = await response.json()
-          setOrgData({
-            organizationName: data.organizationName || 'EventHub',
-            organizationEmail: data.organizationEmail || '',
-          })
-        }
-      } catch {
-        // Keep defaults on error
-      }
-    }
-    fetchOrgData()
-  }, [])
 
   const toggleExpanded = (label: string) => {
     setExpandedItems((prev) =>
@@ -190,9 +110,9 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
           <Link href="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-white" />
+              <LayoutDashboard className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">EventHub</span>
+            <span className="text-xl font-bold text-gray-900">My App</span>
           </Link>
 
           {/* Mobile close button */}

@@ -1,6 +1,7 @@
 {
-  "name": "starter-kit_4.0",
-  "version": "0.1.0",
+  "name": "nextjs16-starter-kit",
+  "version": "1.0.0",
+  "description": "Production-ready Next.js 16 starter kit with Better Auth, Drizzle ORM, and Vercel Blob",
   "private": true,
   "scripts": {
     "dev": "next dev",

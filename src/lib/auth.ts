@@ -10,9 +10,9 @@
  * - Server components: auth.api.getSession()
  */
 
+import { db } from '@/db'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { db } from '@/db'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -56,7 +56,7 @@ export const auth = betterAuth({
 
   // Callbacks
   callbacks: {
-    async onUserCreated(user) {
+    async onUserCreated(user: { email?: string }) {
       console.log('[BetterAuth] New user created:', user.email)
     },
   },

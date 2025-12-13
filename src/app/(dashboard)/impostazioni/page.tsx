@@ -4,17 +4,17 @@
  * WHY: Settings page with Suspense for data fetching
  *
  * FEATURES:
- * - 3 tabs: Profilo, Notifiche, Template Email
+ * - Profile settings tab
  * - Suspense boundary for loading state
  * - Server Component wrapper that fetches settings from DB
  */
 
-import { Suspense } from 'react'
 import { SettingsTabs } from '@/components/dashboard/settings/SettingsTabs'
 import { getOrganizationSettings } from '@/lib/dal/settings'
+import { Suspense } from 'react'
 
 export const metadata = {
-  title: 'Impostazioni | EventHub',
+  title: 'Impostazioni | My App',
   description: 'Gestisci le impostazioni della tua organizzazione',
 }
 
@@ -31,9 +31,7 @@ async function SettingsContent() {
   // Fetch settings from database
   const settings = await getOrganizationSettings()
 
-  return (
-    <SettingsTabs initialProfile={settings.profile} initialNotifications={settings.notifications} />
-  )
+  return <SettingsTabs initialProfile={settings.profile} />
 }
 
 export default function SettingsPage() {
@@ -42,7 +40,7 @@ export default function SettingsPage() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Impostazioni</h1>
         <p className="mt-2 text-gray-600">
-          Gestisci le impostazioni della tua organizzazione, notifiche e template email
+          Gestisci le impostazioni del tuo profilo
         </p>
       </div>
 
