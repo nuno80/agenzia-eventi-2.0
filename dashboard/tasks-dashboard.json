@@ -8,7 +8,10 @@
         "other-9 completato: Settings DB persistence",
         "Implementati: DB schema organization_settings, DAL settings.ts, server actions update",
         "Features: profile settings + notification settings persistenza su database invece di localStorage",
-        "Fix: Aggiunto Toaster component (Sonner) al root layout per feedback visivo salvataggio"
+        "Fix: Aggiunto Toaster component (Sonner) al root layout per feedback visivo salvataggio",
+        "New: Pagina Guida (/guida) con documentazione completa per ogni sezione dashboard",
+        "New: Route /dashboard dedicata con StatsOverview, UrgentDeadlines, UpcomingEvents, PaymentsWidget",
+        "Fix: Corretti link Dashboard nella Sidebar e Navbar landing page"
       ]
     },
     {

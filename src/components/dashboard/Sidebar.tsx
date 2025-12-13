@@ -31,6 +31,7 @@ import {
   Euro,
   FileText,
   FolderOpen,
+  HelpCircle,
   LayoutDashboard,
   Mic,
   Settings,
@@ -59,7 +60,7 @@ interface NavItem {
 const navigation: NavItem[] = [
   {
     label: 'Dashboard',
-    href: '/eventi',
+    href: '/dashboard',
     icon: LayoutDashboard,
   },
   {
@@ -101,7 +102,7 @@ const navigation: NavItem[] = [
   },
   {
     label: 'Report',
-    href: '/report',
+    href: '/finance/report',
     icon: FileText,
   },
   {
@@ -113,6 +114,11 @@ const navigation: NavItem[] = [
     label: 'Impostazioni',
     href: '/impostazioni',
     icon: Settings,
+  },
+  {
+    label: 'Guida',
+    href: '/guida',
+    icon: HelpCircle,
   },
 ]
 

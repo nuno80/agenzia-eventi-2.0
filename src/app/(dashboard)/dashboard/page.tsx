@@ -1,5 +1,5 @@
 /**
- * FILE: src/app/(dashboard)/page.tsx
+ * FILE: src/app/(dashboard)/dashboard/page.tsx
  *
  * PAGE: Dashboard Home
  * TYPE: Server Component
@@ -16,7 +16,7 @@
  * - Payments widget
  *
  * USAGE:
- * Automatically rendered at / route (dashboard home)
+ * Automatically rendered at /dashboard route
  */
 
 import { Suspense } from 'react'
