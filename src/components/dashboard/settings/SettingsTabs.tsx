@@ -7,18 +7,25 @@
  * - 3 tabs: Profilo, Notifiche, Template Email
  * - State management for active tab
  * - Responsive design
+ * - Accepts initial settings from server (DB)
  */
 
 'use client'
 
 import { useState } from 'react'
+import type { NotificationSettings, ProfileSettings } from '@/lib/validations/settings'
 import { EmailTemplateSettings } from './EmailTemplateSettings'
 import { NotificationSettingsForm } from './NotificationSettings'
 import { ProfileSettingsForm } from './ProfileSettings'
 
 type Tab = 'profile' | 'notifications' | 'templates'
 
-export function SettingsTabs() {
+interface SettingsTabsProps {
+  initialProfile: ProfileSettings
+  initialNotifications: NotificationSettings
+}
+
+export function SettingsTabs({ initialProfile, initialNotifications }: SettingsTabsProps) {
   const [activeTab, setActiveTab] = useState<Tab>('profile')
 
   const tabs = [
@@ -56,8 +63,10 @@ export function SettingsTabs() {
 
       {/* Tab Content */}
       <div className="mt-6">
-        {activeTab === 'profile' && <ProfileSettingsForm />}
-        {activeTab === 'notifications' && <NotificationSettingsForm />}
+        {activeTab === 'profile' && <ProfileSettingsForm initialSettings={initialProfile} />}
+        {activeTab === 'notifications' && (
+          <NotificationSettingsForm initialSettings={initialNotifications} />
+        )}
         {activeTab === 'templates' && <EmailTemplateSettings />}
       </div>
     </div>

@@ -6,11 +6,12 @@
  * FEATURES:
  * - 3 tabs: Profilo, Notifiche, Template Email
  * - Suspense boundary for loading state
- * - Server Component wrapper
+ * - Server Component wrapper that fetches settings from DB
  */
 
 import { Suspense } from 'react'
 import { SettingsTabs } from '@/components/dashboard/settings/SettingsTabs'
+import { getOrganizationSettings } from '@/lib/dal/settings'
 
 export const metadata = {
   title: 'Impostazioni | EventHub',
@@ -27,10 +28,12 @@ function SettingsSkeleton() {
 }
 
 async function SettingsContent() {
-  // TODO: Fetch user settings from database when auth is implemented
-  // For now, settings are managed client-side with localStorage
+  // Fetch settings from database
+  const settings = await getOrganizationSettings()
 
-  return <SettingsTabs />
+  return (
+    <SettingsTabs initialProfile={settings.profile} initialNotifications={settings.notifications} />
+  )
 }
 
 export default function SettingsPage() {

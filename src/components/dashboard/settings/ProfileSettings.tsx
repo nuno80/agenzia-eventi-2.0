@@ -1,40 +1,31 @@
 /**
  * FILE: src/components/dashboard/settings/ProfileSettings.tsx
  * TYPE: Client Component
- * WHY: Interactive form for profile settings with localStorage persistence
+ * WHY: Interactive form for profile settings with database persistence
  *
  * FEATURES:
  * - Form with validation
- * - localStorage persistence (temporary until auth)
+ * - Database persistence via server actions
  * - Toast notifications
  * - Logo upload placeholder
+ * - Accepts initial settings from server
  */
 
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { updateProfileSettings } from '@/app/actions/settings'
 import { Button } from '@/components/ui/button'
-import { defaultProfileSettings, type ProfileSettings } from '@/lib/validations/settings'
+import type { ProfileSettings } from '@/lib/validations/settings'
 
-const STORAGE_KEY = 'eventhub_profile_settings'
+interface ProfileSettingsFormProps {
+  initialSettings: ProfileSettings
+}
 
-export function ProfileSettingsForm() {
-  const [settings, setSettings] = useState<ProfileSettings>(defaultProfileSettings)
+export function ProfileSettingsForm({ initialSettings }: ProfileSettingsFormProps) {
+  const [settings, setSettings] = useState<ProfileSettings>(initialSettings)
   const [isLoading, setIsLoading] = useState(false)
-
-  // Load from localStorage on mount
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      try {
-        setSettings(JSON.parse(stored))
-      } catch (error) {
-        console.error('Failed to parse stored settings:', error)
-      }
-    }
-  }, [])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -45,11 +36,9 @@ export function ProfileSettingsForm() {
       const result = await updateProfileSettings(formData)
 
       if (result.success && result.data) {
-        // Save to localStorage
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(result.data))
         setSettings(result.data)
         toast.success('Impostazioni salvate con successo')
-      } else {
+      } else if (!result.success) {
         toast.error(result.error || 'Errore durante il salvataggio')
       }
     } catch (_error) {

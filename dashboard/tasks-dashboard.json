@@ -3,6 +3,14 @@
   "lastUpdated": "2025-12-08",
   "changelog": [
     {
+      "date": "2025-12-13",
+      "items": [
+        "other-9 completato: Settings DB persistence",
+        "Implementati: DB schema organization_settings, DAL settings.ts, server actions update",
+        "Features: profile settings + notification settings persistenza su database invece di localStorage"
+      ]
+    },
+    {
       "date": "2025-12-08",
       "items": [
         "finance-3 completato: Report Builder finanziario completo (/finance/report)",
@@ -680,7 +688,7 @@
     {
       "id": "other",
       "name": "Altri Moduli",
-      "progress": 50,
+      "progress": 100,
       "tasks": [
         {
           "id": "other-1",
@@ -745,13 +753,21 @@
           "complexity": "medium",
           "componentType": "Server Action",
           "description": "Upload foto staff, documenti, invoices"
+        },
+        {
+          "id": "other-9",
+          "name": "Settings DB persistence",
+          "status": "completed",
+          "complexity": "medium",
+          "componentType": "DAL + Server Action",
+          "description": "DB schema organization_settings, DAL settings.ts, server actions update per persistenza profilo e notifiche"
         }
       ]
     },
     {
       "id": "integrations",
       "name": "Intelligent Integrations",
-      "progress": 20,
+      "progress": 100,
       "tasks": [
         {
           "id": "integration-1",

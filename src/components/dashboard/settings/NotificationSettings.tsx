@@ -1,39 +1,30 @@
 /**
  * FILE: src/components/dashboard/settings/NotificationSettings.tsx
  * TYPE: Client Component
- * WHY: Interactive form for notification preferences with localStorage
+ * WHY: Interactive form for notification preferences with database persistence
  *
  * FEATURES:
  * - Toggle switches for notifications
  * - Slider for deadline days
- * - localStorage persistence
+ * - Database persistence via server actions
+ * - Accepts initial settings from server
  */
 
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { updateNotificationSettings } from '@/app/actions/settings'
 import { Button } from '@/components/ui/button'
-import { defaultNotificationSettings, type NotificationSettings } from '@/lib/validations/settings'
+import type { NotificationSettings } from '@/lib/validations/settings'
 
-const STORAGE_KEY = 'eventhub_notification_settings'
+interface NotificationSettingsFormProps {
+  initialSettings: NotificationSettings
+}
 
-export function NotificationSettingsForm() {
-  const [settings, setSettings] = useState<NotificationSettings>(defaultNotificationSettings)
+export function NotificationSettingsForm({ initialSettings }: NotificationSettingsFormProps) {
+  const [settings, setSettings] = useState<NotificationSettings>(initialSettings)
   const [isLoading, setIsLoading] = useState(false)
-
-  // Load from localStorage on mount
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      try {
-        setSettings(JSON.parse(stored))
-      } catch (error) {
-        console.error('Failed to parse stored settings:', error)
-      }
-    }
-  }, [])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -44,10 +35,9 @@ export function NotificationSettingsForm() {
       const result = await updateNotificationSettings(formData)
 
       if (result.success && result.data) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(result.data))
         setSettings(result.data)
         toast.success('Preferenze notifiche salvate')
-      } else {
+      } else if (!result.success) {
         toast.error(result.error || 'Errore durante il salvataggio')
       }
     } catch (_error) {

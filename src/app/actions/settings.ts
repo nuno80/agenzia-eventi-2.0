@@ -1,12 +1,16 @@
 /**
  * FILE: src/app/actions/settings.ts
  * TYPE: Server Actions
- * WHY: Handle settings mutations (will use localStorage for now, DB later)
+ * WHY: Handle settings mutations with database persistence
  */
 
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import {
+  updateNotificationSettings as dalUpdateNotifications,
+  updateProfileSettings as dalUpdateProfile,
+} from '@/lib/dal/settings'
 import {
   type EmailTemplate,
   emailTemplateSchema,
@@ -47,14 +51,15 @@ export async function updateProfileSettings(
 
     const validated = profileSettingsSchema.parse(rawData)
 
-    // TODO: Save to database when auth is implemented
-    // For now, this is handled client-side with localStorage
+    // Save to database via DAL
+    const result = await dalUpdateProfile(validated)
 
     revalidatePath('/impostazioni')
 
-    return { success: true, data: validated }
+    return { success: true, data: result.profile }
   } catch (error) {
     if (error instanceof Error) {
+      console.error('[Action] updateProfileSettings error:', error)
       return { success: false, error: error.message }
     }
     return { success: false, error: 'Errore durante il salvataggio delle impostazioni' }
@@ -82,14 +87,15 @@ export async function updateNotificationSettings(
 
     const validated = notificationSettingsSchema.parse(rawData)
 
-    // TODO: Save to database when auth is implemented
-    // For now, this is handled client-side with localStorage
+    // Save to database via DAL
+    const result = await dalUpdateNotifications(validated)
 
     revalidatePath('/impostazioni')
 
-    return { success: true, data: validated }
+    return { success: true, data: result.notifications }
   } catch (error) {
     if (error instanceof Error) {
+      console.error('[Action] updateNotificationSettings error:', error)
       return { success: false, error: error.message }
     }
     return { success: false, error: 'Errore durante il salvataggio delle notifiche' }
@@ -116,8 +122,9 @@ export async function updateEmailTemplate(
 
     const validated = emailTemplateSchema.parse(rawData)
 
-    // TODO: Save to database when auth is implemented
-    // For now, this is handled client-side with localStorage
+    // Note: Email templates are stored separately in emailTemplates table
+    // For now, keep client-side handling until we implement full template CRUD
+    // This action validates and returns the data, client stores in localStorage
 
     revalidatePath('/impostazioni')
 
@@ -132,8 +139,8 @@ export async function updateEmailTemplate(
 
 export async function resetEmailTemplate(_templateId: string): Promise<ActionResult> {
   try {
-    // TODO: Reset to default from database
-    // For now, this is handled client-side with localStorage
+    // Note: Email templates reset handled client-side for now
+    // Will implement full DB integration in future iteration
 
     revalidatePath('/impostazioni')
 
