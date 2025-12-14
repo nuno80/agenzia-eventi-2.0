@@ -8,12 +8,23 @@
 
 Prima di qualsiasi attività:
 
-1. **Leggere README.md** - Tech stack e struttura progetto
-2. **Consultare docs/** a seconda del task:
-   - `docs/nextjs16-reference.md` → Architettura e pattern Next.js 16
-   - `docs/database.md` → Drizzle ORM + Turso
-   - `docs/authentication.md` → Better Auth (opt-in)
-   - `docs/code-style.md` → Biome e convenzioni
+1. **Leggere README.md** - Tech stack e overview progetto
+2. **Lettura SELETTIVA docs/** - Consulta SOLO i file rilevanti per il task corrente
+
+### Tabella Lettura Selettiva
+
+| Tipo di Task | File da Consultare |
+|--------------|-------------------|
+| Database query/schema | `docs/database.md` |
+| Autenticazione/autorizzazione | `docs/authentication.md` |
+| Setup credenziali | `docs/environment-setup.md` |
+| Pattern Next.js 16 (quick) | `docs/nextjs16-reference.md` |
+| SEO/Metadata/Sitemap/OG | `docs/nextjs16-guide.md` |
+| Linting/formatting | `docs/code-style.md` |
+| Docker deployment | `docs/guida_ottimizzazione_docker.md` |
+| Gemini CLI setup | `docs/guida-GEMINI-CLI.md` |
+
+> **⚠️ IMPORTANTE**: Leggi solo i file docs necessari per il task. Non leggere l'intera documentazione - satura il contesto inutilmente.
 
 ---
 

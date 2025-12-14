@@ -104,12 +104,12 @@ export default function ProductPage() {
     <>
       {/* Static shell - incluso nel pre-render */}
       <CachedProductInfo />
-      
+
       {/* Dynamic - streamed in parallelo */}
       <Suspense fallback={<CartSkeleton />}>
         <UserCart />
       </Suspense>
-      
+
       <Suspense fallback={<RecommendationsSkeleton />}>
         <PersonalizedRecommendations />
       </Suspense>
@@ -186,7 +186,7 @@ export default function Loading() {
 ### Regola d'Oro 🎯
 
 ```
-Runtime APIs (cookies, headers, searchParams) 
+Runtime APIs (cookies, headers, searchParams)
 = Suspense Boundary Obbligatorio
 ```
 
@@ -206,16 +206,16 @@ function Page({ params, searchParams }) {
 }
 
 // ✅ Next.js 16 (OBBLIGATORIO)
-async function Page({ 
-  params, 
-  searchParams 
-}: { 
-  params: Promise<{ id: string }>; 
+async function Page({
+  params,
+  searchParams
+}: {
+  params: Promise<{ id: string }>;
   searchParams: Promise<{ sort: string }>;
 }) {
   const { id } = await params; // ⚠️ AWAIT obbligatorio
   const { sort } = await searchParams; // ⚠️ AWAIT obbligatorio
-  
+
   return <div>Product {id}</div>;
 }
 ```
@@ -237,8 +237,8 @@ const res = await fetch('https://api.example.com/data'); // Era cached
 
 // ✅ Next.js 16: NIENTE è cached di default
 const res1 = await fetch('https://api.example.com/data'); // Dinamico
-const res2 = await fetch('https://api.example.com/data', { 
-  cache: 'no-store' 
+const res2 = await fetch('https://api.example.com/data', {
+  cache: 'no-store'
 }); // Esplicito
 
 // ✅ Per cachare, usa "use cache"
@@ -350,20 +350,20 @@ export default function DashboardPage() {
   return (
     <div>
       <h1>Dashboard</h1>
-      
+
       {/* Static shell */}
       <CachedStats />
-      
+
       {/* Dynamic sections - streaming parallelo */}
       <div className="grid">
         <Suspense fallback={<CardSkeleton />}>
           <RevenueCard />
         </Suspense>
-        
+
         <Suspense fallback={<CardSkeleton />}>
           <UsersCard />
         </Suspense>
-        
+
         <Suspense fallback={<CardSkeleton />}>
           <OrdersCard />
         </Suspense>
@@ -400,14 +400,14 @@ export default async function BlogPost({ params, searchParams }: Props) {
   // 1. Await params (Next.js 16)
   const { slug } = await params;
   const query = await searchParams;
-  
+
   // 2. Fetch data
   const post = await getPost(slug);
-  
+
   if (!post) {
     notFound(); // 404 page
   }
-  
+
   // 3. Render
   return (
     <article>
@@ -422,7 +422,7 @@ async function getPost(slug: string) {
   "use cache";
   cacheTag(`post-${slug}`);
   cacheLife('hours');
-  
+
   return await db.post.findUnique({ where: { slug } });
 }
 ```
@@ -452,37 +452,37 @@ export async function createProduct(formData: FormData) {
     price: formData.get('price'),
     published: formData.get('published') === 'true',
   };
-  
+
   try {
     const validatedData = productSchema.parse(rawData);
-    
+
     // 4. Auth check (se necessario)
     const session = await verifySession();
     if (!session) {
       throw new Error('Unauthorized');
     }
-    
+
     // 5. Mutate data
     const product = await db.product.create({
       data: validatedData,
     });
-    
+
     // 6. Invalidate cache
     updateTag('products'); // Read-your-writes
-    
+
     // 7. Optional: redirect
     redirect(`/products/${product.id}`);
-    
+
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { 
-        success: false, 
-        errors: error.errors 
+      return {
+        success: false,
+        errors: error.errors
       };
     }
-    return { 
-      success: false, 
-      error: 'Failed to create product' 
+    return {
+      success: false,
+      error: 'Failed to create product'
     };
   }
 }
@@ -499,7 +499,7 @@ import { verifySession } from './auth';
 export const getPost = cache(async (postId: string) => {
   // 1. Auth check
   const session = await verifySession();
-  
+
   try {
     // 2. Fetch from DB
     const post = await db.post.findUnique({
@@ -519,16 +519,16 @@ export const getPost = cache(async (postId: string) => {
         },
       },
     });
-    
+
     // 4. Authorization check
     if (!post) return null;
-    
+
     if (!post.published && post.authorId !== session?.userId) {
       return null; // Non autorizzato
     }
-    
+
     return post;
-    
+
   } catch (error) {
     console.error('Failed to fetch post:', error);
     throw new Error('Failed to fetch post');
@@ -537,25 +537,25 @@ export const getPost = cache(async (postId: string) => {
 
 // Mutation function
 export async function updatePost(
-  postId: string, 
+  postId: string,
   data: { title?: string; content?: string }
 ) {
   const session = await verifySession();
-  
+
   if (!session) {
     throw new Error('Unauthorized');
   }
-  
+
   // Verifica ownership
   const post = await db.post.findUnique({
     where: { id: postId },
     select: { authorId: true },
   });
-  
+
   if (!post || post.authorId !== session.userId) {
     throw new Error('Forbidden');
   }
-  
+
   return await db.post.update({
     where: { id: postId },
     data,
@@ -736,7 +736,7 @@ import Image from 'next/image';
 // app/layout.tsx
 import { Inter } from 'next/font/google';
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap', // Evita FOIT
 });
@@ -777,27 +777,36 @@ export const metadata: Metadata = {
 
 ---
 
-## 🔗 Approfondimenti (Moduli Dettagliati)
+## 🔗 Approfondimenti → nextjs16-guide.md
 
-Quando hai bisogno di maggiori dettagli, consulta questi moduli:
+Quando hai bisogno di maggiori dettagli, consulta [`nextjs16-guide.md`](./nextjs16-guide.md):
 
-```
-📁 01-routing-navigation.md
-   → Dynamic routes, route groups, parallel routes, intercepting routes
+| Argomento | Sezione in nextjs16-guide.md | Linea |
+|-----------|------------------------------|-------|
+| **SEO & Metadata** | `## Metadata API - SEO e Meta Tags` | L1 |
+| **Open Graph Images** | `### OG Image Dinamici` | L344 |
+| **Sitemap & Robots** | `#### robots.txt` / `#### sitemap.xml` | L440 |
+| **Image Optimization** | `## Image Optimization con next/image` | L740 |
+| **Font Optimization** | `## Font Optimization con next/font` | L1057 |
+| **Environment Variables** | `## Environment Variables - Best Practices` | L1430 |
+| **Turbopack** | `## 🆕 Turbopack (Stabile)` | L2070 |
+| **React Server Components** | `## React Server Components (RSC)` | L2102 |
+| **Routing & Layouts** | `## Routing (App Router)` / `## Layouts` | L2173 |
+| **Proxy.js (Middleware)** | `## 🆕 Proxy.js (sostituisce Middleware)` | L2332 |
+| **Cache Components** | `## 🆕 Cache Components e "use cache"` | L2445 |
+| **Data Fetching** | `## Data Fetching` | L2515 |
+| **DAL Pattern** | `## Data Access Layer (DAL) - Best Practices` | L3192 |
+| **Server Actions** | `## Server Actions` | L4008 |
+| **React Compiler** | `## 🆕 React 19.2 e React Compiler` | L4104 |
+| **Autenticazione** | `## Autenticazione (con Clerk)` | L4251 |
+| **Migrazione 15→16** | `## 🆕 Migrazione da Next.js 15 a 16` | L4392 |
+| **Best Practices** | `## Best Practices per Next.js 16` | L4468 |
 
-📁 02-server-client-components.md
-   → Composizione, boundary patterns, performance tips
+> 💡 **Tip**: Usa `Ctrl+G` nel tuo editor per andare direttamente alla linea.
 
-📁 03-data-fetching-caching.md
-   → Suspense avanzato, streaming, error handling, cache strategies
+---
 
-📁 04-server-actions.md
-   → Form handling, validazione, progressive enhancement, error handling
-
-📁 05-metadata-seo.md
-   → generateMetadata, OG images, sitemap, robots.txt
-
-📁 06-authentication-clerk.md
+## 📚 Altri Documenti
    → Setup completo, protezione routes, user management
 
 📁 07-dal-security.md
@@ -1160,7 +1169,7 @@ import { getProducts } from '@/lib/dal/products';
 
 export default async function ProductsPage() {
   const products = await getProducts(); // Fetch sul server
-  
+
   return (
     <div>
       <h1>Products</h1>
@@ -1179,16 +1188,16 @@ import { useState } from 'react';
 
 export default function ProductList({ products }) {
   const [filter, setFilter] = useState('');
-  
-  const filtered = products.filter(p => 
+
+  const filtered = products.filter(p =>
     p.name.toLowerCase().includes(filter.toLowerCase())
   );
-  
+
   return (
     <>
-      <input 
-        value={filter} 
-        onChange={e => setFilter(e.target.value)} 
+      <input
+        value={filter}
+        onChange={e => setFilter(e.target.value)}
         placeholder="Filter..."
       />
       <ul>
@@ -1244,7 +1253,7 @@ interface ButtonProps {
 
 export default function Button({ children, onClick, type = 'button' }: ButtonProps) {
   return (
-    <button 
+    <button
       type={type}
       onClick={onClick}
       className="px-4 py-2 bg-blue-500 text-white rounded"
@@ -1277,12 +1286,12 @@ describe('createProduct', () => {
     const formData = new FormData();
     formData.append('name', 'Test Product');
     formData.append('price', '99.99');
-    
+
     const mockCreate = jest.fn().mockResolvedValue({ id: '1' });
     (db.product.create as jest.Mock) = mockCreate;
-    
+
     const result = await createProduct(formData);
-    
+
     expect(result.success).toBe(true);
     expect(mockCreate).toHaveBeenCalledWith({
       data: {
@@ -1291,14 +1300,14 @@ describe('createProduct', () => {
       },
     });
   });
-  
+
   it('should return error with invalid data', async () => {
     const formData = new FormData();
     formData.append('name', 'A'); // Too short
     formData.append('price', '-10'); // Negative
-    
+
     const result = await createProduct(formData);
-    
+
     expect(result.success).toBe(false);
     expect(result.errors).toBeDefined();
   });
@@ -1313,10 +1322,10 @@ import { test, expect } from '@playwright/test';
 
 test('should display products list', async ({ page }) => {
   await page.goto('/products');
-  
+
   // Attendi che il loading finisca
   await expect(page.getByText('Loading...')).not.toBeVisible();
-  
+
   // Verifica che i prodotti siano visibili
   await expect(page.getByRole('list')).toBeVisible();
   await expect(page.getByText('Product 1')).toBeVisible();
@@ -1324,11 +1333,11 @@ test('should display products list', async ({ page }) => {
 
 test('should create a new product', async ({ page }) => {
   await page.goto('/products/new');
-  
+
   await page.fill('input[name="name"]', 'New Product');
   await page.fill('input[name="price"]', '99.99');
   await page.click('button[type="submit"]');
-  
+
   // Attendi redirect e verifica successo
   await page.waitForURL(/\/products\/\d+/);
   await expect(page.getByText('New Product')).toBeVisible();
@@ -1365,7 +1374,7 @@ test('should create a new product', async ({ page }) => {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    
+
     // Validation error
     if (!body.email) {
       return NextResponse.json(
@@ -1373,7 +1382,7 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    
+
     // Auth check
     const { userId } = await auth();
     if (!userId) {
@@ -1382,12 +1391,12 @@ export async function POST(request: Request) {
         { status: 401 }
       );
     }
-    
+
     // Create resource
     const user = await db.user.create({ data: body });
-    
+
     return NextResponse.json(user, { status: 201 });
-    
+
   } catch (error) {
     console.error(error);
     return NextResponse.json(
