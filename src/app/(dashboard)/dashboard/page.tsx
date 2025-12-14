@@ -18,9 +18,7 @@ export default function DashboardPage() {
       {/* Page Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-sm text-gray-600 mt-1">
-          Benvenuto nella tua dashboard
-        </p>
+        <p className="text-sm text-gray-600 mt-1">Benvenuto nella tua dashboard</p>
       </div>
 
       {/* Welcome Card */}
@@ -29,31 +27,23 @@ export default function DashboardPage() {
           <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-3xl">🚀</span>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
-            Starter Kit Pronto!
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Starter Kit Pronto!</h2>
           <p className="text-gray-600 mb-6">
-            Questo è il tuo punto di partenza. Aggiungi widget, grafici e
-            funzionalità secondo le tue necessità.
+            Questo è il tuo punto di partenza. Aggiungi widget, grafici e funzionalità secondo le
+            tue necessità.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
             <div className="p-4 bg-gray-50 rounded-lg">
               <h3 className="font-medium text-gray-900 mb-1">📁 Files</h3>
-              <p className="text-sm text-gray-600">
-                Gestione file con Vercel Blob
-              </p>
+              <p className="text-sm text-gray-600">Gestione file con Vercel Blob</p>
             </div>
             <div className="p-4 bg-gray-50 rounded-lg">
               <h3 className="font-medium text-gray-900 mb-1">🔐 Auth</h3>
-              <p className="text-sm text-gray-600">
-                Better Auth pronto (opt-in)
-              </p>
+              <p className="text-sm text-gray-600">Better Auth pronto (opt-in)</p>
             </div>
             <div className="p-4 bg-gray-50 rounded-lg">
               <h3 className="font-medium text-gray-900 mb-1">🗄️ Database</h3>
-              <p className="text-sm text-gray-600">
-                Drizzle ORM + Turso
-              </p>
+              <p className="text-sm text-gray-600">Drizzle ORM + Turso</p>
             </div>
           </div>
         </div>

@@ -24,11 +24,11 @@
 
 'use client'
 
-import { cn } from '@/lib/utils'
 import { ChevronDown, FolderOpen, LayoutDashboard, Settings, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { cn } from '@/lib/utils'
 
 interface SidebarProps {
   isMobileOpen: boolean
@@ -65,7 +65,7 @@ export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
   const pathname = usePathname()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
   const [orgData, setOrgData] = useState({
-    organizationName: 'EventHub',
+    organizationName: 'StarterKit',
     organizationEmail: '',
   })
 

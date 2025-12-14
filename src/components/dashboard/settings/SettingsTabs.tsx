@@ -10,8 +10,8 @@
 
 'use client'
 
-import type { ProfileSettings } from '@/lib/validations/settings'
 import { useState } from 'react'
+import type { ProfileSettings } from '@/lib/validations/settings'
 import { ProfileSettingsForm } from './ProfileSettings'
 
 type Tab = 'profile'

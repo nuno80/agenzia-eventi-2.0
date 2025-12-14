@@ -9,9 +9,9 @@
  * - Server Component wrapper that fetches settings from DB
  */
 
+import { Suspense } from 'react'
 import { SettingsTabs } from '@/components/dashboard/settings/SettingsTabs'
 import { getOrganizationSettings } from '@/lib/dal/settings'
-import { Suspense } from 'react'
 
 export const metadata = {
   title: 'Impostazioni | My App',
@@ -39,9 +39,7 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Impostazioni</h1>
-        <p className="mt-2 text-gray-600">
-          Gestisci le impostazioni del tuo profilo
-        </p>
+        <p className="mt-2 text-gray-600">Gestisci le impostazioni del tuo profilo</p>
       </div>
 
       <Suspense fallback={<SettingsSkeleton />}>

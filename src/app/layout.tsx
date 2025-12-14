@@ -14,11 +14,10 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Organizzazione Eventi Aziendali Roma | EventiPro - Event Management Professionale',
+  title: 'StarterKit | Next.js 16 Starter',
   description:
-    'Organizzazione eventi corporate a Roma: congressi, formazione, hostess ed eventi online. Esperienza in eventi complessi ECM. Preventivo gratuito per PMI.',
-  keywords:
-    'organizzazione eventi roma, eventi aziendali roma, congressi roma, eventi ibridi, formazione corporate',
+    'Il kit di partenza definitivo per le tue applicazioni Next.js 16. Include autenticazione, database, e componenti UI moderni.',
+  keywords: ['Next.js 16', 'Starter Kit', 'React', 'Tailwind CSS', 'TypeScript', 'Template'],
   openGraph: {
     title: 'EventiPro Roma - Eventi Corporate che Generano Risultati',
     description: 'Congressi, formazione aziendale ed eventi ibridi per PMI a Roma',

@@ -1,7 +1,6 @@
 'use client'
 
 import CaseStudiesSection from './landing/CaseStudiesSection'
-import ContactFormSection from './landing/ContactFormSection'
 import ContactUs1 from './landing/contact-us-1'
 import DifferentiatorsSection from './landing/DifferentiatorsSection'
 import FAQSection from './landing/FAQSection'
@@ -14,27 +13,17 @@ import StatsSection from './landing/StatsSection'
 import WhatsAppButton from './landing/WhatsAppButton'
 
 const EventManagementLanding = () => {
-  const handleContactClick = () => {
-    const element = document.getElementById('contact-form')
-    if (element) element.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const handleServicesClick = () => {
-    const element = document.getElementById('services')
-    if (element) element.scrollIntoView({ behavior: 'smooth' })
-  }
-
   return (
     <div className="min-h-screen bg-slate-50">
       <Navbar />
-      <HeroSection onContactClick={handleContactClick} onServicesClick={handleServicesClick} />
+      <HeroSection />
       <DifferentiatorsSection />
       <ServicesSection />
       <ProcessSection />
       <CaseStudiesSection />
       <StatsSection />
       <FAQSection />
-      <ContactFormSection />
+      {/* <ContactFormSection /> */}
       <ContactUs1 />
       <Footer />
       <WhatsAppButton />

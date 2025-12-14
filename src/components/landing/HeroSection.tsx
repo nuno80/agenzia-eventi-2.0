@@ -13,15 +13,13 @@ import {
   Target,
   Users,
 } from 'lucide-react'
+import Link from 'next/link'
 import type React from 'react'
 import { useEffect, useState } from 'react'
 
-interface HeroSectionProps {
-  onContactClick: () => void
-  onServicesClick: () => void
-}
+type HeroSectionProps = {}
 
-const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, onServicesClick }) => {
+const HeroSection: React.FC<HeroSectionProps> = () => {
   const [isVisible, setIsVisible] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
@@ -90,15 +88,15 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, onServicesCli
           className="absolute inset-0 opacity-50"
           style={{
             background: `
-              radial-gradient(circle at ${50 + mousePosition.x}% ${50 + mousePosition.y}%, 
-                rgba(217, 119, 6, 0.3) 0%, 
+              radial-gradient(circle at ${50 + mousePosition.x}% ${50 + mousePosition.y}%,
+                rgba(217, 119, 6, 0.3) 0%,
                 transparent 50%),
-              radial-gradient(circle at ${30 - mousePosition.x}% ${70 - mousePosition.y}%, 
-                rgba(245, 158, 11, 0.2) 0%, 
+              radial-gradient(circle at ${30 - mousePosition.x}% ${70 - mousePosition.y}%,
+                rgba(245, 158, 11, 0.2) 0%,
                 transparent 50%),
-              linear-gradient(135deg, 
-                #0f172a 0%, 
-                #1e293b 50%, 
+              linear-gradient(135deg,
+                #0f172a 0%,
+                #1e293b 50%,
                 #0f172a 100%)
             `,
             transition: 'background 0.3s ease',
@@ -172,19 +170,19 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, onServicesCli
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
           >
-            <button
-              onClick={onContactClick}
+            <Link
+              href="/#contact"
               className="group relative bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 px-8 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-2xl shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105"
             >
               <span>Richiedi un Preventivo Gratuito</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button
-              onClick={onServicesClick}
-              className="group relative bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/20 hover:border-amber-500/50 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105"
+            </Link>
+            <Link
+              href="/servizi"
+              className="group relative bg-white/5 backdrop-blur-xl hover:bg-white/10 border border-white/20 hover:border-amber-500/50 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 inline-flex items-center justify-center"
             >
               Scopri Come Lavoriamo
-            </button>
+            </Link>
           </div>
 
           {/* Bento Grid Stats */}

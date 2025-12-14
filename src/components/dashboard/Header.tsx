@@ -223,6 +223,9 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
                     onClick={() => setShowNotifications(false)}
                     className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                   >
+                    <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                      StarterKit
+                    </span>
                     Visualizza tutte
                   </Link>
                 </div>

@@ -9,6 +9,7 @@
 Prima di qualsiasi attività:
 
 1. **Leggere README.md** - Tech stack e overview progetto
+2. **Leggere  sempre `docs/nextjs16-reference.md`** - per ottimizzare l'uso di nextjs16
 2. **Lettura SELETTIVA docs/** - Consulta SOLO i file rilevanti per il task corrente
 
 ### Tabella Lettura Selettiva

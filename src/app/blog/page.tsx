@@ -1,12 +1,13 @@
 import { ArrowRight, Calendar, Clock } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Footer from '@/components/landing/Footer'
 import Navbar from '@/components/landing/Navbar'
 
 export const metadata: Metadata = {
-  title: 'Blog Eventi Corporate | Guide e Consigli per PMI - EventiPro Roma',
+  title: 'Blog StarterKit | Guide e Consigli per Sviluppatori',
   description:
-    'Guide pratiche, consigli e strategie per organizzare eventi aziendali di successo. Esperti in congressi, formazione corporate ed eventi ibridi.',
+    'Guide pratiche, tutorial e best practices per lo sviluppo con Next.js 16. Impara a costruire app moderne e performanti.',
 }
 
 // Mock data - in production this would come from a CMS or database
@@ -119,6 +120,7 @@ export default function BlogPage() {
           ))}
         </div>
       </section>
+      <Footer />
     </div>
   )
 }

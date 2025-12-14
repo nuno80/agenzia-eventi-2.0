@@ -46,7 +46,7 @@ export default function ContactUs1() {
   }
 
   return (
-    <section className="bg-background relative w-full overflow-hidden py-16 md:py-24">
+    <section id="contact" className="bg-background relative w-full overflow-hidden py-16 md:py-24">
       <div
         className="absolute top-0 left-0 h-[500px] w-[500px] rounded-full opacity-20 blur-[120px]"
         style={{
@@ -280,7 +280,7 @@ export default function ContactUs1() {
                     Raccontaci del tuo progetto e ti ricontatteremo entro 24 ore
                   </span>
                   <div className="absolute -right-20 -bottom-20 z-10 mx-auto flex h-full w-full max-w-[300px] items-center justify-center transition-all duration-700 hover:scale-105 md:-right-28 md:-bottom-28 md:max-w-[550px]">
-                    {/* 
+                    {/*
                       Globe customization options:
                       - scale: Controls the size of the globe (0.5 = 50% smaller)
                       - baseColor: Changes the main color of the globe [R, G, B] values between 0-1
