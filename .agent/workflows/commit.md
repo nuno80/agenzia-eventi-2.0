@@ -2,20 +2,24 @@
 description: effettua lint check e il commit a termine di ogni task
 ---
 
-Esegui i seguenti tre step in ordine, passando allo step successivo solo dopo aver completato con successo il precedente:
+Esegui i seguenti step in ordine:
 
-Esegui: pnpm check:fix:unsafe
+// turbo
+1. Esegui: `pnpm check:fix:unsafe`
 
-Assicurati che non rimangano errori o warning bloccanti.
+2. Assicurati che non rimangano errori bloccanti
 
-Aggiorna il file: @tasks-dashboard.json
+3. Aggiorna `.gemini/project-state/BACKLOG.md` se hai completato task
 
-Applica tutte le modifiche necessarie e verifica che il file sia valido JSON.
+// turbo
+4. Esegui commit con messaggio descrittivo:
+   ```bash
+   git add .
+   git commit -m "feat/fix/chore: descrizione"
+   ```
 
-Esegui un commit dettagliato e il push su origin main
-
-Usa un messaggio di commit chiaro e descrittivo.
-
-Concludi con:
-
-git push origin main
+// turbo
+5. Push su origin:
+   ```bash
+   git push origin main
+   ```

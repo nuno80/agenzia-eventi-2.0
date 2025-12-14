@@ -1,5 +1,7 @@
 ---
-description: Questo prompt indica cosa fare all'avvio di ogni conversazione
+description: Cosa fare all'avvio di ogni conversazione
 ---
 
-Analizza i file AGENTS.md; dashboard/prompt.md; guide/nextjs16-quick-reference.md; dashboard/tasks-dashboard.json e preparati per il prossimo task decrivendo brevemente il suo scopo
+1. `.gemini/GEMINI.md` è già caricato automaticamente
+2. Leggi `.gemini/project-state/BACKLOG.md` per vedere i task pendenti
+3. Chiedi quale task iniziare o attendi istruzioni

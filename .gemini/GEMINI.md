@@ -24,6 +24,8 @@ Prima di qualsiasi attività:
 | Docker deployment | `docs/guida_ottimizzazione_docker.md` |
 | Gemini CLI setup | `docs/guida-GEMINI-CLI.md` |
 | File upload/storage | `docs/guida-vercel-blob.md` |
+| **Task da fare** | `.gemini/project-state/BACKLOG.md` |
+| **Debug / Logica app** | `.gemini/project-state/APP-LOGIC.md` |
 
 > **⚠️ IMPORTANTE**: Leggi solo i file docs necessari per il task. Non leggere l'intera documentazione - satura il contesto inutilmente.
 
