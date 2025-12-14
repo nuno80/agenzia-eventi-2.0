@@ -23,6 +23,7 @@ Prima di qualsiasi attività:
 | Linting/formatting | `docs/code-style.md` |
 | Docker deployment | `docs/guida_ottimizzazione_docker.md` |
 | Gemini CLI setup | `docs/guida-GEMINI-CLI.md` |
+| File upload/storage | `docs/guida-vercel-blob.md` |
 
 > **⚠️ IMPORTANTE**: Leggi solo i file docs necessari per il task. Non leggere l'intera documentazione - satura il contesto inutilmente.
 
@@ -171,3 +172,52 @@ Per approfondimenti, consultare sempre la cartella `docs/`:
 - [Authentication](docs/authentication.md) - Better Auth
 - [Code Style](docs/code-style.md) - Biome
 - [Next.js 16](docs/nextjs16-reference.md) - Pattern e best practice
+
+---
+
+## 🤔 Workflow Pre-Coding (OBBLIGATORIO)
+
+**Prima di scrivere qualsiasi codice**, per ogni nuovo task o feature:
+
+1. **Analizza la richiesta** - Leggi attentamente cosa viene chiesto
+2. **Fai domande di chiarimento** - Non procedere con assunzioni:
+   - Qual è il comportamento atteso?
+   - Ci sono edge cases da considerare?
+   - Come deve integrarsi con il codice esistente?
+   - Quali sono i criteri di accettazione?
+3. **Attendi conferma** - Solo dopo aver ricevuto risposte, procedi
+
+> **⚠️ REGOLA**: Mai scrivere codice basandosi su assunzioni. Chiedere sempre per essere sicuri di andare nella direzione giusta.
+
+---
+
+## 📦 Estensioni per Progetti Specifici
+
+Quando ricevi un **PRD dedicato** per un nuovo modulo/app, crea un'estensione separata:
+
+### Struttura
+
+```
+.gemini/extensions/[nome-progetto]/
+├── gemini-extension.json  # Config obbligatoria
+└── GEMINI.md              # Contesto progetto specifico
+```
+
+### File gemini-extension.json (template)
+
+```json
+{
+  "name": "[nome-progetto]",
+  "version": "1.0.0",
+  "contextFileName": "GEMINI.md"
+}
+```
+
+### Quando creare un'estensione
+
+- PRD con logica di business specifica
+- Moduli con stack tecnologico diverso
+- Microservizi separati
+- Progetti con entità DB dedicate
+
+L'estensione viene caricata automaticamente insieme al GEMINI.md principale.
